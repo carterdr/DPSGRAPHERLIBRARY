@@ -1,0 +1,51 @@
+Lumina + Gl + cata
+
+first lumina->2nd: 0:26:00
+lumina->gl: 0:58:00
+gl -> cata hit: 1:24:00
+cata->first lumina: 0:36:00
+
+
+Izi + ikelos + cata
+
+izi->ikelos 2:10
+ikelos->cata: 1:18:00 
+cata->Izi: 1
+
+
+Thoughtless + ikelos + cata
+
+Thoughtless->ikelos 0:40:00
+ikelos->cata: 1:18:00 
+cata->Thoughtless: 42
+
+Single Izi-> ikelos: 0:45:00
+
+------------------------------------
+Cold Comfort + Ritpide
+
+Riptide -> primary: 76/60
+primary -> cold: 50/60
+cold -> riptide: 82/60
+
+
+Cold Comfort + Irukanji
+
+Irukanji -> primary: 41/60
+primary -> cold: 48/60
+cold -> irukanji: 57/60
+
+
+41 + 48 + 57 + 41 + 48
+
+
+
+
+
+
+
+
+
+
+
+
