@@ -14,6 +14,7 @@ import LuckyPants
 import Swords
 import WeaponPrints
 Excel.Excel.clearExcel()
-a = Snipers.SupremacyFTTC()
-a.printDps(1.25, "Supremacy (Rewind FTTC) No Surges")
-a.printDps(1.25 * 1.22, "Supremacy (Rewind FTTC)")
+q = LuckyPants.Malfeasance()
+
+q = LuckyPants.WardensLaw()
+q.printDps(1.25)

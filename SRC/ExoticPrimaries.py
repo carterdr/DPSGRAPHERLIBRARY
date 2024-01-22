@@ -95,3 +95,43 @@ class Striga:
     average_dps=(hs_damage*78+total_tick_damage)/18.76666667
     def getDamage(time, default_time, average_dps=average_dps):
         return 0 * average_dps*(time-default_time)
+    
+class FinalWarning:
+    def __init__(self):
+        self.time_between_shots_burst = 8/60
+        self.burst_delay = 95/60
+        self.initial_charge_time = 93/60
+        self.reload_speed = 154/60
+        self.burst_size = 10
+        self.bursts_per_mag = 2
+        self.base_damage=4904 * 1.22
+        self.time=0
+        self.damage_done=0        
+    def printDps(self, buffPerc, name = "FinalWarning", time = 0, damage_done = 0, arcSouls = False):
+        #buffPerc is like well
+        e = Excel.Excel(name)
+        shots_fired=0 
+        count=0
+        time+=95/60
+        while (time<100): 
+            for j in range(self.bursts_per_mag):
+                for i in range(self.burst_size):
+                    shots_fired=shots_fired+1
+                    damage_done +=self.base_damage * buffPerc
+                    Methods.update(e, time, damage_done, shots_fired, count, arcSouls)
+                    if(i==self.burst_size-1):
+                        if (j == self.bursts_per_mag - 1):
+                            time+=self.reload_speed
+                            print(f"reload and {j}")
+                        else:
+                            time+= self.burst_delay 
+                            print(f"burst delay and {j}")  
+                    else:
+                        time+=self.time_between_shots_burst
+                    if(time > 100):
+                        break    
+                if(time > 100):
+                    break    
+        self.time=time
+        self.damage_done=Methods.getDamage_Done(damage_done, time, 0, buffPerc, False, arcSouls)            
+        e.closeExcel()          

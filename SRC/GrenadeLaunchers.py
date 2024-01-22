@@ -337,7 +337,7 @@ class IziRegnant:
                 print("current rotation:"+str(count+1) + "| 4x shot " + str(i.num_4x-izi_4x_remaining) +"| 3x shot " + str(i.num_3x-izi_3x_remaining) + "| Rockets Shot " + str(gl_fired) +"| time: "+str(format(time,".2f")) + "| damage: " + str(damage_done) + "| dps: " + "infinity")
 class Cataphract:
     def __init__(self) :
-        self.reserves = 17 
+        self.reserves = 24
         self.mag = 6
         self.base = (15933 + 6570) * 1.22
         self.time_between_shots = 30/60
@@ -346,7 +346,7 @@ class Cataphract:
         #buffPerc is like well
         e = Excel.Excel(name)
         shots_fired=0
-        mag_size = self.reserves if isEnvious else self.mag
+        mag_size = 17 if isEnvious else self.mag
         damage_per_shot = self.base * buffPerc  
         if isScatterSignal:
             time += 76/60
@@ -355,9 +355,18 @@ class Cataphract:
             time += 50/60           
         else:
             time += 40/60 + 78/60
-        bait_time = 0
+        bait_time = time
         for i in range(10):
             for i in range(mag_size):
+                if (shots_fired != self.reserves - 1 and bait_time + 10 < time ):
+                    if isScatterSignal:
+                        time += 76/60
+                        damage_done += FusionRifles.ScatterSignal().base_damage * buffPerc
+                        Methods.update(e, time, damage_done, shots_fired, 0, arcSouls)    
+                        time += 50/60           
+                    else:
+                        time += 40/60 + 78/60
+                    bait_time = time
                 if (shots_fired == 0):
                     bait_time = time;
                 if (shots_fired >=1 and time < bait_time + 10):
@@ -371,7 +380,8 @@ class Cataphract:
                     break    
                 time+=self.time_between_shots                
             if(shots_fired==self.reserves):
-                    break                 
+                    break
+            mag_size = 6                 
             time+= self.reload_time
 
         self.time=time
