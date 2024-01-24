@@ -4,6 +4,3 @@ def printAmmoFinderReserves(reserves):
     min = math.ceil(reserves * 0.06875) + scav
     max = math.ceil(reserves * 0.09075) + scav
     print(f"min {min} max: {max}") 
-    
-printAmmoFinderReserves(7)
-printAmmoFinderReserves()

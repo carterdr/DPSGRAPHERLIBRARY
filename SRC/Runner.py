@@ -1,4 +1,5 @@
-import Linears
+import sys
+sys.path.append("./Libraries")
 import Excel
 import Shotguns
 import Snipers
@@ -14,7 +15,16 @@ import LuckyPants
 import Swords
 import WeaponPrints
 Excel.Excel.clearExcel()
-q = LuckyPants.Malfeasance()
+Excel.Excel.createTime()
+#Insert Code Below
 
-q = LuckyPants.WardensLaw()
-q.printDps(1.25)
+#Example
+crux = Rockets.Crux()
+crux.printDps(1.25)
+
+#MultiWeapon Example
+crux = Rockets.Crux()
+col = crux.printDps(1.25)
+cloud = Snipers.CloudStrike()
+#Place cloudstrike dps in same column as crux
+cloud.printDps(1.25, "Cloudstrike", crux.damage_times, placeInColumn = col)
