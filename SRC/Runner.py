@@ -1,6 +1,6 @@
 import sys
 sys.path.append("./Libraries")
-import Excel
+from Excel import Excel
 import Shotguns
 import Snipers
 import FusionRifles
@@ -14,8 +14,8 @@ import Bow
 import LuckyPants
 import Swords
 import WeaponPrints
-Excel.Excel.clearExcel()
-Excel.Excel.createTime()
+Excel.clearExcel()
+Excel.createTime()
 #Insert Code Below
 
 #Example
@@ -28,3 +28,12 @@ col = crux.printDps(1.25)
 cloud = Snipers.CloudStrike()
 #Place cloudstrike dps in same column as crux
 cloud.printDps(1.25, "Cloudstrike", crux.damage_times, placeInColumn = col)
+
+
+
+
+
+
+#Insert Code Above
+#Displays Data
+Excel.displayData()
