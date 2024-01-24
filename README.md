@@ -37,7 +37,8 @@ This library calculates DPS using the following methodology:
    - For single weapon DPS calculation, instantiate the weapon class and call `printDPS()`.
    - For multiple weapons, chain the `printDPS()` method calls, passing the appropriate parameters.
 3. **Output File:** The results are written to `DPS.xlsx`. Ensure this file is closed before running the script.
-4. **Data Visualization:** Transfer the data to a permanent spreadsheet and create a line chart with time on the x-axis for visualization.
+5. **Data Visualization:** Upon execution, the script will render a graphical representation of the data in a separate window for immediate analysis.
+6. **Permanent Storage** Transfer the data to a permanent spreadsheet and create a line chart with time on the x-axis for visualization.
 
 #### Examples
 
