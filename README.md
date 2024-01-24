@@ -14,7 +14,7 @@ This library calculates DPS using the following methodology:
   -   All damage values assume boss spec if possible.
 - **Output:** The library prints unique damage values and timestamps to the console and populates an Excel file for graph plotting. It covers the first 100 seconds of weapon damage.
   ![Final Graph Example](https://github.com/carterdr/DPSGRAPHERLIBRARY/assets/113926029/7131c2f8-d6a8-4255-a651-a5bf12b6523c)
-)
+
 
 
 
