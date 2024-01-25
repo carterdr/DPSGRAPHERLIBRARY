@@ -31,18 +31,18 @@ class Cataclysm(Linear):
         self.base_damage = 22721 * 1.22
         self.mag_size_initial = 10
         self.mag_size_subsequent = 10
-        self.bNs_reload_time_lunas=50/60
+        self.bNs_reload_time_lunas=47/60
         super().__init__(self.reserves)  
     def printDps(self, buffPerc, isBnS = True, name = "Cataclysm", damageTimes = [], placeInColumn = None, Primary_Damage=0, Special_Damage=0, Primary_To_Special= 40/60, Special_To_Heavy= 78/60, Heavy_To_Primary = 40/60):
         if(isBnS):   
             self._preparePrintDps_(name, damageTimes, placeInColumn)            
-            bait_tuple = [(Primary_To_Special, Primary_Damage * buffPerc), (Special_To_Heavy, Special_Damage * buffPerc), (0, 0)]
+            bait_tuple = [(Primary_To_Special, Primary_Damage * buffPerc), (Special_To_Heavy, Special_Damage * buffPerc), (Heavy_To_Primary, 0)]
             def damagePerShot(is_proc_shot, bait_time, shots_fired, shots_fired_this_mag):
-                if (self.time < bait_time + 11 and not is_proc_shot):
+                if (self.time < bait_time + 10 and not is_proc_shot):
                     return self.base_damage * buffPerc * 1.35;
                 else:
                     return self.base_damage * buffPerc
-            self.processBaitDamageLoop(bait_tuple, self.mag_size_initial, self.mag_size_subsequent,self.time_between_shots, Heavy_To_Primary + self.bNs_reload_time_lunas, damagePerShot)                     
+            self.processBaitDamageLoop(bait_tuple, self.mag_size_initial, self.mag_size_subsequent,self.time_between_shots, self.bNs_reload_time_lunas, damagePerShot)                     
             return self.excel.closeExcel(self.damage_times)   
         else:
             name = "Cataclysm (FTTC FF)"

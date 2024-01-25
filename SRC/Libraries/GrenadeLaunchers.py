@@ -64,7 +64,7 @@ class Witherhoard(GrenadeLauncher):
         self._preparePrintDps_(name, damageTimes, placeInColumn)
         for rows in range(0, 1001):
             damage_done = self.dps * (rows/10) * buffPerc
-            self.damage_times.append(self.update(rows/10, damage_done, rows))              
+            self.damage_times.append(self.update(rows/10, damage_done, rows, rows))              
         return self.excel.closeExcel(self.damage_times)  
 class Parasite(GrenadeLauncher):
     def __init__(self):

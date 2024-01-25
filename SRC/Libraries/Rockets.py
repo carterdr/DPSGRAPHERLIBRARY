@@ -30,9 +30,11 @@ class CruxBait(Rocket):
         self.reload_time=130/60
         self.mag_size_initial = 1
         self.mag_size_subsequent = 2         
-    def printDps (self, buffPerc, name = "Crux (Clown Bait)", damageTimes = [], placeInColumn = None, damageSpecial = 0):
+    def printDps (self, buffPerc, name = "Crux (Clown Bait)", damageTimes = [], placeInColumn = None, Primary_Damage=0, Special_Damage=0, Primary_To_Special= 40/60, Special_To_Heavy= 1, Heavy_To_Primary = 40/60, charge_time = None):
         self._preparePrintDps_(name, damageTimes, placeInColumn)
-        bait_tuple = [(40/60, damageSpecial * buffPerc), (1, 0), (1, 0)]
+        bait_tuple = [(Primary_To_Special, Primary_Damage * buffPerc), (Special_To_Heavy, Special_Damage * buffPerc), (Heavy_To_Primary, 0)]
+        if charge_time != None:
+            self.time += charge_time
         def damagePerShot(is_proc_shot, bait_time, shots_fired, shots_fired_this_mag):
             if (not is_proc_shot):
                 return self.base_damage * buffPerc * 1.35;
@@ -113,10 +115,13 @@ class ColdComfort(Rocket):
             mag_size = 4
         self.mag_size_initial = mag_size
         self.mag_size_subsequent = 1
-    def printDps(self, buffPerc, isBnS = True, name = "ColdComfort", damageTimes = [], placeInColumn = None, Primary_Damage=0, Special_Damage=0, Primary_To_Special= 40/60, Special_To_Heavy= 1, Heavy_To_Primary = 40/60):
+    def printDps(self, buffPerc, isBnS = True, name = "ColdComfort", damageTimes = [], placeInColumn = None, Primary_Damage=0, Special_Damage=0, Primary_To_Special= 40/60, Special_To_Heavy= 1, Heavy_To_Primary = 40/60, charge_time = None):
         if isBnS:
             name = f"Cold Comfort (Bait {self.mag_size_initial} Mag)"        
             self._preparePrintDps_(name, damageTimes, placeInColumn)            
+            if charge_time != None:
+                self.time += charge_time
+                print(self.time)
             bait_tuple = [(Primary_To_Special, Primary_Damage * buffPerc), (Special_To_Heavy, Special_Damage * buffPerc), (Heavy_To_Primary, 0)]
             def damagePerShot(is_proc_shot, bait_time, shots_fired, shots_fired_this_mag):
                 print(f"bait{bait_time}")
@@ -145,18 +150,20 @@ class Apex(Rocket):
         self.reload_time=130/60
         self.mag_size_initial = 2
         self.mag_size_subsequent = 1
-    def printDps(self, buffPerc, isBnS = True, name = "Apex", damageTimes = [], placeInColumn = None, Primary_Damage=0, Special_Damage=0, Primary_To_Special= 40/60, Special_To_Heavy= 1, Heavy_To_Primary = 40/60):
+    def printDps(self, buffPerc, isBnS = True, name = "Apex", damageTimes = [], placeInColumn = None, Primary_Damage=0, Special_Damage=0, Primary_To_Special= 40/60, Special_To_Heavy= 1, Heavy_To_Primary = 40/60, charge_time = None):
         if isBnS:
             name = f"Apex (Recon Bait {self.mag_size_initial} Mag)"        
             self._preparePrintDps_(name, damageTimes, placeInColumn)            
             bait_tuple = [(Primary_To_Special, Primary_Damage * buffPerc), (Special_To_Heavy, Special_Damage * buffPerc), (Heavy_To_Primary, 0)]
+            if charge_time != None:
+                self.time += charge_time            
             def damagePerShot(is_proc_shot, bait_time, shots_fired, shots_fired_this_mag):
                 print(f"bait{bait_time}")
                 if (self.time < bait_time + 11 and not is_proc_shot):
                     return self.base_damage * buffPerc * 1.35;
                 else:
                     return self.base_damage * buffPerc
-            self.processBaitDamageLoop(bait_tuple, self.mag_size_initial, self.mag_size_subsequent,self.time_between_shots, self.reload_time, damagePerShot)                     
+            self.processBaitDamageLoop(bait_tuple, self.mag_size_initial, self.mag_size_subsequent,self.time_between_shots, self.reload_time, damagePerShot, 11)                     
             return self.excel.closeExcel(self.damage_times)   
         else:
             name = f"Apex (Recon EL {self.mag_size_initial} Mag)"        
@@ -247,8 +254,8 @@ class IziRocket(Rocket):
         return self.excel.closeExcel(self.damage_times)
     def _generate_attack_sequence(self, izi, buffPerc):
         rocket_damage_base = self.base_damage * buffPerc
-        damage_4x = izi.damage_4x * buffPerc 
-        damage_3x = izi.damage_3x * buffPerc
+        damage_4x = izi.damage_4x * buffPerc / 1.22
+        damage_3x = izi.damage_3x * buffPerc / 1.22
         if self.rocket_reserves > 7:
             final_delay = 165/60
             extraAttack = [

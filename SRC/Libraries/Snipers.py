@@ -61,8 +61,8 @@ class Fugue(Sniper):
 class Izi(Sniper):
     def __init__(self, reserves = 20):
         self.health_bar_damage = 1.25
-        self.damage_4x = 71040 * self.health_bar_damage
-        self.damage_3x = 34962 * self.health_bar_damage
+        self.damage_4x = 71040 * self.health_bar_damage * 1.22
+        self.damage_3x = 34962 * self.health_bar_damage * 1.22
         self.reserves = reserves
         self.num_4x = ((reserves - 1)// 4) + 1
         self.num_3x = ((reserves-1)%4)//3
