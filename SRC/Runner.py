@@ -9,8 +9,6 @@ ExcelModule.Excel.createTime()
 
 
 
-col = Linears.DoomedPartitioner().printDps(1.25)
-GrenadeLaunchers.Witherhoard().printDps(1.25, "witherhoard", [], col)
 #Insert Code Above
 #Creates Graph
 ExcelModule.Excel.displayData()

@@ -4,7 +4,8 @@ import os
 class Excel():
     def __init__ (self, name, placeInColumn = None):
         self.name = name
-        self.wb = openpyxl.load_workbook("DPS.xlsx")
+        self.file_path = Excel.getExcelPath()
+        self.wb = openpyxl.load_workbook(self.file_path)
         self.sh1 = self.wb["Sheet1"]
         self.column = Excel.getOpenColumn(self.sh1)
         if placeInColumn != None:
@@ -24,12 +25,13 @@ class Excel():
         # Construct the full path to Dps.xlsx
         return os.path.join(project_directory, "Dps.xlsx")
     def createTime():
-        wb = openpyxl.load_workbook("DPS.xlsx")
+        file_path = Excel.getExcelPath()
+        wb = openpyxl.load_workbook(file_path)
         sh1 = wb["Sheet1"]
         sh1.cell(row=1, column=1, value="Seconds")
         for row in range(1001):
             sh1.cell(row=row+2, column=1).value = "{:.1f}".format(row/10)           
-        wb.save("DPS.xlsx")
+        wb.save(file_path)
     def closeExcel (self, damagetimes):
         for row, value in damagetimes:
             current_value = self.sh1.cell(row+1, self.column).value
@@ -37,7 +39,7 @@ class Excel():
                 current_value = 0
             self.sh1.cell(row+1, self.column).value = int(format(value + current_value,".0f"))
         self.__fillGaps()
-        self.wb.save("DPS.xlsx")        
+        self.wb.save(self.file_path)        
         return self.column
     def __fillGaps(self):
         currentMax = self.sh1.cell(2, self.column).value
@@ -49,17 +51,18 @@ class Excel():
                 currentMax = value
             self.sh1.cell(row,self.column).value = int(currentMax)
     def clearExcel():
+        print(Excel.getExcelPath())
         file_path = Excel.getExcelPath()
-        book = openpyxl.load_workbook("DPS.xlsx") #get the file name
+        book = openpyxl.load_workbook(file_path) #get the file name
         sheet = book.get_sheet_by_name('Sheet1') #get the sheet name
         for a in sheet['A1':'Z1002']: #you can set the range here 
             for cell in a:
                 cell.value = None #set a value or null here
-        book.save("DPS.xlsx")
+        book.save(file_path)
     def displayData():
         file_path = Excel.getExcelPath()
         # Load the workbook and select the active sheet
-        wb = openpyxl.load_workbook("DPS.xlsx")
+        wb = openpyxl.load_workbook(file_path)
         sheet = wb.active
         # Read the 'seconds' column (assuming it is the first column)
         open_column = Excel.getOpenColumn(sheet)
