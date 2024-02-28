@@ -1,24 +1,24 @@
-import Linears
-import Excel
-import Shotguns
-import Snipers
-import FusionRifles
-import ExoticPrimaries
-import Rockets
-import Abilities
-import TraceRifles
-import GrenadeLaunchers
-import MachineGuns
-import Bow
-import LuckyPants
-import Swords
+from Libraries import Linears
+from Libraries import Excel
+from Libraries import Shotguns
+from Libraries import Snipers
+from Libraries import FusionRifles
+from Libraries import ExoticPrimaries
+from Libraries import Rockets
+from Libraries import Abilities
+from Libraries import TraceRifles
+from Libraries import GrenadeLaunchers
+from Libraries import MachineGuns
+from Libraries import Bow
+from Libraries import LuckyPants
+from Libraries import Swords
 def printCataclysmicBait() :
     x = Linears.Cataclysm()
     col = x.printDps(1.25, True, "Cataclysmic Bait", [], None, 0, Snipers.Ikelos().base_damage)
     y = Snipers.Ikelos()
     y.reserves-=4
     y.mag_size_initial -= 4
-    y.printDps(1.25, "Ikelos SR (FTTC FF)", x.damage_times, col)
+    y.printDps(1.25, 0,0, "Ikelos SR (FTTC FF)", x.damage_times, col)
 
     x = Linears.Cataclysm()
     col = x.printDps(1.25, True, "Cataclysmic Bait", [], None, Snipers.Izi().damage_4x/1.22, 0, 130/60, 78/60, 1)

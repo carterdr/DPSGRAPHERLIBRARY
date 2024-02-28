@@ -1,6 +1,17 @@
-import Excel
+from Libraries import Excel
 class Weapon:
     def __init__(self, reserves):
+        self.bait_damage_buff = 1.3
+        self.vorpal_damage_buff = 1.15
+        self.focused_furry_damage_buff = 1.2
+        self.surgex3_damage_buff = 1.22
+        self.surgex2_damage_buff = 1.17
+        self.surgex1_damage_buff = 1.1
+        self.kinetic_primary_damage_buff = 1.1
+        self.kinetic_special_damage_buff = 1.15
+        self.firing_line_damage_buff = 1.2
+        self.surrounded_enhanced_damage_buff = 1.47
+        self.surrounded_damage_buff=1.4
         self.time = 0
         self.damage_done = 0
         self.damage_times = []
