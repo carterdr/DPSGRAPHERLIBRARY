@@ -23,6 +23,7 @@ class Weapon:
             self.time = 0
             self.damage_done = 0
             if len(damageTimes) != 0:
+                print("ADDING SWAP DELAY")
                 self.time = damageTimes[-1][0]/10 + 1
 
     def processSimpleDamageLoop(self, inital_mag, subsequent_mag, timeBetweenShots, reloadTime, damagePerShotFunction):

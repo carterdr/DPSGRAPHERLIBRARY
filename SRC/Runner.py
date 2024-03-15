@@ -4,10 +4,9 @@ from Libraries import Excel as ExcelModule
 ExcelModule.Excel.clearExcel()
 ExcelModule.Excel.createTime()
 
-
-#Insert Code Below
-
-
+Swords.Bequest().printDps(1.25)
+Swords.Lament().printDps(1.25)
+Swords.Gullotine().printDps(1.25)
 
 #Insert Code Above
 #Creates Graph

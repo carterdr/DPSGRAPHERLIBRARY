@@ -240,7 +240,7 @@ class Ghally(Rocket):
         self.reload_time = 130/60
         self.mag_size_initial = 2
         self.mag_size_subsequent = 2
-        self.main_damage = (23688 + 6760) * self.surgex3_damage_buff * (.95/.9)
+        self.main_damage = (27636 + 3182) * self.surgex3_damage_buff
         self.pack_damage = 8*(2*471 + 1010) * self.surgex3_damage_buff
         self.base_damage = (self.main_damage + self.pack_damage)
 

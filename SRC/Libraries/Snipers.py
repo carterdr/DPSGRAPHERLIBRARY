@@ -297,7 +297,6 @@ class SupremacyTremors(Sniper):
         self.tremor_damage = 5067 * 3 
     def printDps(self, buffPerc, name="Supremacy (Rewind Tremors) No Surges", damageTimes=[], placeInColumn=None):
         self._preparePrintDps_(name, damageTimes, placeInColumn)
-        self.time += self.charge_time
 
         def damagePerShot(shots_fired, shots_fired_this_mag):
             if (shots_fired in [1, 12, 18]):
@@ -317,11 +316,17 @@ class SupremacyFTTC(Sniper):
         self.mag_size_initial = 46
         self.mag_size_subsequent = 46
 
-    def printDps(self, buffPerc, name="Supremacy (Rewind FTTC) No Surges", damageTimes=[], placeInColumn=None):
+    def printDps(self, buffPerc, Tethers=0, TripleTethers=0, addShotDelay = False, name="Supremacy (Rewind FTTC) No Surges", damageTimes=[], placeInColumn=None):
         self._preparePrintDps_(name, damageTimes, placeInColumn)
-
+        if addShotDelay:
+            self.time += self.time_between_shots - 1
+        bonus_damage_duration = TripleTethers * 17 if TripleTethers != 0 else Tethers * 12 if Tethers != 0 else 0
         def damagePerShot(shots_fired, shots_fired_this_mag):
-            return self.base_damage * buffPerc
+            if bonus_damage_duration > self.time:
+                return self.base_damage * buffPerc * 1.3
+            elif bonus_damage_duration !=0:
+                return self.base_damage * buffPerc * 1.15
+            return self.base_damage * buffPerc 
         self.processSimpleDamageLoop(self.mag_size_initial, self.mag_size_subsequent,
                                      self.time_between_shots, self.reload_time, damagePerShot)
         print(self.damage_times)

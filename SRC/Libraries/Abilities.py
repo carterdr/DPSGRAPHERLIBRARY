@@ -142,12 +142,15 @@ class GoldenGun(Ability):
         self.duration_base_cooldown = 105/60
         super().__init__()
 
-    def printDps(self, isStarEaters=False, isNighthawk=True, isRadiant=False, name="Golden Gun", damageTimes=[], placeInColumn=None):
+    def printDps(self, isStarEaters=False, isNighthawk=True, isRadiant=False, TetherBuff = False, Prepop = False, name="Golden Gun", damageTimes=[], placeInColumn=None):
         self._preparePrintDps_(name, damageTimes, placeInColumn)
         damage_per_shot = self.damage_nighthawk * \
             (1.25 if isRadiant else 1) if isNighthawk else self.damage_stareaters if isStarEaters else self.damage_base
+        if TetherBuff:
+            damage_per_shot *= 1.3
         if (isNighthawk):
-            self.time += self.duration_nighthawk
+            if not Prepop:
+                self.time += self.duration_nighthawk
             self.damage_done += damage_per_shot
             self.damage_times.append(self.update(
                 self.time, self.damage_done, 0))

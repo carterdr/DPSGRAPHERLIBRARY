@@ -71,7 +71,6 @@ class Excel():
 
         # Create a figure and an axis object
         fig, ax = plt.subplots(figsize=(15, 8))
-
         
         for column in range(2, open_column):
             damage = [float(sheet.cell(row=i, column=column).value) for i in range(2, max_row + 1)]
