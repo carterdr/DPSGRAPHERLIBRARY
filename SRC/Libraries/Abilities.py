@@ -1,5 +1,4 @@
-from Libraries import Excel
-
+from Libraries import Excel, Weapon
 
 class Ability:
     def __init__(self):
@@ -30,8 +29,8 @@ class ArcSoul(Ability):
     def __init__(self):
         self.charge_time = 49/60
         self.time_between_shots = 110/60
-        self.arc_soul_damage = 6409.2
-        self.arc_soul_dps = 6409.2/(110/60)
+        self.arc_soul_damage = 7919 / Weapon.story_mission_to_raid_scalar
+        self.arc_soul_dps = self.arc_soul_damage/(110/60)
         super().__init__()
 
     def printDps(self, name="Arc Souls", damageTimes=[], placeInColumn=None):
@@ -45,17 +44,26 @@ class ArcSoul(Ability):
 
 class ChaosReach(Ability):
     def __init__(self):
-        self.tick_time = 1/6
+        self.base_duration_frames = 314
+        self.base_damage = 365380 / Weapon.story_mission_to_raid_scalar
+        self.base_average_damage_per_frame = self.base_damage / self.base_duration_frames
+        self.geo_duration_frames = 558
+        self.geo_damage = 750496 / Weapon.story_mission_to_raid_scalar
+        self.geo_average_damage_per_frame = self.geo_damage / self.geo_duration_frames
         super().__init__()
 
-    def printDps(self, name="Chaos Reach", damageTimes=[], placeInColumn=None):
+    def printDps(self, geoMags = True, name="Chaos Reach (Geomags)", damageTimes=[], placeInColumn=None):
+        if not geoMags:
+            name = "Chaos Reach"
         self._preparePrintDps_(name, damageTimes, placeInColumn)
         ticks = 55  # Geomags
-        for i in range(ticks):
-            self.damage_done += 590187/55 * 0.631
+        frames = self.geo_duration_frames if geoMags else self.base_duration_frames
+        frame_damage = self.geo_average_damage_per_frame if geoMags else self.base_average_damage_per_frame
+        for i in range(frames):
+            self.damage_done += frame_damage 
             self.damage_times.append(self.update(
                 self.time, self.damage_done, ticks))
-            self.time += 1/6
+            self.time += 1/60
         col = self.excel.closeExcel(self.damage_times)
         self.damage_times.append((self.damage_times[-1][0] - 9, 0))
         return col
@@ -63,14 +71,19 @@ class ChaosReach(Ability):
 
 class NeedleStorm(Ability):
     def __init__(self):
-        self.damage_fragment = 406386 * 0.631
-        self.damage_base = 367587 * 0.631
+        self.damage_fragment = 518307 / Weapon.story_mission_to_raid_scalar
+        self.damage_base = 472138 / Weapon.story_mission_to_raid_scalar
+        self.damage_stareaters = 633486 / Weapon.story_mission_to_raid_scalar
         self.duration = 128/60
         super().__init__()
 
-    def printDps(self, fragment=True, name="Needle Storm", damageTimes=[], placeInColumn=None):
+    def printDps(self, fragment=True, starEaters = False, name="Needle Storm", damageTimes=[], placeInColumn=None):
+        if fragment:
+            name += " (Evolution)"
+        if starEaters:
+            name += " (Star Eaters)"
         self._preparePrintDps_(name, damageTimes, placeInColumn)
-        self.damage_done = self.damage_fragment if fragment else self.damage_base
+        self.damage_done = self.damage_fragment if fragment else self.damage_stareaters if starEaters else self.damage_base
         self.time += self.duration
         self.damage_times.append(self.update(self.time, self.damage_done, 0))
         col = self.excel.closeExcel(self.damage_times)
@@ -80,12 +93,14 @@ class NeedleStorm(Ability):
 
 class BladeBarrage(Ability):
     def __init__(self):
-        self.damage_stareaters = 528354 * 0.631
-        self.damage_base = 317686 * 0.631
+        self.damage_stareaters = 737147 / Weapon.story_mission_to_raid_scalar
+        self.damage_base = 439928 / Weapon.story_mission_to_raid_scalar
         self.duration = 136/60
         super().__init__()
 
     def printDps(self, isStarEaters=True, name="Blade Barrage", damageTimes=[], placeInColumn=None):
+        if isStarEaters:
+            name += " (Star Eaters)"
         self._preparePrintDps_(name, damageTimes, placeInColumn)
         self.damage_done = self.damage_stareaters if isStarEaters else self.damage_base
         self.time += self.duration
@@ -97,13 +112,21 @@ class BladeBarrage(Ability):
 
 class NovaBomb(Ability):
     def __init__(self):
-        self.damage_vortex = 528354 * 0.631
-        self.damage_cataclysm = 317686 * 0.631
+        self.damage_vortex = 460717 / Weapon.story_mission_to_raid_scalar
+        self.damage_cataclysm = 472235 / Weapon.story_mission_to_raid_scalar
+        self.damage_cataclysm_stareater = 794737 / Weapon.story_mission_to_raid_scalar
         self.duration_cataclysm = 108/60
         self.duration_vortex = 120/60
         super().__init__()
 
-    def printDps(self, isCataclsym=True, name="Nova Bomb", damageTimes=[], placeInColumn=None):
+    def printDps(self, isCataclsym=True, isStarEaters = True, name="Nova Bomb", damageTimes=[], placeInColumn=None):
+        if isCataclsym:
+            name += " (Catacylsm)"
+        else:
+            name += " (Vortex)"
+        if isStarEaters :
+            name = "Nova Bomb (Catacylsm Star Eaters)"
+            self.damage_cataclysm = self.damage_cataclysm_stareater
         self._preparePrintDps_(name, damageTimes, placeInColumn)
         self.damage_done = self.damage_cataclysm if isCataclsym else self.damage_vortex
         self.time += self.duration_cataclysm if isCataclsym else self.duration_vortex
@@ -115,12 +138,14 @@ class NovaBomb(Ability):
 
 class GatheringStorm(Ability):
     def __init__(self):
-        self.damage_stareaters = 492045 * 0.631
-        self.damage_base = 292048 * 0.631
+        self.damage_stareaters = 633486 / Weapon.story_mission_to_raid_scalar
+        self.damage_base = 376349 / Weapon.story_mission_to_raid_scalar
         self.duration = 126/60
         super().__init__()
 
     def printDps(self, isStarEaters=True, name="Gathering Storm", damageTimes=[], placeInColumn=None):
+        if isStarEaters:
+            name += " (Star Eaters)"
         self._preparePrintDps_(name, damageTimes, placeInColumn)
         self.damage_done = self.damage_stareaters if isStarEaters else self.damage_base
         self.time += self.duration
@@ -132,9 +157,9 @@ class GatheringStorm(Ability):
 
 class GoldenGun(Ability):
     def __init__(self):
-        self.damage_stareaters = 369096 * 0.631
-        self.damage_nighthawk = 298866 * 0.631 * 1.25
-        self.damage_base = 217115 * 0.631
+        self.damage_stareaters = 488360 / Weapon.story_mission_to_raid_scalar
+        self.damage_nighthawk = 525217.6 / Weapon.story_mission_to_raid_scalar
+        self.damage_base = 285644 / Weapon.story_mission_to_raid_scalar
         self.duration_nighthawk = 148/60
         self.duration_base_shot_1 = 78/60
         self.duration_base_shot_2 = 36/60
@@ -143,6 +168,13 @@ class GoldenGun(Ability):
         super().__init__()
 
     def printDps(self, isStarEaters=False, isNighthawk=True, isRadiant=False, TetherBuff = False, Prepop = False, name="Golden Gun", damageTimes=[], placeInColumn=None):
+        radiant_text = " Radiant" if isRadiant else ""
+        if isNighthawk:
+            name = f"GoldenGun (Nighthawk{radiant_text})"
+        elif isStarEaters:
+            name = f"GoldenGun (Star Eaters{radiant_text})"
+        elif isRadiant:
+            name = "Golden Gun (Radiant)"
         self._preparePrintDps_(name, damageTimes, placeInColumn)
         damage_per_shot = self.damage_nighthawk * \
             (1.25 if isRadiant else 1) if isNighthawk else self.damage_stareaters if isStarEaters else self.damage_base
@@ -175,10 +207,10 @@ class GoldenGun(Ability):
 
 class Tether(Ability):
     def __init__(self):
-        self.damage_stareaters = 377147 * 0.631
-        self.damage_orpheus = 369026 * 0.631
-        self.damage_base = 241991 * 0.631
-        self.damage_deadfall = 42626 * .631
+        self.damage_stareaters = 610450 / Weapon.story_mission_to_raid_scalar
+        self.damage_orpheus = 529825 / Weapon.story_mission_to_raid_scalar
+        self.damage_base = 311839 / Weapon.story_mission_to_raid_scalar
+        self.damage_deadfall = 57448 / Weapon.story_mission_to_raid_scalar
         self.duration_orpheus_shot_1 = 57/60
         self.duration_orpheus_shot_2 = 78/60
         self.duration_orpheus_shot_3 = 84/60
@@ -189,7 +221,13 @@ class Tether(Ability):
         self.duration_deafall = 111/60
         super().__init__()
 
-    def printDps(self, isDeadfall=False, isStarEaters=False, isOrpheus=True, name="Tether", damageTimes=[], placeInColumn=None):
+    def printDps(self, isDeadfall=False, isStarEaters=False, isOrpheus=False, name="Tether (Triple)", damageTimes=[], placeInColumn=None):
+        if isDeadfall:
+            name = "Tether (Deadfall)"
+        if isStarEaters:
+            name = "Tether (Triple Stareaters)"
+        if isOrpheus:
+            name = "Tether (Triple Orpheus)"        
         self._preparePrintDps_(name, damageTimes, placeInColumn)
         damage_per_shot = self.damage_orpheus if isOrpheus else self.damage_stareaters if isStarEaters else self.damage_deadfall if isDeadfall else self.damage_base
         if (isOrpheus):
@@ -228,15 +266,47 @@ class Tether(Ability):
 
 class SilenceAndSquall(Ability):
     def __init__(self):
-        self.damage_stareaters = 248032 * 0.631
-        self.damage_durance_fissures = 179183 * 0.631
-        self.damage_base = 148131 * .631
+        self.damage_base = 320440 / Weapon.story_mission_to_raid_scalar
+        self.damage_stareaters = 462228 / Weapon.story_mission_to_raid_scalar
+        self.damage_stareaters_durance_fissures = 540037 / Weapon.story_mission_to_raid_scalar
+        self.damage_stareaters_ruin = 465622 / Weapon.story_mission_to_raid_scalar
+        self.damage_durance_fissures = 403127 / Weapon.story_mission_to_raid_scalar
         self.duration = 155/60
         super().__init__()
 
-    def printDps(self, isStarEaters=True, isDurace=False, name="Silence and Squall", damageTimes=[], placeInColumn=None):
+    def printDps(self, isStarEaters=True, isDuraceFissures=False, isRuin = False, name="Silence and Squall", damageTimes=[], placeInColumn=None):
+        damage = self.damage_base
+        if isStarEaters and isDuraceFissures:
+            name += " (Star Eaters + Durance + Fissures)"
+            damage = self.damage_stareaters_durance_fissures
+        elif isStarEaters and isRuin:
+            name += " (Star Eaters + Ruin)"
+            damage = self.damage_stareaters_ruin
+        elif isStarEaters:
+            name += " (Star Eaters)"
+            damage = self.damage_stareaters
+        elif isDuraceFissures:
+            name += " (Durance + Fissures)"
+            damage = self.damage_durance_fissures
         self._preparePrintDps_(name, damageTimes, placeInColumn)
-        self.damage_done = self.damage_stareaters if isStarEaters else self.damage_durance_fissures if isDurace else self.damage_base
+        self.damage_done = damage
+        self.time += self.duration
+        self.damage_times.append(self.update(self.time, self.damage_done, 0))
+        col = self.excel.closeExcel(self.damage_times)
+        self.damage_times.append((self.damage_times[-1][0] - 9, 0))
+        return col
+class TwlightArsenal(Ability):
+    def __init__(self):
+        self.damage_stareaters = 423501 * 1.675 / Weapon.story_mission_to_raid_scalar
+        self.damage_base = 423501 / Weapon.story_mission_to_raid_scalar
+        self.duration = 228/60
+        super().__init__()
+
+    def printDps(self, isStarEaters=True, name="TwlightArsenal", damageTimes=[], placeInColumn=None):
+        if isStarEaters:
+            name += " (Star Eaters)"
+        self._preparePrintDps_(name, damageTimes, placeInColumn)
+        self.damage_done = self.damage_stareaters if isStarEaters else self.damage_base
         self.time += self.duration
         self.damage_times.append(self.update(self.time, self.damage_done, 0))
         col = self.excel.closeExcel(self.damage_times)

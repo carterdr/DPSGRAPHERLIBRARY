@@ -1,6 +1,14 @@
 import openpyxl
 import matplotlib.pyplot as plt
 import os
+from Libraries import Weapon
+def renameColumn(col, name):
+    file_path = Excel.getExcelPath()
+    wb = openpyxl.load_workbook(file_path)
+    sheet = wb["Sheet1"]
+    sheet.cell(1,col).value = name
+    wb.save(file_path)
+
 class Excel():
     def __init__ (self, name, placeInColumn = None):
         self.name = name
@@ -9,9 +17,12 @@ class Excel():
         self.sh1 = self.wb["Sheet1"]
         self.column = Excel.getOpenColumn(self.sh1)
         if placeInColumn != None:
-           self.column = placeInColumn
-           self.name = self.sh1.cell(1, self.column).value + " + " + name 
+            self.column = placeInColumn
+            self.name = self.sh1.cell(1, self.column).value
+            if name != "":
+                self.name += " + " + name 
         self.sh1.cell(1,self.column,self.name)     
+
     def getOpenColumn(sheet):
         column = 2         
         while(not sheet.cell(1,column).value==None):
@@ -32,30 +43,66 @@ class Excel():
         for row in range(1001):
             sh1.cell(row=row+2, column=1).value = "{:.1f}".format(row/10)           
         wb.save(file_path)
-    def closeExcel (self, damagetimes):
-        for row, value in damagetimes:
-            current_value = self.sh1.cell(row+1, self.column).value
-            if current_value is None:
-                current_value = 0
-            self.sh1.cell(row+1, self.column).value = int(format(value + current_value,".0f"))
-        self.__fillGaps()
-        self.wb.save(self.file_path)        
+    def closeExcel(self, damagetimes):
+        damagetimes = self._removeDupeValues(damagetimes)
+        cumulative_damage = 0 
+
+
+        if damagetimes:
+            first_time = damagetimes[0][0] + 1
+        else:
+            first_time = 1002  # If there are no damage times, set to the last row
+
+        # Initialize column with zeros up to the first damage time
+        for row in range(2, first_time + 1):
+            if self.sh1.cell(row, self.column).value is None:
+                self.sh1.cell(row, self.column).value = 0
+                
+        for i in range(0,len(damagetimes)):
+            current_time, value = damagetimes[i]
+            cumulative_damage += value
+            if i == len(damagetimes)-1:
+                next_time = 1002
+            else:
+                next_time = damagetimes[i+1][0]
+            for row in range(current_time + 1, next_time + 1):  # Update from the previous time + 1 to the current time + 1
+                if self.sh1.cell(row, self.column).value is None:
+                    self.sh1.cell(row, self.column).value = 0
+                self.sh1.cell(row, self.column).value += cumulative_damage
+        self.wb.save(self.file_path)
         return self.column
-    def __fillGaps(self):
-        currentMax = self.sh1.cell(2, self.column).value
-        if currentMax == None:
-            currentMax = 0 
-        for row in range(2, 1003):
-            value = self.sh1.cell(row,self.column).value
-            if value != None and value > currentMax:
-                currentMax = value
-            self.sh1.cell(row,self.column).value = int(currentMax)
+
+    def _removeDupeValues(self, damagetimes):
+        newTimes = {}
+        #remove dupes
+        for time, damage in damagetimes:
+            damage = int(format(damage * Weapon.story_mission_to_raid_scalar, ".0f"))
+            if time not in newTimes:
+                newTimes[time] = damage 
+            if newTimes[time] < damage:
+                newTimes[time] = damage
+        new_damage_times = []
+        for time in sorted(newTimes.keys()):
+            new_damage_times.append((time, newTimes[time]))
+        damagetimes = new_damage_times
+        #change format
+        newTimes = {}
+        cumulative_damage = 0    
+        for time, damage in damagetimes:
+            if time < 1002:
+                newTimes[time] = damage - cumulative_damage
+                cumulative_damage = damage
+        newDamageTimes = []
+        for time in sorted(newTimes.keys()):
+            newDamageTimes.append((time, newTimes[time]))
+        return newDamageTimes
+
     def clearExcel():
         print(Excel.getExcelPath())
         file_path = Excel.getExcelPath()
         book = openpyxl.load_workbook(file_path) #get the file name
         sheet = book.get_sheet_by_name('Sheet1') #get the sheet name
-        for a in sheet['A1':'Z1002']: #you can set the range here 
+        for a in sheet.iter_cols(): #you can set the range here 
             for cell in a:
                 cell.value = None #set a value or null here
         book.save(file_path)
@@ -116,4 +163,5 @@ class Excel():
         if maxRow > 1002:
             maxRow = 1002
         return maxRow                 
+    
         

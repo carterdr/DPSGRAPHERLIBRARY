@@ -9,9 +9,8 @@ class LeviathansBreath(Weapon.Weapon):
         self.mag_size_subsequent = self.reserves
         self.charge_time = 95/60
         self.time_between_shots = 86/60
-        self.base_damage = (21031 + 28644 + 2331 + 37) * 1.05 * self.surgex3_damage_buff #bug damage = 1.05
-
-    def printDps(self, buffPerc, name="LeviathansBreath", damageTimes=[], placeInColumn=None):
+        self.base_damage = (25548 + 33852 + 2755 + 44) * 1.04 * self.surgex3_damage_buff #bug damage = 1.05
+    def printDps(self, buffPerc = 1.25, name="Leviathans Breath", damageTimes=[], placeInColumn=None):
         self._preparePrintDps_(name, damageTimes, placeInColumn)
         if self.time != 0:
             self.time -= .5

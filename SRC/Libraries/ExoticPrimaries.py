@@ -12,11 +12,11 @@ class Outbreak(ExoticPrimary):
         super().__init__(100000)
         self.time_between_shots = 23/60
         self.reload_time = 71/60
-        self.mag_size_initial = 12
-        self.mag_size_subsequent = 12
-        self.base_damage = 654 * 3 * self.surgex3_damage_buff
+        self.mag_size_initial = 34
+        self.mag_size_subsequent = 34
+        self.base_damage = 869 * 3 * self.surgex3_damage_buff
 
-    def printDps(self, buffPerc, people, name="Outbreak", damageTimes=[], placeInColumn=None):
+    def printDps(self, buffPerc = 1.25, people=6, name="Outbreak (Solo)", damageTimes=[], placeInColumn=None):
         self.damage_bonus = 1
         if people > 1:
             name = f"Outbreak ({people} People Stacking)"
@@ -38,17 +38,15 @@ class Outbreak(ExoticPrimary):
                                      self.time_between_shots, self.reload_time, damagePerShot)
         print(self.damage_times)
         return self.excel.closeExcel(self.damage_times)
-
-
 class ToM(ExoticPrimary):
     def __init__(self):
         super().__init__(100000)
         self.time_between_shots = 14/60
-        self.base_damage = 1495 * 1.22
-        self.final_round_damage = 3288 * self.surgex3_damage_buff
-        self.blight_damage = (7039 + 770 * 4 + 65 * 2) * 1.2 * self.surgex3_damage_buff
+        self.base_damage = 1634 * self.surgex3_damage_buff 
+        self.final_round_damage = 3595 * self.surgex3_damage_buff
+        self.blight_damage = (8478 + 910 * 8 + 76) * self.surgex3_damage_buff
 
-    def printDps(self, buffPerc, isBuffed, isBuffing, name="ToM", damageTimes=[], placeInColumn=None):
+    def printDps(self, buffPerc = 1.25, isBuffed=False, isBuffing=False, name="ToM", damageTimes=[], placeInColumn=None):
         self._preparePrintDps_(name, damageTimes, placeInColumn)
         shots_fired = 0
         while (self.time < 100):
@@ -62,8 +60,6 @@ class ToM(ExoticPrimary):
                     self.time += 126/60
                     self.damage_done += self.blight_damage*buffPerc
                     self.damage_done += self.final_round_damage*buffPerc*1.5
-                    shots_fired += 1
-                    self.update(self.time, self.damage_done, shots_fired, 0)
                 else:
                     if (shots_fired > 10):
                         self.damage_done += self.final_round_damage*buffPerc*1.5
@@ -74,25 +70,27 @@ class ToM(ExoticPrimary):
                     self.damage_done += self.final_round_damage * buffPerc
                 else:
                     self.damage_done += self.base_damage*buffPerc
+            shots_fired += 1
+            self.damage_times.append(self.update(self.time, self.damage_done, shots_fired, 0))
+            self.time += self.time_between_shots
 
-            self.update(self.time, self.damage_done, shots_fired, 0)
         print(self.damage_times)
         return self.excel.closeExcel(self.damage_times)
 
 
 class FinalWarning(ExoticPrimary):
     def __init__(self):
-        super().__init__(self.burst_size * self.bursts_per_mag)
+        super().__init__(20)
         self.time_between_shots = 8/60
         self.burst_delay = 95/60
         self.initial_charge_time = 93/60
         self.reload_speed = 154/60
         self.burst_size = 10
         self.bursts_per_mag = 2
-        self.base_damage = 4904 * self.surgex3_damage_buff
+        self.base_damage = 5795 * self.surgex3_damage_buff * 1.05
 
 
-    def printDps(self, buffPerc, name="FinalWarning", damageTimes=[], placeInColumn=None):
+    def printDps(self, buffPerc = 1.25, name="FinalWarning", damageTimes=[], placeInColumn=None):
         self._preparePrintDps_(name, damageTimes, placeInColumn)
         self.time += self.initial_charge_time
         while (self.time < 100):
