@@ -5,6 +5,7 @@ class Rocket(Weapon.Weapon):
     def __init__(self, reserves):
         self.bipod_damage_scalar = .75
         super().__init__(reserves)
+        self.reload_num_appear = 65/60
         self.wolfpack_damage = 8 * (557 + 1193)
         self.highrpm_rocket_damage = (12890 + 41059)
         self.adaptive_explosive_light_damage = (self.wolfpack_damage + 1.25*self.highrpm_rocket_damage) * self.surgex3_damage_buff
@@ -25,7 +26,7 @@ class Rocket(Weapon.Weapon):
 #Dump
 #####################################################################################################################################
 class ApexBait(Rocket):
-    def __init__(self, reserves=7):
+    def __init__(self, reserves=8):
         super().__init__(reserves)
         self.time_between_shots = 72/60
         self.reload_time = 127/60
@@ -66,7 +67,7 @@ class ApexBait(Rocket):
             return self.excel.closeExcel(self.damage_times)
 
 class ColdComfort(Rocket):
-    def __init__(self, mag_size=4, reserves=7):
+    def __init__(self, mag_size=4, reserves=8):
         super().__init__(reserves)
         self.time_between_shots = 66/60
         self.reload_time = 127/60
@@ -110,20 +111,25 @@ class ColdComfort(Rocket):
             return self.excel.closeExcel(self.damage_times)
         
 class Crux(Rocket):
-    def __init__(self, reserves=7, explosive_light_shots = 7, preppedclown = False):
+    def __init__(self, reserves=8, explosive_light_shots = 7, preppedclown = False):
         super().__init__(reserves)
         self.time_between_shots = 66/60
         self.reload_time = 127/60
         self.mag_size_initial = 1 if not preppedclown else 2
         self.mag_size_subsequent = 2
         self.explosive_light_shots = explosive_light_shots
-    def printDps(self, buffPerc = 1.25, Tethers=0, TripleTethers=0, name="Crux (Clown EL)", damageTimes=[], placeInColumn=None):
+    def printDps(self, buffPerc = 1.25, Tethers=0, TripleTethers=0, wolfpacks = True, name="Crux (Clown EL)", damageTimes=[], placeInColumn=None):
         bonus_damage_duration = TripleTethers * 17 if TripleTethers != 0 else Tethers * 12 if Tethers != 0 else 0
         clown_text = "Prepped Clown" if self.mag_size_initial == 2 else "Clown"
-        el_text = f"{self.explosive_light_shots} EL" if self.explosive_light_shots > 7 else "7 EL"
-        reserves_text = f" {self.reserves} Reserves" if self.reserves > 7 and self.explosive_light_shots < 8 else ""
-        name = f"Crux ({clown_text} {el_text}{reserves_text})"
+        el_text = f"{self.explosive_light_shots} EL"
+        reserves_text = f" {self.reserves} Reserves" if self.reserves > 8 else ""
+        wolfpack_text = f" No Wolfpacks" if not wolfpacks else ""
+        name = f"Crux ({clown_text} {el_text}{reserves_text}){wolfpack_text}"
         self._preparePrintDps_(name, damageTimes, placeInColumn)
+        if not wolfpacks:
+            self.adaptive_explosive_light_damage = self.highrpm_rocket_damage * self.surgex3_damage_buff * 1.25
+            self.adaptive_base_damage = self.highrpm_rocket_damage * self.surgex3_damage_buff
+
         def damagePerShot(shots_fired, shots_fired_this_mag):
             damage_done = 0
             if (shots_fired < self.explosive_light_shots):
@@ -166,7 +172,7 @@ class CruxSTLDPS(Rocket):
         return self.excel.closeExcel(self.damage_times)
 
 class CruxBait(Rocket):
-    def __init__(self, reserves=7):
+    def __init__(self, reserves=8):
         super().__init__(reserves)
         self.time_between_shots = 66/60
         self.reload_time = 127/60
@@ -190,7 +196,7 @@ class CruxBait(Rocket):
         return self.excel.closeExcel(self.damage_times)
     
 class Hothead(Rocket):
-    def __init__(self, reserves=8):
+    def __init__(self, reserves=9):
         super().__init__(reserves)
         self.time_between_shots = 72/60
         self.reload_time = 127/60
@@ -200,7 +206,7 @@ class Hothead(Rocket):
     def printDps(self, buffPerc = 1.25, Tethers=0, TripleTethers=0, isEL = False, name="Hothead (FP Clown)", damageTimes=[], placeInColumn=None):
         bonus_damage_duration = TripleTethers * 17 if TripleTethers != 0 else Tethers * 12 if Tethers != 0 else 0
         if isEL:
-            reserves_text = f" {self.reserves} Reserves" if self.reserves > 8 else ""
+            reserves_text = f" {self.reserves} Reserves" if self.reserves > 9 else ""
             name = f"Hothead (FP EL{reserves_text})"
             self.mag_size_subsequent = 1
             self._preparePrintDps_(name, damageTimes, placeInColumn)
@@ -220,7 +226,7 @@ class Hothead(Rocket):
             return self.excel.closeExcel(self.damage_times)
         else:
             clown_text = "Prepped Clown" if self.mag_size_initial == 2 else "Clown"
-            reserves_text = f" {self.reserves} Reserves" if self.reserves > 8 else ""
+            reserves_text = f" {self.reserves} Reserves" if self.reserves > 9 else ""
             name = f"Hothead (FP {clown_text}{reserves_text})"
             self._preparePrintDps_(name, damageTimes, placeInColumn)
 
@@ -242,7 +248,7 @@ class Hothead(Rocket):
 #Bipod
 #####################################################################################################################################
 class BipodApex(Rocket):
-    def __init__(self, mag_size=4, reserves=12):
+    def __init__(self, mag_size=4, reserves=13):
         super().__init__(reserves)
         self.time_between_shots = 53/60
         self.reload_time = 127/60
@@ -266,7 +272,7 @@ class BipodApex(Rocket):
 
 
 class BipodColdComfort(Rocket):
-    def __init__(self, mag_size=2, reserves=12):
+    def __init__(self, mag_size=2, reserves=13):
         super().__init__(reserves)
         self.time_between_shots = 50/60
         self.reload_time = 127/60
@@ -289,7 +295,7 @@ class BipodColdComfort(Rocket):
 
 
 class BipodCrux(Rocket):
-    def __init__(self, reserves=12):
+    def __init__(self, reserves=13):
         super().__init__(reserves)
         self.time_between_shots = 50/60
         self.reload_time = 127/60
@@ -313,7 +319,7 @@ class BipodCrux(Rocket):
 #Exotics
 #####################################################################################################################################
 class Ghally(Rocket):
-    def __init__(self, reserves=9):
+    def __init__(self, reserves=10):
         super().__init__(reserves)
         self.time_between_shots = 77/60
         self.reload_time = 127/60
@@ -322,7 +328,7 @@ class Ghally(Rocket):
         self.base_damage = self.gjally_damage * self.surgex3_damage_buff
 
     def printDps(self, buffPerc = 1.25, Tethers=0, TripleTethers=0,  name="Gjallarhorn", damageTimes=[], placeInColumn=None):
-        if self.reserves > 9:
+        if self.reserves > 10:
             name += f" {self.reserves} Reserves"
         bonus_damage_duration = TripleTethers * 17 if TripleTethers != 0 else Tethers * 12 if Tethers != 0 else 0
         self._preparePrintDps_(name, damageTimes, placeInColumn)
@@ -341,7 +347,7 @@ class Ghally(Rocket):
 class DragonsBreath(Rocket):
     def __init__(self):
         self.mag_size = 1
-        self.reserves = 7
+        self.reserves = 10
         super().__init__(self.reserves)
         self.travel_time = 15/60
         self.burn_damage = self.dragonsbreath_burn_damage * self.surgex3_damage_buff
@@ -382,7 +388,7 @@ class DragonsBreath(Rocket):
         return self.excel.closeExcel(self.damage_times)
     
 class TwoTailedFox(Rocket):
-    def __init__(self, reserves=8):
+    def __init__(self, reserves=9):
         super().__init__(reserves)
         self.base_damage = self.two_tailed_fox_damage * self.surgex3_damage_buff
         self.time_between_shots = 173/60
@@ -408,7 +414,7 @@ class TwoTailedFox(Rocket):
         return self.excel.closeExcel(self.damage_times)
 
 class WardCliff(Rocket):
-    def __init__(self, reserves=6):
+    def __init__(self, reserves=7):
         super().__init__(reserves)
         self.base_damage = self.wardcliff_damage * self.surgex3_damage_buff
         self.time_between_shots = 212/60
@@ -432,7 +438,7 @@ class WardCliff(Rocket):
 #Rotations
 #####################################################################################################################################
 class BaitApexSupremRotation(Rocket):
-    def __init__(self, reserves = 7):
+    def __init__(self, reserves = 8):
         self.mag_size = 2
         self.reserves = reserves
         super().__init__(self.reserves)
@@ -550,7 +556,8 @@ class CartesianApex(Rocket):
             {"damage": fusion_damage, "delay": 54/60 + 66/60},
             {"damage": fusion_damage, "delay": 58/60},
             {"damage": rocket_damage_base, "delay": 52/60},
-            {"damage": rocket_damage_bait, "delay": 71/60}
+            {"damage": rocket_damage_bait, "delay": 71/60},
+            {"damage": rocket_damage_bait, "delay": ApexBait().reload_time}
         ]
 
         for attack in attack_sequence:
@@ -566,7 +573,7 @@ class CartesianApex(Rocket):
         car.printDps(1.25, "", self.damage_times, col)
         return col
 class GjallyTremors(Rocket):
-    def __init__(self, reserves = 9):
+    def __init__(self, reserves = 10):
         self.mag_size = 2
         self.reserves = reserves
         super().__init__(self.reserves)
@@ -644,7 +651,7 @@ class GjallyTremors(Rocket):
         suprem.printDps(buffPerc, Tethers,TripleTethers, "", self.damage_times, col)
         return col
 class ELApexSupremRotation(Rocket):
-    def __init__(self, reserves = 7, num_el=7):
+    def __init__(self, reserves = 8, num_el=7):
         self.mag_size = 2
         self.reserves = reserves
         self.num_el = num_el
@@ -744,7 +751,8 @@ class EremiteApex(Rocket):
             {"damage": rocket_damage_bait, "delay": 59/60},
             {"damage": rocket_damage_base, "delay": 71/60},
             {"damage": fusion_damage, "delay": 69/60 + 104/60},
-            {"damage": rocket_damage_bait, "delay": 59/60}
+            {"damage": rocket_damage_bait, "delay": 59/60},
+            {"damage": rocket_damage_bait, "delay": 71/60}
         ]
 
         for attack in attack_sequence:
@@ -761,7 +769,7 @@ class EremiteApex(Rocket):
         return col
    
 class IziRocket(Rocket):
-    def __init__(self, izi_reserves=21, rocket_reserves=7, oneKineticSurge = False):
+    def __init__(self, izi_reserves=19, rocket_reserves=8, oneKineticSurge = False):
         super().__init__(rocket_reserves)
         self.oneKineticSurge = oneKineticSurge
         self.rocket_shot_izi = 36/60
@@ -770,7 +778,7 @@ class IziRocket(Rocket):
         self.rocket_reserves = rocket_reserves
 
     def printDps(self, buffPerc = 1.25, name="Izanagi Apex (Recon Bait)", damageTimes=[], placeInColumn=None):
-        if self.reserves > 7:
+        if self.reserves > 8:
             name += f" {self.reserves} Reserves"
         if self.oneKineticSurge:
             name += " 1 Kinetic Surge"
@@ -781,7 +789,7 @@ class IziRocket(Rocket):
         for attack in attack_sequence:
             self.damage_done += attack["damage"]
             self.damage_times.append(self.update(
-                attack["izi_4x_remaining"], attack["izi_3x_remaining"], attack["rockets_fired"], izi))
+                attack["izi_4x_remaining"], attack["izi_2x_remaining"], attack["rockets_fired"], izi))
             self.time += attack["delay"]
 
         print(self.damage_times)
@@ -791,67 +799,65 @@ class IziRocket(Rocket):
         rocket_damage_base = self.adaptive_base_damage * buffPerc
         rocket_damage_bait = rocket_damage_base * self.bait_damage_buff
         damage_4x = izi.damage_4x * buffPerc / self.surgex3_damage_buff
-        damage_3x = izi.damage_3x * buffPerc / self.surgex3_damage_buff
+        damage_2x = izi.damage_2x * buffPerc / self.surgex3_damage_buff
         if self.oneKineticSurge:
             damage_4x *= 1.1
-            damage_3x *= 1.1
+            damage_2x *= 1.1
             rocket_damage_base *= 1.17/1.22
             rocket_damage_bait *= 1.17/1.22
         if self.rocket_reserves > 7:
             final_delay = 130/60
             extraAttack = [
                 {"damage": rocket_damage_bait, "delay": self.rocket_shot_izi, "rockets_fired": 8,
-                    "izi_4x_remaining": izi.num_4x-5, "izi_3x_remaining": izi.num_3x},
-                {"damage": damage_4x, "delay": self.izi_primary_rocket, "rockets_fired": 8,
-                    "izi_4x_remaining": izi.num_4x-6, "izi_3x_remaining": izi.num_3x},
-                {"damage": rocket_damage_bait, "delay": 0, "rockets_fired": 9,
-                    "izi_4x_remaining": izi.num_4x-6, "izi_3x_remaining": izi.num_3x}
+                    "izi_4x_remaining": izi.num_4x-5, "izi_2x_remaining": izi.num_2x},
+                {"damage": damage_2x, "delay": self.izi_primary_rocket, "rockets_fired": 8,
+                    "izi_4x_remaining": izi.num_4x-5, "izi_2x_remaining": izi.num_2x-1}
             ]
         else:
             final_delay = self.rocket_shot_izi
-            extraAttack = [{"damage": damage_4x, "delay": 0, "rockets_fired": 7,
-                            "izi_4x_remaining": izi.num_4x-6, "izi_3x_remaining": izi.num_3x}]
+            extraAttack = [{"damage": damage_2x, "delay": 0, "rockets_fired": 7,
+                            "izi_4x_remaining": izi.num_4x-5, "izi_2x_remaining": izi.num_2x-1}]
         attack_sequence = [
             {"damage": rocket_damage_base, "delay": self.rocket_shot_izi, "rockets_fired": 1,
-                "izi_4x_remaining": izi.num_4x, "izi_3x_remaining": izi.num_3x},
+                "izi_4x_remaining": izi.num_4x, "izi_2x_remaining": izi.num_2x},
             {"damage": damage_4x, "delay": self.izi_primary_rocket, "rockets_fired": 1,
-                "izi_4x_remaining": izi.num_4x - 1, "izi_3x_remaining": izi.num_3x},
+                "izi_4x_remaining": izi.num_4x - 1, "izi_2x_remaining": izi.num_2x},
             # Double Rockets
             {"damage": rocket_damage_bait, "delay": 72/60, "rockets_fired": 2,
-                "izi_4x_remaining": izi.num_4x - 1, "izi_3x_remaining": izi.num_3x},
+                "izi_4x_remaining": izi.num_4x - 1, "izi_2x_remaining": izi.num_2x},
             {"damage": rocket_damage_bait, "delay": self.rocket_shot_izi, "rockets_fired": 3,
-                "izi_4x_remaining": izi.num_4x - 1, "izi_3x_remaining": izi.num_3x},
+                "izi_4x_remaining": izi.num_4x - 1, "izi_2x_remaining": izi.num_2x},
             # Loop of Izanagi 4x shot and Rocket shot
             {"damage": damage_4x, "delay": self.izi_primary_rocket, "rockets_fired": 3,
-                "izi_4x_remaining": izi.num_4x - 2, "izi_3x_remaining": izi.num_3x},
+                "izi_4x_remaining": izi.num_4x - 2, "izi_2x_remaining": izi.num_2x},
             {"damage":rocket_damage_bait, "delay": self.rocket_shot_izi, "rockets_fired": 4,
-                "izi_4x_remaining": izi.num_4x - 2, "izi_3x_remaining": izi.num_3x},
+                "izi_4x_remaining": izi.num_4x - 2, "izi_2x_remaining": izi.num_2x},
             {"damage": damage_4x, "delay": self.izi_primary_rocket, "rockets_fired": 4,
-                "izi_4x_remaining": izi.num_4x - 3, "izi_3x_remaining": izi.num_3x},
+                "izi_4x_remaining": izi.num_4x - 3, "izi_2x_remaining": izi.num_2x},
             {"damage": rocket_damage_bait, "delay": self.rocket_shot_izi, "rockets_fired": 5,
-                "izi_4x_remaining": izi.num_4x - 3, "izi_3x_remaining": izi.num_3x},
+                "izi_4x_remaining": izi.num_4x - 3, "izi_2x_remaining": izi.num_2x},
             {"damage": damage_4x, "delay": self.izi_primary_rocket, "rockets_fired": 5,
-                "izi_4x_remaining": izi.num_4x - 4, "izi_3x_remaining": izi.num_3x},
+                "izi_4x_remaining": izi.num_4x - 4, "izi_2x_remaining": izi.num_2x},
             {"damage": rocket_damage_base, "delay": self.rocket_shot_izi, "rockets_fired": 6,
-                "izi_4x_remaining": izi.num_4x - 4, "izi_3x_remaining": izi.num_3x},
+                "izi_4x_remaining": izi.num_4x - 4, "izi_2x_remaining": izi.num_2x},
             {"damage": damage_4x, "delay": self.izi_primary_rocket, "rockets_fired": 6,
-                "izi_4x_remaining": izi.num_4x - 5, "izi_3x_remaining": izi.num_3x},
+                "izi_4x_remaining": izi.num_4x - 5, "izi_2x_remaining": izi.num_2x},
             {"damage": rocket_damage_bait, "delay": final_delay, "rockets_fired": 7,
-                "izi_4x_remaining": izi.num_4x - 5, "izi_3x_remaining": izi.num_3x},
+                "izi_4x_remaining": izi.num_4x - 5, "izi_2x_remaining": izi.num_2x},
         ]
         attack_sequence += (extraAttack)
         return attack_sequence
 
-    def update(self, izi_4x_remaining, izi_3x_remaining, rockets_fired, izi):
+    def update(self, izi_4x_remaining, izi_2x_remaining, rockets_fired, izi):
         print_info = "| 4x shot: {}, 3x shot: {}, Rockets Shot: {}, Time: {:.2f}, Damage: {}, DPS: {}".format(
-            izi.num_4x - izi_4x_remaining, izi.num_3x -
-            izi_3x_remaining, rockets_fired, self.time, self.damage_done,
+            izi.num_4x - izi_4x_remaining, izi.num_2x -
+            izi_2x_remaining, rockets_fired, self.time, self.damage_done,
             "infinity" if self.time == 0 else "{:.0f}".format(self.damage_done / self.time))
         print(print_info)
         return (int((float(format(self.time, ".1f"))+.1)*10), int(format(self.damage_done, ".0f")))
     
 class IziELRocket(Rocket):
-    def __init__(self, izi_reserves=21, rocket_reserves=7, oneKineticSurge = False):
+    def __init__(self, izi_reserves=21, rocket_reserves=8, oneKineticSurge = False):
         super().__init__(rocket_reserves)
         self.oneKineticSurge = oneKineticSurge
         self.rocket_shot_izi = 62/60
@@ -860,7 +866,7 @@ class IziELRocket(Rocket):
         self.rocket_reserves = rocket_reserves
 
     def printDps(self, buffPerc = 1.25, name="Izanagi Apex (Recon EL)", damageTimes=[], placeInColumn=None):
-        if self.reserves > 7:
+        if self.reserves > 8:
             name += f" {self.reserves} Reserves"
         if self.oneKineticSurge:
             name += " 1 Kinetic Surge"
@@ -872,7 +878,7 @@ class IziELRocket(Rocket):
         for attack in attack_sequence:
             self.damage_done += attack["damage"]
             self.damage_times.append(self.update(
-                attack["izi_4x_remaining"], attack["izi_3x_remaining"], attack["rockets_fired"], izi))
+                attack["izi_4x_remaining"], attack["izi_2x_remaining"], attack["rockets_fired"], izi))
             self.time += attack["delay"]
 
         print(self.damage_times)
@@ -882,62 +888,60 @@ class IziELRocket(Rocket):
         rocket_damage_base = self.adaptive_base_damage * buffPerc
         rocket_damage_el = self.adaptive_explosive_light_damage * buffPerc
         damage_4x = izi.damage_4x * buffPerc / self.surgex3_damage_buff
-        damage_3x = izi.damage_3x * buffPerc / self.surgex3_damage_buff
+        damage_2x = izi.damage_2x * buffPerc / self.surgex3_damage_buff
         if self.oneKineticSurge:
             damage_4x *= 1.1
-            damage_3x *= 1.1
+            damage_2x *= 1.1
             rocket_damage_base *= 1.17/1.22
             rocket_damage_el *= 1.17/1.22
         if self.rocket_reserves > 7:
             final_delay = 130/60 #reload?
             extraAttack = [
                 {"damage": rocket_damage_base, "delay": self.rocket_shot_izi, "rockets_fired": 8,
-                    "izi_4x_remaining": izi.num_4x-5, "izi_3x_remaining": izi.num_3x},
-                {"damage": damage_4x, "delay": self.izi_shot_rocket, "rockets_fired": 8,
-                    "izi_4x_remaining": izi.num_4x-6, "izi_3x_remaining": izi.num_3x},
-                {"damage": rocket_damage_base, "delay": 0, "rockets_fired": 9,
-                    "izi_4x_remaining": izi.num_4x-6, "izi_3x_remaining": izi.num_3x}
+                    "izi_4x_remaining": izi.num_4x-5, "izi_2x_remaining": izi.num_2x},
+                {"damage": damage_2x, "delay": self.izi_shot_rocket, "rockets_fired": 8,
+                    "izi_4x_remaining": izi.num_4x-5, "izi_2x_remaining": izi.num_2x-1},
             ]
         else:
             final_delay = self.rocket_shot_izi
-            extraAttack = [{"damage": damage_4x, "delay": 0, "rockets_fired": 7,
-                            "izi_4x_remaining": izi.num_4x-6, "izi_3x_remaining": izi.num_3x}]
+            extraAttack = [{"damage": damage_2x, "delay": 0, "rockets_fired": 7,
+                            "izi_4x_remaining": izi.num_4x-5, "izi_2x_remaining": izi.num_2x-1}]
         attack_sequence = [
             # Double Rockets
             {"damage": rocket_damage_el, "delay": 72/60, "rockets_fired": 1,
-                "izi_4x_remaining": izi.num_4x, "izi_3x_remaining": izi.num_3x},
+                "izi_4x_remaining": izi.num_4x, "izi_2x_remaining": izi.num_2x},
             {"damage": rocket_damage_el, "delay": self.rocket_shot_izi, "rockets_fired": 2,
-                "izi_4x_remaining": izi.num_4x, "izi_3x_remaining": izi.num_3x},
+                "izi_4x_remaining": izi.num_4x, "izi_2x_remaining": izi.num_2x},
             {"damage": damage_4x, "delay": self.izi_shot_rocket, "rockets_fired": 1,
-                "izi_4x_remaining": izi.num_4x - 1, "izi_3x_remaining": izi.num_3x},
+                "izi_4x_remaining": izi.num_4x - 1, "izi_2x_remaining": izi.num_2x},
             
             {"damage": rocket_damage_el, "delay": self.rocket_shot_izi, "rockets_fired": 3,
-                "izi_4x_remaining": izi.num_4x - 1, "izi_3x_remaining": izi.num_3x},
+                "izi_4x_remaining": izi.num_4x - 1, "izi_2x_remaining": izi.num_2x},
             # Loop of Izanagi 4x shot and Rocket shot
             {"damage": damage_4x, "delay": self.izi_shot_rocket, "rockets_fired": 3,
-                "izi_4x_remaining": izi.num_4x - 2, "izi_3x_remaining": izi.num_3x},
+                "izi_4x_remaining": izi.num_4x - 2, "izi_2x_remaining": izi.num_2x},
             {"damage":rocket_damage_el, "delay": self.rocket_shot_izi, "rockets_fired": 4,
-                "izi_4x_remaining": izi.num_4x - 2, "izi_3x_remaining": izi.num_3x},
+                "izi_4x_remaining": izi.num_4x - 2, "izi_2x_remaining": izi.num_2x},
             {"damage": damage_4x, "delay": self.izi_shot_rocket, "rockets_fired": 4,
-                "izi_4x_remaining": izi.num_4x - 3, "izi_3x_remaining": izi.num_3x},
+                "izi_4x_remaining": izi.num_4x - 3, "izi_2x_remaining": izi.num_2x},
             {"damage": rocket_damage_el, "delay": self.rocket_shot_izi, "rockets_fired": 5,
-                "izi_4x_remaining": izi.num_4x - 3, "izi_3x_remaining": izi.num_3x},
+                "izi_4x_remaining": izi.num_4x - 3, "izi_2x_remaining": izi.num_2x},
             {"damage": damage_4x, "delay": self.izi_shot_rocket, "rockets_fired": 5,
-                "izi_4x_remaining": izi.num_4x - 4, "izi_3x_remaining": izi.num_3x},
+                "izi_4x_remaining": izi.num_4x - 4, "izi_2x_remaining": izi.num_2x},
             {"damage": rocket_damage_el, "delay": self.rocket_shot_izi, "rockets_fired": 6,
-                "izi_4x_remaining": izi.num_4x - 4, "izi_3x_remaining": izi.num_3x},
+                "izi_4x_remaining": izi.num_4x - 4, "izi_2x_remaining": izi.num_2x},
             {"damage": damage_4x, "delay": self.izi_shot_rocket, "rockets_fired": 6,
-                "izi_4x_remaining": izi.num_4x - 5, "izi_3x_remaining": izi.num_3x},
+                "izi_4x_remaining": izi.num_4x - 5, "izi_2x_remaining": izi.num_2x},
             {"damage": rocket_damage_el, "delay": final_delay, "rockets_fired": 7,
-                "izi_4x_remaining": izi.num_4x - 5, "izi_3x_remaining": izi.num_3x},
+                "izi_4x_remaining": izi.num_4x - 5, "izi_2x_remaining": izi.num_2x},
         ]
         attack_sequence += (extraAttack)
         return attack_sequence
 
-    def update(self, izi_4x_remaining, izi_3x_remaining, rockets_fired, izi):
+    def update(self, izi_4x_remaining, izi_2x_remaining, rockets_fired, izi):
         print_info = "| 4x shot: {}, 3x shot: {}, Rockets Shot: {}, Time: {:.2f}, Damage: {}, DPS: {}".format(
-            izi.num_4x - izi_4x_remaining, izi.num_3x -
-            izi_3x_remaining, rockets_fired, self.time, self.damage_done,
+            izi.num_4x - izi_4x_remaining, izi.num_2x -
+            izi_2x_remaining, rockets_fired, self.time, self.damage_done,
             "infinity" if self.time == 0 else "{:.0f}".format(self.damage_done / self.time))
         print(print_info)
         return (int((float(format(self.time, ".1f"))+.1)*10), int(format(self.damage_done, ".0f")))
@@ -965,7 +969,8 @@ class MercilessApex(Rocket):
             {"damage": rocket_damage_bait, "delay": 58/60},
             {"damage": rocket_damage_base, "delay": 71/60},
             {"damage": fusion_damage, "delay": 55/60 + 115/60},
-            {"damage": rocket_damage_bait, "delay": 58/60}
+            {"damage": rocket_damage_bait, "delay": 58/60},
+            {"damage": rocket_damage_bait, "delay": ApexBait().reload_time}
         ]
 
         for attack in attack_sequence:
@@ -981,7 +986,7 @@ class MercilessApex(Rocket):
         merc.printDps(1.25, "", self.damage_times, col)
         return col
 class StillHuntApex(Rocket):
-    def __init__(self, sniper_reserves=22, rocket_reserves = 7, num_el = 7):
+    def __init__(self, sniper_reserves=22, rocket_reserves = 8, num_el = 7):
         super().__init__(2)
         self.sniper_reserves = sniper_reserves
         self.rocket_reserves = rocket_reserves
@@ -989,7 +994,7 @@ class StillHuntApex(Rocket):
         self.num_el = num_el
         self.prepped_nh_to_still = 58/60
     def printDPSNoHolster(self, buffPerc = 1.25, wolfpack=True, prepped = True, name="Apex", damageTimes=[], placeInColumn=None):
-        rocket_reserves_text = f" {self.rocket_reserves} Reserves" if self.rocket_reserves > 7 else ""
+        rocket_reserves_text = f" {self.rocket_reserves} Reserves" if self.rocket_reserves > 8 else ""
         sniper_reserves_text = f" {self.sniper_reserves} Reserves" if self.sniper_reserves > 22 else ""
         if not prepped:
             sniper_reserves_text = sniper_reserves_text[1:] 
@@ -1028,7 +1033,7 @@ class StillHuntApex(Rocket):
             z.printDps(isBnS=False,buffPerc=buffPerc, damageTimes=y.damage_times, placeInColumn=col)
             Excel.renameColumn(col, name= name)
     def printDpsHolster(self, buffPerc = 1.25, Tethers=0, TripleTethers=0, prepped = True, wolfpack =True, nighthawk = False, name="Still Hunt Apex (Holster Rotation)", damageTimes=[], placeInColumn=None):
-        rocket_reserves_text = f" {self.rocket_reserves} Reserves" if self.rocket_reserves > 7 else ""
+        rocket_reserves_text = f" {self.rocket_reserves} Reserves" if self.rocket_reserves > 8 else ""
         sniper_reserves_text = f" {self.sniper_reserves} Reserves" if self.sniper_reserves > 22 else ""
         wolfpack_text = " No Wolfpacks" if not wolfpack else ""
         prepped_text = "Prepped" if prepped else ""
@@ -1066,6 +1071,8 @@ class StillHuntApex(Rocket):
                 damage_this_shot *= 1.15
             self.damage_done += damage_this_shot
             self.damage_times.append(self.update(self.time, self.damage_done, shots_fired, 1))
+            shots_fired += 1
+            remaining_sniper -= 1
             print("nighthawk")
         else:
             if nighthawk:
@@ -1206,4 +1213,90 @@ class StillHuntApex(Rocket):
             rotation += 1
         print(self.damage_times)
         col = self.excel.closeExcel(self.damage_times)
+        return col
+class CruxCloudRotation(Rocket):
+    def __init__(self, reserves=8, explosive_light_shots = 7):
+        super().__init__(reserves)
+        self.time_between_shots = 66/60
+        self.reload_time = 127/60
+        self.mag_size_initial = 2
+        self.mag_size_subsequent = 1
+        self.explosive_light_shots = explosive_light_shots
+    def printDps(self, buffPerc = 1.25, Tethers=0, TripleTethers=0,wolfpacks = True,  name="Crux (Recon EL) + Cloudstrike Rotation", damageTimes=[], placeInColumn=None):
+        el_text = f"{self.explosive_light_shots} EL"
+        reserves_text = f" {self.reserves} Reserves" if self.reserves > 8 else ""
+        wolfpack_text = f" No Wolfpacks" if not wolfpacks else ""
+        name = f"Crux (Recon {el_text}{reserves_text}){wolfpack_text} + Cloudstrike Rotation"
+        if not wolfpacks:
+            self.adaptive_explosive_light_damage = self.highrpm_rocket_damage * self.surgex3_damage_buff * 1.25
+            self.adaptive_base_damage = self.highrpm_rocket_damage * self.surgex3_damage_buff
+        bonus_damage_duration = TripleTethers * 17 if TripleTethers != 0 else Tethers * 12 if Tethers != 0 else 0
+        
+        self._preparePrintDps_(name, damageTimes, placeInColumn)
+        shots_fired = 0
+        cloud_reload_rocket = 92/60
+        rocket_to_cloud = 47/60
+        cloud = Snipers.CloudStrike()
+        sniper_damage = cloud.base_damage * buffPerc          
+        rotation = 0
+        mag_size = self.mag_size_initial
+        while shots_fired < self.reserves:
+            for shot in range(mag_size):
+                damage_this_shot = self.adaptive_base_damage * buffPerc
+                if (shots_fired < self.explosive_light_shots):
+                    damage_this_shot = self.adaptive_explosive_light_damage * buffPerc
+                if bonus_damage_duration > self.time:
+                    damage_this_shot *= 1.3
+                elif bonus_damage_duration != 0:
+                    damage_this_shot *= 1.15
+                self.damage_done += damage_this_shot
+                shots_fired += 1
+                print(f"       -crux shot # {shots_fired} {damage_this_shot}")
+                self.damage_times.append(self.update(self.time, self.damage_done, shots_fired, 1))
+                if shots_fired == self.reserves:
+                    break 
+                if shot < mag_size - 1:
+                    self.time+=self.time_between_shots
+                    print("       - time between crux")
+                elif cloud.reserves == 0:
+                    self.time += self.reload_time
+                    print("       - reload shooting crux")
+                else:
+                    self.time += rocket_to_cloud
+                    print("       - swapping from rocket to cloud")
+            mag_size = self.mag_size_subsequent
+            cloud_shots = 0
+            cloud_mag = 7
+            while cloud_shots < cloud_mag:
+                if cloud.reserves == 0:
+                    self.time += 47/60
+                    break
+                cloud.reserves -= 1
+                cloud_shots += 1
+                damage_this_shot = sniper_damage
+                if (cloud_shots) % 3 == 0:
+                    cloud_mag += 1
+                    cloud.reserves += 1
+                    damage_this_shot += cloud.first_lightning * buffPerc 
+                if bonus_damage_duration > self.time:
+                    damage_this_shot *= 1.3
+                elif bonus_damage_duration != 0:
+                    damage_this_shot *= 1.15
+                self.damage_done += damage_this_shot
+                print(f"       -cloud shot # {cloud_shots} {damage_this_shot}")
+                self.damage_times.append(self.update(self.time, self.damage_done, shots_fired, 1))
+
+                if cloud_shots < cloud_mag:
+                    self.time+=cloud.time_between_shots
+                    print("       - time between cloud")
+                else:
+                    self.time += cloud_reload_rocket
+                    print("       - swapping from cloud to rocket")
+            if shots_fired == self.reserves:
+                break 
+            print("restarting rotation")
+            rotation += 1
+        print(self.damage_times)
+        col = self.excel.closeExcel(self.damage_times)
+        cloud.printDps(buffPerc, 0,0, "", self.damage_times, col)
         return col

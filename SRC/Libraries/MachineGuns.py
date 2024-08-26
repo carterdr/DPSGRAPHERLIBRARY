@@ -14,7 +14,7 @@ class MachineGun(Weapon.Weapon):
 #####################################################################################################################################
 class Retrofit(MachineGun):
     def __init__(self):
-        self.reserves = 446
+        self.reserves = 515
         super().__init__(self.reserves)
         self.mag_size_initial = 115
         self.mag_size_subsequent = 115
@@ -47,7 +47,7 @@ class Retrofit(MachineGun):
 #####################################################################################################################################
 class GrandOverture(MachineGun):
     def __init__(self):
-        self.reserves = 60
+        self.reserves = 67
         super().__init__(self.reserves)
         self.mag_size_initial = 20
         self.mag_size_subsequent = 20
@@ -102,7 +102,7 @@ class GrandOverture(MachineGun):
 
 class ThunderLord(MachineGun):
     def __init__(self):
-        self.reserves = 295
+        self.reserves = 341
         super().__init__(self.reserves)
         self.mag_size = 62
         self.time_between_shots_initial = 8/60
@@ -146,7 +146,7 @@ class ThunderLord(MachineGun):
         return self.excel.closeExcel(self.damage_times)
 class Xenophage(MachineGun):
     def __init__(self):
-        self.reserves = 28
+        self.reserves = 31
         super().__init__(self.reserves)
         self.base_damage = self.xenophage_damage * self.surgex3_damage_buff
         self.reload_time = 213/60

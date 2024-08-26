@@ -22,7 +22,7 @@ class Fusions(Weapon.Weapon):
 #####################################################################################################################################
 class Cartesian(Fusions):
     def __init__(self):
-        self.reserves = 19
+        self.reserves = 21
         super().__init__(self.reserves)
         self.charge_time = 27/60
         self.time_between_shots = 59/60
@@ -46,7 +46,7 @@ class Cartesian(Fusions):
 
 class Iterative(Fusions):
     def __init__(self):
-        self.reserves = 19
+        self.reserves = 22
         super().__init__(self.reserves)
         self.charge_time = 27/60
         self.time_between_shots = 59/60
@@ -74,7 +74,7 @@ class Iterative(Fusions):
 
 class Riptide(Fusions):
     def __init__(self):
-        self.reserves = 18  # 18 | 24
+        self.reserves = 20  # 18 | 24
         super().__init__(self.reserves)
         self.charge_time = 27/60
         self.time_between_shots = 59/60
@@ -98,12 +98,13 @@ class Riptide(Fusions):
 
 class ScatterSignal(Fusions):
     def __init__(self):
-        self.reserves = 18
+        self.reserves = 21
         super().__init__(self.reserves)
-        self.charge_time = 26/60
+        self.charge_time = 27/60
         self.time_between_shots = 57/60
-        self.mag_size_initial = self.reserves
-        self.mag_size_subsequent = self.reserves
+        self.reload_time = 90/60
+        self.mag_size_initial = 18
+        self.mag_size_subsequent = 18
         self.base_damage = self.rapid_damage *self.surgex3_damage_buff
 
     def printDps(self, buffPerc = 1.25, name="Scatter Signal (Overflow CB)", damageTimes=[], placeInColumn=None):
@@ -113,12 +114,12 @@ class ScatterSignal(Fusions):
         self.time += self.charge_time
 
         def damagePerShot(shots_fired, shots_fired_this_mag):
-            if shots_fired > 0:
+            if shots_fired_this_mag > 0:
                 return self.base_damage * buffPerc * self.controled_burst_damage_buff
             else:
                 return self.base_damage * buffPerc
         self.processSimpleDamageLoop(
-            self.mag_size_initial, self.mag_size_subsequent, self.time_between_shots, 0, damagePerShot)
+            self.mag_size_initial, self.mag_size_subsequent, self.time_between_shots, self.reload_time, damagePerShot)
         print(self.damage_times)
         return self.excel.closeExcel(self.damage_times)
 #####################################################################################################################################
@@ -128,7 +129,7 @@ class ScatterSignal(Fusions):
 #####################################################################################################################################
 class Techeun(Fusions):
     def __init__(self):
-        self.reserves = 16  
+        self.reserves = 18
         super().__init__(self.reserves)
         self.charge_time = 36/60
         self.time_between_shots = 65/60
@@ -158,7 +159,7 @@ class Techeun(Fusions):
 #####################################################################################################################################
 class Eremite(Fusions):
     def __init__(self):
-        self.reserves = 14  # 14 / 20
+        self.reserves = 17  # 14 / 20
         super().__init__(self.reserves)
         self.charge_time = 59/60
         self.time_between_shots = 84/60
@@ -187,7 +188,7 @@ class Eremite(Fusions):
 #####################################################################################################################################
 class Merciless(Fusions):
     def __init__(self):
-        self.reserves = 17
+        self.reserves = 19
         super().__init__(self.reserves)
         self.shotOne_damage = self.merciless_damages[0] * self.surgex3_damage_buff
         self.charge_time = 54/60

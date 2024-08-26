@@ -1,11 +1,5 @@
 from Libraries import (Linears, Excel,Shotguns,Snipers,FusionRifles,ExoticPrimaries,Rockets,
                        Abilities, TraceRifles, GrenadeLaunchers, MachineGuns, Bow, LuckyPants, Swords)
-def printAllMultiPerson():
-    printApexSupremacyRotation()
-    printCruxCloudstrikePermaDiv()
-    printCruxCloudstrikeRocketDiv()
-    printCruxSupremacyPermaDiv()
-    printCruxSupremacyRocketDiv()
 def printApexSupremacyRotation():
     #4 (Apex (Recon Bait) + Supremacy (Rewind FTTC) Rotation 1 Kinetic Surge) + (PERMA Divinity) + (Gjallarhorn + Supremacy (Rewind FTTC)) + 1 Nighthawk + 1 Tether
     x = Abilities.Tether()
@@ -27,7 +21,7 @@ def printApexSupremacyRotation():
     
     
     
-    
+
     
     #4 (Apex (Recon Bait) + Supremacy (Rewind FTTC) Rotation 1 Kinetic Surge) + (PERMA Divinity) + (Gjallarhorn + Supremacy (Rewind FTTC)) + 2 Nighthawk
     x = Abilities.GoldenGun()
@@ -52,49 +46,6 @@ def printApexSupremacyRotation():
     
     
     
-    
-    #4 (Apex (Recon Bait) 9 Reserves + Supremacy (Rewind FTTC) Rotation 1 Kinetic Surge) + (PERMA Divinity) + (Gjallarhorn (12 Reserves) + Supremacy (Rewind FTTC)) + 1 Nighthawk + 1 Tether
-    x = Abilities.Tether()
-    col = x.printDps(isDeadfall=True)
-    y = Rockets.BaitApexSupremRotation(9)
-    y.printDps(Tethers=1, damageTimes=x.damage_times, placeInColumn=col)
-    
-    x = Abilities.GoldenGun()
-    x.printDps(isNighthawk=True, TetherBuff=True, placeInColumn=col)
-    Rockets.BaitApexSupremRotation(9).printDps(Tethers=1, damageTimes=x.damage_times, placeInColumn=col)
-
-    Rockets.BaitApexSupremRotation(9).printDps(buffPerc = 2 * 1.25, Tethers=1, placeInColumn=col)
-    TraceRifles.Divinity().printDps(no_reload=True, placeInColumn=col)
-    
-    x = Rockets.Ghally(12)
-    x.printDps(Tethers=1, placeInColumn=col)
-    Snipers.SupremacyFTTC().printDps(Tethers=1, placeInColumn=col, damageTimes=x.damage_times)
-    Excel.renameColumn(col=col, name="4 Apex (Recon Bait) 9 Reserves + Supremacy (Rewind FTTC) Rotation 1 Kinetic Surge) + (PERMA Divinity) + (Gjallarhorn (12 Reserves) + Supremacy (Rewind FTTC)) + 1 Nighthawk + 1 Tether")
-    
-    
-    
-    
-    
-    #4 (Apex (Recon Bait) 9 Reserves + Supremacy (Rewind FTTC) Rotation 1 Kinetic Surge) + (PERMA Divinity) + (Gjallarhorn (12 Reserves) + Supremacy (Rewind FTTC)) + 2 Nighthawk
-    x = Abilities.GoldenGun()
-    x.damage_nighthawk *= 1.15
-    col = x.printDps(isNighthawk=True)
-    Rockets.BaitApexSupremRotation(9).printDps(buffPerc= 1.25 * 1.15, damageTimes=x.damage_times, placeInColumn=col)
-
-
-    x = Abilities.GoldenGun()
-    x.damage_nighthawk *= 1.15
-    x.printDps(isNighthawk=True, placeInColumn=col)
-    Rockets.BaitApexSupremRotation(9).printDps(buffPerc= 1.25 * 1.15, damageTimes=x.damage_times, placeInColumn=col)
-    
-    
-    Rockets.BaitApexSupremRotation(9).printDps(buffPerc = 2 * 1.25 * 1.15, placeInColumn=col)
-    TraceRifles.Divinity().printDps(no_reload=True, placeInColumn=col)
-    
-    x = Rockets.Ghally(12)
-    x.printDps(buffPerc= 1.25 * 1.15, placeInColumn=col)
-    Snipers.SupremacyFTTC().printDps(buffPerc= 1.25 * 1.15, placeInColumn=col, damageTimes=x.damage_times)
-    Excel.renameColumn(col=col, name="4 (Apex (Recon Bait) 9 Reserves + Supremacy (Rewind FTTC) Rotation 1 Kinetic Surge) + (PERMA Divinity) + (Gjallarhorn (12 Reserves) + Supremacy (Rewind FTTC)) + 2 Nighthawk")
 def printCruxCloudstrikePermaDiv():
     
     #4 (Crux (Clown 7 EL) + Cloudstrike) + (Gjallarhorn + Ikelos SR (FTTC FF)) + (PERMA DIV) + 1 Nighthawk + 1 Tether 
@@ -122,54 +73,54 @@ def printCruxCloudstrikePermaDiv():
     Excel.renameColumn(col=col, name="4 (Crux (Clown 7 EL) + Cloudstrike) + (Gjallarhorn + Ikelos SR (FTTC FF)) + (PERMA DIV) + 1 Nighthawk + 1 Tether")
 
 
-    #4 (Crux (Clown 7 EL 10 Reserves) + Cloudstrike) + (Gjallarhorn (12 Reserves) + Ikelos SR (FTTC FF)) + (PERMA DIV) + 1 Nighthawk + 1 Tether
+    #4 (Crux (Prepped Clown 8 EL) + Cloudstrike) + (Gjallarhorn + Ikelos SR (FTTC FF)) + (PERMA DIV) + 1 Nighthawk + 1 Tether
     x = Abilities.GoldenGun()
     col = x.printDps(isNighthawk=True, TetherBuff=True)
-    y = Rockets.Crux(10)
+    y = Rockets.Crux(8,8,True)
     y.printDps(Tethers=1, damageTimes=x.damage_times, placeInColumn=col)
     Snipers.CloudStrike().printDps(Tethers=1, damageTimes=y.damage_times, placeInColumn=col)
     
     x = Abilities.Tether()
     x.printDps(isDeadfall=True,placeInColumn=col)
-    y = Rockets.Crux(10)
+    y = Rockets.Crux(8,8,True)
     y.printDps(Tethers=1, damageTimes=x.damage_times, placeInColumn=col)
     Snipers.CloudStrike().printDps(Tethers=1, damageTimes=y.damage_times, placeInColumn=col)
     
-    x = Rockets.Crux(10)
+    x = Rockets.Crux(8,8,True)
     x.printDps(buffPerc= 2 * 1.25, Tethers=1, placeInColumn=col)
     Snipers.CloudStrike().printDps(Tethers=1, damageTimes=x.damage_times, placeInColumn=col)
     
     TraceRifles.Divinity().printDps(no_reload=True, placeInColumn=col)
     
-    x = Rockets.Ghally(12)
+    x = Rockets.Ghally()
     x.printDps(Tethers=1, placeInColumn=col)
     Snipers.Ikelos().printDps(Tethers=1, placeInColumn=col, damageTimes=x.damage_times)
-    Excel.renameColumn(col=col, name="4 (Crux (Clown 7 EL 10 Reserves) + Cloudstrike) + (Gjallarhorn (12 Reserves) + Ikelos SR (FTTC FF)) + (PERMA DIV) + 1 Nighthawk + 1 Tether")
+    Excel.renameColumn(col=col, name="4 (Crux (Prepped Clown 8 EL) + Cloudstrike) + (Gjallarhorn + Ikelos SR (FTTC FF)) + (PERMA DIV) + 1 Nighthawk + 1 Tether")
     
     
-    #4 (Crux (Prepped Clown 10 EL 10 Reserves) + Cloudstrike) + (Gjallarhorn (12 Reserves) + Ikelos SR (FTTC FF)) + (PERMA DIV) + 1 Nighthawk + 1 Tether
+    #4 (Crux (Prepped Clown 10 EL 13 Reserves) + Cloudstrike) + (Gjallarhorn + Ikelos SR (FTTC FF)) + (PERMA DIV) + 1 Nighthawk + 1 Tether
     x = Abilities.GoldenGun()
     col = x.printDps(isNighthawk=True, TetherBuff=True)
-    y = Rockets.Crux(10, 10,True)
+    y = Rockets.Crux(13, 10,True)
     y.printDps(Tethers=1, damageTimes=x.damage_times, placeInColumn=col)
     Snipers.CloudStrike().printDps(Tethers=1, damageTimes=y.damage_times, placeInColumn=col)
     
     x = Abilities.Tether()
     x.printDps(isDeadfall=True,placeInColumn=col)
-    y = Rockets.Crux(10, 10,True)
+    y = Rockets.Crux(13, 10,True)
     y.printDps(Tethers=1, damageTimes=x.damage_times, placeInColumn=col)
     Snipers.CloudStrike().printDps(Tethers=1, damageTimes=y.damage_times, placeInColumn=col)
     
-    x = Rockets.Crux(10,10,True)
+    x = Rockets.Crux(13,10,True)
     x.printDps(buffPerc= 2 * 1.25, Tethers=1, placeInColumn=col)
     Snipers.CloudStrike().printDps(Tethers=1, damageTimes=x.damage_times, placeInColumn=col)
     
     TraceRifles.Divinity().printDps(no_reload=True, placeInColumn=col)
     
-    x = Rockets.Ghally(12)
+    x = Rockets.Ghally()
     x.printDps(Tethers=1, placeInColumn=col)
     Snipers.Ikelos().printDps(Tethers=1, placeInColumn=col, damageTimes=x.damage_times)
-    Excel.renameColumn(col=col, name="4 (Crux (Prepped Clown 10 EL 10 Reserves) + Cloudstrike) + (Gjallarhorn (12 Reserves) + Ikelos SR (FTTC FF)) + (PERMA DIV) + 1 Nighthawk + 1 Tether")
+    Excel.renameColumn(col=col, name="4 (Crux (Prepped Clown 10 EL 13 Reserves) + Cloudstrike) + (Gjallarhorn + Ikelos SR (FTTC FF)) + (PERMA DIV) + 1 Nighthawk + 1 Tether")
 def printCruxCloudstrikeRocketDiv():
      
     #4 (Crux (Clown 7 EL) + Cloudstrike) + (Gjallarhorn + Ikelos SR (FTTC FF)) + (Crux (Clown 6 EL) Then Div) + 1 Nighthawk + 1 Tether
@@ -199,47 +150,47 @@ def printCruxCloudstrikeRocketDiv():
     Excel.renameColumn(col=col, name="4 (Crux (Clown 7 EL) + Cloudstrike) + (Gjallarhorn + Ikelos SR (FTTC FF)) + (Crux (Clown 6 EL) Then Div) + 1 Nighthawk + 1 Tether")
 
 
-    #4 (Crux (Clown 7 EL 10 Reserves) + Cloudstrike) + (Gjallarhorn (12 Reserves) + Ikelos SR (FTTC FF)) + (Crux (Clown 7 EL) Then Div) + 1 Nighthawk + 1 Tether
+    #4 (Crux (Prepped Clown 8 EL) + Cloudstrike) + (Gjallarhorn+ Ikelos SR (FTTC FF)) + (Crux (Prepped Clown 6 EL) Then Div) + 1 Nighthawk + 1 Tether
     x = Abilities.GoldenGun()
     col = x.printDps(isNighthawk=True, TetherBuff=True)
-    y = Rockets.Crux(10)
+    y = Rockets.Crux(8,8,True)
     y.printDps(Tethers=1, damageTimes=x.damage_times, placeInColumn=col)
     Snipers.CloudStrike().printDps(Tethers=1, damageTimes=y.damage_times, placeInColumn=col)
     
     x = Abilities.Tether()
     x.printDps(isDeadfall=True,placeInColumn=col)
-    y = Rockets.Crux(10)
+    y = Rockets.Crux(8,8,True)
     y.printDps(Tethers=1, damageTimes=x.damage_times, placeInColumn=col)
     Snipers.CloudStrike().printDps(Tethers=1, damageTimes=y.damage_times, placeInColumn=col)
     
-    x = Rockets.Crux(10)
+    x = Rockets.Crux(8,8,True)
     x.printDps(buffPerc= 2 * 1.25, Tethers=1, placeInColumn=col)
     Snipers.CloudStrike().printDps(Tethers=1, damageTimes=x.damage_times, placeInColumn=col)
     
-    y = Rockets.Crux(7)
+    y = Rockets.Crux(6,6,True)
     y.printDps(Tethers=1,placeInColumn=col)
     TraceRifles.Divinity().printDps(no_reload=True, placeInColumn=col, damageTimes=y.damage_times)
     
-    x = Rockets.Ghally(12)
+    x = Rockets.Ghally()
     x.printDps(Tethers=1, placeInColumn=col)
     Snipers.Ikelos().printDps(Tethers=1, placeInColumn=col, damageTimes=x.damage_times)
-    Excel.renameColumn(col=col, name="4 (Crux (Prepped Clown 10 EL 10 Reserves) + Cloudstrike) + (Gjallarhorn (12 Reserves) + Ikelos SR (FTTC FF)) + (Crux (Clown 7 EL) Then Div) + 1 Nighthawk + 1 Tether")
+    Excel.renameColumn(col=col, name="4 (Crux (Prepped Clown 8 EL) + Cloudstrike) + (Gjallarhorn + Ikelos SR (FTTC FF)) + (Crux (Prepped Clown 6 EL) Then Div) + 1 Nighthawk + 1 Tether")
     
     
-    #4 (Crux (Prepped Clown 10 EL 10 Reserves) + Cloudstrike) + (Gjallarhorn (12 Reserves) + Ikelos SR (FTTC FF)) + (PERMA DIV) + 1 Nighthawk + 1 Tether
+    #4 (Crux (Prepped Clown 10 EL 13 Reserves) + Cloudstrike) + (Gjallarhorn + Ikelos SR (FTTC FF)) + (PERMA DIV) + 1 Nighthawk + 1 Tether
     x = Abilities.GoldenGun()
     col = x.printDps(isNighthawk=True, TetherBuff=True)
-    y = Rockets.Crux(10, 10,True)
+    y = Rockets.Crux(13, 10,True)
     y.printDps(Tethers=1, damageTimes=x.damage_times, placeInColumn=col)
     Snipers.CloudStrike().printDps(Tethers=1, damageTimes=y.damage_times, placeInColumn=col)
     
     x = Abilities.Tether()
     x.printDps(isDeadfall=True,placeInColumn=col)
-    y = Rockets.Crux(10, 10,True)
+    y = Rockets.Crux(13, 10,True)
     y.printDps(Tethers=1, damageTimes=x.damage_times, placeInColumn=col)
     Snipers.CloudStrike().printDps(Tethers=1, damageTimes=y.damage_times, placeInColumn=col)
     
-    x = Rockets.Crux(10, 10,True)
+    x = Rockets.Crux(13, 10,True)
     x.printDps(buffPerc= 2 * 1.25, Tethers=1, placeInColumn=col)
     Snipers.CloudStrike().printDps(Tethers=1, damageTimes=x.damage_times, placeInColumn=col)
     
@@ -247,10 +198,10 @@ def printCruxCloudstrikeRocketDiv():
     x.printDps(Tethers=1,placeInColumn=col)
     TraceRifles.Divinity().printDps(no_reload=True, placeInColumn=col, damageTimes=y.damage_times)
     
-    x = Rockets.Ghally(12)
+    x = Rockets.Ghally()
     x.printDps(Tethers=1, placeInColumn=col)
     Snipers.Ikelos().printDps(Tethers=1, placeInColumn=col, damageTimes=x.damage_times)
-    Excel.renameColumn(col=col, name="4 (Crux (Prepped Clown 10 EL 10 Reserves) + Cloudstrike) + (Gjallarhorn (12 Reserves) + Ikelos SR (FTTC FF)) + (Crux (Prepped Clown 8 EL) Then Div) + 1 Nighthawk + 1 Tether")
+    Excel.renameColumn(col=col, name="4 (Crux (Prepped Clown 10 EL 13 Reserves) + Cloudstrike) + (Gjallarhorn + Ikelos SR (FTTC FF)) + (Crux (Prepped Clown 8 EL) Then Div) + 1 Nighthawk + 1 Tether")
 def printCruxSupremacyPermaDiv():
     
     #4 (Crux (Clown 7 EL) + Supremacy (Rewind FTTC) No Surges) + (Gjallarhorn + Supremacy (Rewind FTTC) No Surges) + (PERMA DIV) + 1 Nighthawk + 1 Tether 
@@ -278,54 +229,54 @@ def printCruxSupremacyPermaDiv():
     Excel.renameColumn(col=col, name="4 (Crux (Clown 7 EL) + Supremacy (Rewind FTTC) No Surges) + (Gjallarhorn + Supremacy (Rewind FTTC) No Surges) + (PERMA DIV) + 1 Nighthawk + 1 Tether")
 
 
-    #4 (Crux (Clown 7 EL 10 Reserves) + Supremacy (Rewind FTTC) No Surges) + (Gjallarhorn (12 Reserves) + Supremacy (Rewind FTTC) No Surges) + (PERMA DIV) + 1 Nighthawk + 1 Tether
+    #4 (Crux (Prepped Clown 8 EL) + Supremacy (Rewind FTTC) No Surges) + (Gjallarhorn + Supremacy (Rewind FTTC) No Surges) + (PERMA DIV) + 1 Nighthawk + 1 Tether
     x = Abilities.GoldenGun()
     col = x.printDps(isNighthawk=True, TetherBuff=True)
-    y = Rockets.Crux(10)
+    y = Rockets.Crux(8,8,True)
     y.printDps(Tethers=1, damageTimes=x.damage_times, placeInColumn=col)
     Snipers.SupremacyFTTC().printDps(Tethers=1, damageTimes=y.damage_times, placeInColumn=col)
     
     x = Abilities.Tether()
     x.printDps(isDeadfall=True,placeInColumn=col)
-    y = Rockets.Crux(10)
+    y = Rockets.Crux(8,8,True)
     y.printDps(Tethers=1, damageTimes=x.damage_times, placeInColumn=col)
     Snipers.SupremacyFTTC().printDps(Tethers=1, damageTimes=y.damage_times, placeInColumn=col)
     
-    x = Rockets.Crux(10)
+    x = Rockets.Crux(8,8,True)
     x.printDps(buffPerc= 2 * 1.25, Tethers=1, placeInColumn=col)
     Snipers.SupremacyFTTC().printDps(Tethers=1, damageTimes=x.damage_times, placeInColumn=col)
     
     TraceRifles.Divinity().printDps(no_reload=True, placeInColumn=col)
     
-    x = Rockets.Ghally(12)
+    x = Rockets.Ghally()
     x.printDps(Tethers=1, placeInColumn=col)
     Snipers.SupremacyFTTC().printDps(Tethers=1, placeInColumn=col, damageTimes=x.damage_times)
-    Excel.renameColumn(col=col, name="4 (Crux (Clown 7 EL 10 Reserves) + Supremacy (Rewind FTTC) No Surges) + (Gjallarhorn (12 Reserves) + Supremacy (Rewind FTTC) No Surges) + (PERMA DIV) + 1 Nighthawk + 1 Tether")
+    Excel.renameColumn(col=col, name="4 (Crux (Prepped Clown 8 EL) + Supremacy (Rewind FTTC) No Surges) + (Gjallarhorn + Supremacy (Rewind FTTC) No Surges) + (PERMA DIV) + 1 Nighthawk + 1 Tether")
     
     
-    #4 (Crux (Prepped Clown 10 EL 10 Reserves) + Supremacy (Rewind FTTC) No Surges) + (Gjallarhorn (12 Reserves) + Supremacy (Rewind FTTC) No Surges) + (PERMA DIV) + 1 Nighthawk + 1 Tether
+    #4 (Crux (Prepped Clown 10 EL 13 Reserves) + Supremacy (Rewind FTTC) No Surges) + (Gjallarhorn + Supremacy (Rewind FTTC) No Surges) + (PERMA DIV) + 1 Nighthawk + 1 Tether
     x = Abilities.GoldenGun()
     col = x.printDps(isNighthawk=True, TetherBuff=True)
-    y = Rockets.Crux(10, 10,True)
+    y = Rockets.Crux(13, 10,True)
     y.printDps(Tethers=1, damageTimes=x.damage_times, placeInColumn=col)
     Snipers.SupremacyFTTC().printDps(Tethers=1, damageTimes=y.damage_times, placeInColumn=col)
     
     x = Abilities.Tether()
     x.printDps(isDeadfall=True,placeInColumn=col)
-    y = Rockets.Crux(10, 10,True)
+    y = Rockets.Crux(13, 10,True)
     y.printDps(Tethers=1, damageTimes=x.damage_times, placeInColumn=col)
     Snipers.SupremacyFTTC().printDps(Tethers=1, damageTimes=y.damage_times, placeInColumn=col)
     
-    x = Rockets.Crux(10,10,True)
+    x = Rockets.Crux(13,10,True)
     x.printDps(buffPerc= 2 * 1.25, Tethers=1, placeInColumn=col)
     Snipers.SupremacyFTTC().printDps(Tethers=1, damageTimes=x.damage_times, placeInColumn=col)
     
     TraceRifles.Divinity().printDps(no_reload=True, placeInColumn=col)
     
-    x = Rockets.Ghally(12)
+    x = Rockets.Ghally()
     x.printDps(Tethers=1, placeInColumn=col)
     Snipers.SupremacyFTTC().printDps(Tethers=1, placeInColumn=col, damageTimes=x.damage_times)
-    Excel.renameColumn(col=col, name="4 (Crux (Prepped Clown 10 EL 10 Reserves) + Supremacy (Rewind FTTC) No Surges) + (Gjallarhorn (12 Reserves) + Supremacy (Rewind FTTC) No Surges) + (PERMA DIV) + 1 Nighthawk + 1 Tether")
+    Excel.renameColumn(col=col, name="4 (Crux (Prepped Clown 10 EL 10 Reserves) + Supremacy (Rewind FTTC) No Surges) + (Gjallarhorn + Supremacy (Rewind FTTC) No Surges) + (PERMA DIV) + 1 Nighthawk + 1 Tether")
 def printCruxSupremacyRocketDiv():
      
     #4 (Crux (Clown 7 EL) + Supremacy (Rewind FTTC) No Surges) + (Gjallarhorn + Supremacy (Rewind FTTC) No Surges) + (Crux (Clown 6 EL) Then Div) + 1 Nighthawk + 1 Tether
@@ -355,47 +306,47 @@ def printCruxSupremacyRocketDiv():
     Excel.renameColumn(col=col, name="4 (Crux (Clown 7 EL) + Supremacy (Rewind FTTC) No Surges) + (Gjallarhorn + Supremacy (Rewind FTTC) No Surges) + (Crux (Clown 6 EL) Then Div) + 1 Nighthawk + 1 Tether")
 
 
-    #4 (Crux (Clown 7 EL 10 Reserves) + Supremacy (Rewind FTTC) No Surges) + (Gjallarhorn (12 Reserves) + Supremacy (Rewind FTTC) No Surges) + (Crux (Clown 7 EL) Then Div) + 1 Nighthawk + 1 Tether
+    #4 (Crux (Prepped Clown 8 EL) + Supremacy (Rewind FTTC) No Surges) + (Gjallarhorn + Supremacy (Rewind FTTC) No Surges) + (Crux (Clown 7 EL) Then Div) + 1 Nighthawk + 1 Tether
     x = Abilities.GoldenGun()
     col = x.printDps(isNighthawk=True, TetherBuff=True)
-    y = Rockets.Crux(10)
+    y = Rockets.Crux(8,8,True)
     y.printDps(Tethers=1, damageTimes=x.damage_times, placeInColumn=col)
     Snipers.SupremacyFTTC().printDps(Tethers=1, damageTimes=y.damage_times, placeInColumn=col)
     
     x = Abilities.Tether()
     x.printDps(isDeadfall=True,placeInColumn=col)
-    y = Rockets.Crux(10)
+    y = Rockets.Crux(8,8,True)
     y.printDps(Tethers=1, damageTimes=x.damage_times, placeInColumn=col)
     Snipers.SupremacyFTTC().printDps(Tethers=1, damageTimes=y.damage_times, placeInColumn=col)
     
-    x = Rockets.Crux(10)
+    x = Rockets.Crux(8,8,True)
     x.printDps(buffPerc= 2 * 1.25, Tethers=1, placeInColumn=col)
     Snipers.SupremacyFTTC().printDps(Tethers=1, damageTimes=x.damage_times, placeInColumn=col)
     
-    y = Rockets.Crux(7)
+    y = Rockets.Crux(6)
     y.printDps(Tethers=1,placeInColumn=col)
     TraceRifles.Divinity().printDps(no_reload=True, placeInColumn=col, damageTimes=y.damage_times)
     
-    x = Rockets.Ghally(12)
+    x = Rockets.Ghally()
     x.printDps(Tethers=1, placeInColumn=col)
     Snipers.SupremacyFTTC().printDps(Tethers=1, placeInColumn=col, damageTimes=x.damage_times)
-    Excel.renameColumn(col=col, name="4 (Crux (Prepped Clown 10 EL 10 Reserves) + Supremacy (Rewind FTTC) No Surges) + (Gjallarhorn (12 Reserves) + Supremacy (Rewind FTTC) No Surges) + (Crux (Clown 7 EL) Then Div) + 1 Nighthawk + 1 Tether")
+    Excel.renameColumn(col=col, name="4 (Crux (Prepped Clown 8 EL) + Supremacy (Rewind FTTC) No Surges) + (Gjallarhorn + Supremacy (Rewind FTTC) No Surges) + (Crux (Clown 6 EL) Then Div) + 1 Nighthawk + 1 Tether")
     
     
-    #4 (Crux (Prepped Clown 10 EL 10 Reserves) + Supremacy (Rewind FTTC) No Surges) + (Gjallarhorn (12 Reserves) + Supremacy (Rewind FTTC) No Surges) + (PERMA DIV) + 1 Nighthawk + 1 Tether
+    #4 (Crux (Prepped Clown 10 EL 13 Reserves) + Supremacy (Rewind FTTC) No Surges) + (Gjallarhorn (12 Reserves) + Supremacy (Rewind FTTC) No Surges) + (PERMA DIV) + 1 Nighthawk + 1 Tether
     x = Abilities.GoldenGun()
     col = x.printDps(isNighthawk=True, TetherBuff=True)
-    y = Rockets.Crux(10, 10,True)
+    y = Rockets.Crux(13, 10,True)
     y.printDps(Tethers=1, damageTimes=x.damage_times, placeInColumn=col)
     Snipers.SupremacyFTTC().printDps(Tethers=1, damageTimes=y.damage_times, placeInColumn=col)
     
     x = Abilities.Tether()
     x.printDps(isDeadfall=True,placeInColumn=col)
-    y = Rockets.Crux(10, 10,True)
+    y = Rockets.Crux(13, 10,True)
     y.printDps(Tethers=1, damageTimes=x.damage_times, placeInColumn=col)
     Snipers.SupremacyFTTC().printDps(Tethers=1, damageTimes=y.damage_times, placeInColumn=col)
     
-    x = Rockets.Crux(10, 10,True)
+    x = Rockets.Crux(13, 10,True)
     x.printDps(buffPerc= 2 * 1.25, Tethers=1, placeInColumn=col)
     Snipers.SupremacyFTTC().printDps(Tethers=1, damageTimes=x.damage_times, placeInColumn=col)
     
@@ -403,10 +354,10 @@ def printCruxSupremacyRocketDiv():
     x.printDps(Tethers=1,placeInColumn=col)
     TraceRifles.Divinity().printDps(no_reload=True, placeInColumn=col, damageTimes=y.damage_times)
     
-    x = Rockets.Ghally(12)
+    x = Rockets.Ghally()
     x.printDps(Tethers=1, placeInColumn=col)
     Snipers.SupremacyFTTC().printDps(Tethers=1, placeInColumn=col, damageTimes=x.damage_times)
-    Excel.renameColumn(col=col, name="4 (Crux (Prepped Clown 10 EL 10 Reserves) + Supremacy (Rewind FTTC) No Surges) + (Gjallarhorn (12 Reserves) + Supremacy (Rewind FTTC) No Surges) + (Crux (Prepped Clown 8 EL) Then Div) + 1 Nighthawk + 1 Tether")
+    Excel.renameColumn(col=col, name="4 (Crux (Prepped Clown 10 EL 13 Reserves) + Supremacy (Rewind FTTC) No Surges) + (Gjallarhorn + Supremacy (Rewind FTTC) No Surges) + (Crux (Prepped Clown 8 EL) Then Div) + 1 Nighthawk + 1 Tether")
 def printCataphract():
     #5 (Cataphract (21 Mag Bait Spike) + Scatter Signal (Overflow CB)) + (Tractor + Scatter Signal (Overflow CB))) + 2 Nighthawk
     col = GrenadeLaunchers.Cataphract().printDps(isScatterSignal=True, buffPerc=1.25 *3 * 1.3)

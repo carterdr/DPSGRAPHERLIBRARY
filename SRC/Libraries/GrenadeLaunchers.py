@@ -1,11 +1,12 @@
 from Libraries import Weapon
 from Libraries import FusionRifles
 from Libraries import Snipers
-from Libraries import TraceRifles
+from Libraries import TraceRifles, Linears
 
 class GrenadeLauncher(Weapon.Weapon):
     def __init__(self, reserves):
         super().__init__(reserves)
+        self.reload_num_appear = 75/60
         self.mtop_damage = (7366 + 16104) #kinetic spec
         self.lightweight_damage = (12220 + 5538)
         self.double_fire_damage = 2 * (6461 + 7042) / 1.15 #Vorpal spec
@@ -28,7 +29,7 @@ class GrenadeLauncher(Weapon.Weapon):
 #####################################################################################################################################
 class DoubleFire(GrenadeLauncher):
     def __init__(self):
-        self.reserves = 22
+        self.reserves = 21
         super().__init__(self.reserves)
         self.time_between_shots = 97/60
         self.reload_time = 97/60
@@ -48,7 +49,7 @@ class DoubleFire(GrenadeLauncher):
 
 class LightWeight(GrenadeLauncher):
     def __init__(self):
-        self.reserves = 22
+        self.reserves = 24
         super().__init__(self.reserves)
         self.time_between_shots = 94/60
         self.reload_time = 94/60
@@ -68,7 +69,7 @@ class LightWeight(GrenadeLauncher):
 
 class MTOP(GrenadeLauncher):
     def __init__(self):
-        self.reserves = 22
+        self.reserves = 24
         super().__init__(self.reserves)
         self.time_between_shots = 97/60
         self.reload_time = 97/60
@@ -93,7 +94,7 @@ class MTOP(GrenadeLauncher):
 #####################################################################################################################################
 class Cataphract(GrenadeLauncher):
     def __init__(self):
-        self.reserves = 25 #29 reserves
+        self.reserves = 27 
         super().__init__(self.reserves)
         self.mag_size_initial = 7
         self.mag_size_subsequent = 7
@@ -101,14 +102,17 @@ class Cataphract(GrenadeLauncher):
         self.time_between_shots = 30/60
         self.reload_time = 123/60
 
-    def printDps(self, buffPerc = 1.25, mag_size = 21, isSpike = True, isEnvious=True, isScatterSignal=False, name="Cataphract", damageTimes=[], placeInColumn=None):
+    def printDps(self, buffPerc = 1.25, mag_size = 21, isSpike = True, isScatterSignal=False, isEuphony = False, isEvolution = True, name="Cataphract", damageTimes=[], placeInColumn=None):
         spike_text = " Spike" if isSpike else ""
         name += f" ({mag_size} Mag Bait{spike_text})"
         self._preparePrintDps_(name, damageTimes, placeInColumn)
         self.mag_size_initial = mag_size
         print(self.mag_size_initial)
-        if isEnvious:
-            self.mag_size_initial = mag_size
+        dont_reproc = True
+        if mag_size <= 20:
+            dont_reproc = False
+
+        self.mag_size_initial = mag_size
         if not isSpike:
             self.base_damage = self.adaptive_damage * self.surgex3_damage_buff
             self.mag_size_subsequent = 8 
@@ -121,10 +125,19 @@ class Cataphract(GrenadeLauncher):
                           (self.reload_gl_fusion, 0)
                           ]
             self.time += FusionRifles.ScatterSignal().charge_time
+        elif isEuphony:
+            self.linearshot_to_primary = 68/60
+            self.primary_to_heavy = 50/60
+            self.reload_gl_linear = 75/60 - (FusionRifles.ScatterSignal().charge_time) + (Linears.Euphony().charge_time)
+            bait_tuple = [(self.linearshot_to_primary, Linears.Euphony().base_damage * buffPerc),
+                          (self.primary_to_heavy, 0),
+                          (self.reload_gl_linear, 0)
+                          ]
+            self.time += Linears.Euphony().charge_time
         else:
             self.kinetic_to_primary = 50/60
             self.primary_to_heavy = 54/60
-            self.reload_gl_primary = 46/60
+            self.reload_gl_primary = 46/60 
             bait_tuple = [(self.kinetic_to_primary, 0),
                           (self.primary_to_heavy, 0),
                           (self.reload_gl_primary, 0),
@@ -136,21 +149,22 @@ class Cataphract(GrenadeLauncher):
             else:
                 return self.base_damage * buffPerc
         self.processBaitDamageLoop(bait_tuple, self.mag_size_initial, self.mag_size_subsequent,
-                                   self.time_between_shots, self.reload_time, damagePerShot, dont_reproc=True, bait_duration=10)
+                                   self.time_between_shots, self.reload_time, damagePerShot, dont_reproc=dont_reproc, bait_duration=10)
+        column = self.excel.closeExcel(self.damage_times)
         if isScatterSignal:
-            column = self.excel.closeExcel(self.damage_times)
             scatter = FusionRifles.ScatterSignal()
-            if isEnvious:
-                scatter.reserves -= 2
-            else:
-                scatter.reserves -= 3
-            scatter.printDps(1.25, "Scatter Signal (Overflow CB)", self.damage_times, column)
-            return column
-        return self.excel.closeExcel(self.damage_times)
+            scatter.reserves -= self.procs
+            scatter.printDps(buffPerc=buffPerc, damageTimes=self.damage_times, placeInColumn=column)
+        if isEuphony:
+            euphony = Linears.Euphony()
+            euphony.reserves -= self.procs
+            euphony.mag_size_initial -= self.procs
+            euphony.printDps(buffPerc=buffPerc, damageTimes=self.damage_times, placeInColumn=column, evolution=isEvolution)
+        return column
 
 class EdgeTransit(GrenadeLauncher):
     def __init__(self):
-        self.reserves = 24 #29 reserves
+        self.reserves = 26 
         super().__init__(self.reserves)
         self.mag_size_initial = 7
         self.mag_size_subsequent = 7
@@ -164,8 +178,11 @@ class EdgeTransit(GrenadeLauncher):
         self._preparePrintDps_(name, damageTimes, placeInColumn)
         self.mag_size_initial = mag_size
         print(self.mag_size_initial)
-        if isEnvious:
-            self.mag_size_initial = mag_size
+        
+        self.mag_size_initial = mag_size
+        dont_reproc = True
+        if mag_size <= 20:
+            dont_reproc = False
         if not isSpike:
             self.base_damage = self.adaptive_damage * self.surgex3_damage_buff
             self.mag_size_subsequent = 8 
@@ -184,13 +201,13 @@ class EdgeTransit(GrenadeLauncher):
             else:
                 return self.base_damage * buffPerc
         self.processBaitDamageLoop(bait_tuple, self.mag_size_initial, self.mag_size_subsequent,
-                                   self.time_between_shots, self.reload_time, damagePerShot, dont_reproc=True, bait_duration=11)
+                                   self.time_between_shots, self.reload_time, damagePerShot, dont_reproc=dont_reproc, bait_duration=11)
         return self.excel.closeExcel(self.damage_times)
 
 
 class Interferance(GrenadeLauncher):
     def __init__(self):
-        self.reserves = 25  # Fp
+        self.reserves = 29  # Fp
         super().__init__(self.reserves)
         self.mag_size_initial = 7
         self.mag_size_subsequent = 7
@@ -241,7 +258,7 @@ class Regnant(GrenadeLauncher):
 
 class Wendigo(GrenadeLauncher):
     def __init__(self):
-        self.reserves = 25  # Fp
+        self.reserves = 29  # Fp
         super().__init__(self.reserves)
         self.mag_size_initial = 7
         self.mag_size_subsequent = 7
@@ -269,7 +286,7 @@ class Wendigo(GrenadeLauncher):
 #####################################################################################################################################
 class Anarchy(GrenadeLauncher):
     def __init__(self):
-        self.reserves = 23
+        self.reserves = 25
         super().__init__(self.reserves)
         self.anarchy_timing = 25/60  # 2 shot timing
         self.anarchy_tick_damage = self.anarch_tick * self.surgex3_damage_buff
@@ -300,7 +317,7 @@ class Anarchy(GrenadeLauncher):
 
 class Parasite(GrenadeLauncher):
     def __init__(self):
-        self.reserves = 13
+        self.reserves = 15
         super().__init__(self.reserves)
         self.base_damage = self.parasite_damage * self.surgex3_damage_buff 
         self.max_stacks_damage = 3*self.base_damage
@@ -325,7 +342,7 @@ class Parasite(GrenadeLauncher):
     
 class Prospector(GrenadeLauncher):
     def __init__(self):
-        self.reserves = 35 
+        self.reserves = 38
         super().__init__(self.reserves)
         self.mag_size_initial = 8
         self.mag_size_subsequent = 8
@@ -378,7 +395,7 @@ class Witherhoard(GrenadeLauncher):
 class EdgeTransitSupremacyRotation(GrenadeLauncher):
     def __init__(self):
         self.mag_size = 7
-        self.reserves = 24
+        self.reserves = 26
         super().__init__(self.reserves)
         self.time_between_shots = 30/60
         self.base_damage = self.adaptive_spike_damage * self.surgex3_damage_buff
@@ -446,7 +463,7 @@ class EdgeTransitSupremacyRotation(GrenadeLauncher):
     
 class EdgeTransitEnviousFathersSins(GrenadeLauncher):
     def __init__(self):
-        self.reserves = 24 #29 reserves
+        self.reserves = 26 #29 reserves
         super().__init__(self.reserves)
         self.mag_size_initial = 7
         self.mag_size_subsequent = 7
@@ -459,7 +476,9 @@ class EdgeTransitEnviousFathersSins(GrenadeLauncher):
         name += f" ({mag_size} Mag{spike_text} Bait) + Fathers Sins (TT FF)"
         self._preparePrintDps_(name, damageTimes, placeInColumn)
         self.mag_size_initial = mag_size
-
+        dont_reproc = True
+        if mag_size <= 20:
+            dont_reproc = False
         if not isSpike:
             self.base_damage = self.adaptive_damage * self.surgex3_damage_buff
             self.mag_size_subsequent = 8 
@@ -483,21 +502,17 @@ class EdgeTransitEnviousFathersSins(GrenadeLauncher):
             else:
                 return damage_this_shot
         self.processBaitDamageLoop(bait_tuple, self.mag_size_initial, self.mag_size_subsequent,
-                                   self.time_between_shots, self.reload_time, damagePerShot, dont_reproc=True, bait_duration=11)
+                                   self.time_between_shots, self.reload_time, damagePerShot, dont_reproc=dont_reproc, bait_duration=11)
 
         column = self.excel.closeExcel(self.damage_times)
-        if mag_size >= 21:
-            fathers.reserves -= 2
-            fathers.mag_size_initial-=2
-        else:
-            fathers.reserves -= 3
-            fathers.mag_size_initial-=3
+        fathers.reserves -= self.procs
+        fathers.mag_size_initial-=self.procs
         fathers.printDps(buffPerc, 0, 0, "", self.damage_times, column)
         return column
 
 class EdgeTransitEnviousSupremacy(GrenadeLauncher):
     def __init__(self):
-        self.reserves = 24 #29 reserves
+        self.reserves = 26 #29 reserves
         super().__init__(self.reserves)
         self.mag_size_initial = 7
         self.mag_size_subsequent = 7
@@ -511,7 +526,9 @@ class EdgeTransitEnviousSupremacy(GrenadeLauncher):
         name += f" ({mag_size} Mag{spike_text} Bait) + Supremacy (Rewind FTTC){surge_text}"
         self._preparePrintDps_(name, damageTimes, placeInColumn)
         self.mag_size_initial = mag_size
-
+        dont_reproc = True
+        if mag_size <= 20:
+            dont_reproc = False
         if not isSpike:
             self.base_damage = self.adaptive_damage * self.surgex3_damage_buff
             self.mag_size_subsequent = 8
@@ -538,13 +555,11 @@ class EdgeTransitEnviousSupremacy(GrenadeLauncher):
             else:
                 return damage_this_shot
         self.processBaitDamageLoop(bait_tuple, self.mag_size_initial, self.mag_size_subsequent,
-                                   self.time_between_shots, self.reload_time, damagePerShot, dont_reproc=True, bait_duration=11)
+                                   self.time_between_shots, self.reload_time, damagePerShot, dont_reproc=dont_reproc, bait_duration=11)
 
         column = self.excel.closeExcel(self.damage_times)
-        if mag_size >= 21:
-            supremacy.reserves -= 2
-        else:
-            supremacy.reserves -= 3
+        supremacy.reserves -= self.procs
+
         supremacy.printDps(buffPerc, 0, 0, False, "", self.damage_times, column)
         return column
 
@@ -562,6 +577,9 @@ class EdgeTransitDiv(GrenadeLauncher):
         spike_text = " Spike" if isSpike else ""
         name += f" ({mag_size} Mag{spike_text} Bait)"
         self._preparePrintDps_(name, damageTimes, placeInColumn)
+        dont_reproc = True
+        if mag_size <= 20:
+            dont_reproc = False
         if isEnvious:
             self.mag_size_initial = mag_size
         if not isSpike:
@@ -588,12 +606,10 @@ class EdgeTransitDiv(GrenadeLauncher):
             else:
                 return damage_this_shot
         self.processBaitDamageLoop(bait_tuple, self.mag_size_initial, self.mag_size_subsequent,
-                                   self.time_between_shots, self.reload_time, damagePerShot, dont_reproc=True, bait_duration=11)
+                                   self.time_between_shots, self.reload_time, damagePerShot, dont_reproc=dont_reproc, bait_duration=11)
         column = self.excel.closeExcel(self.damage_times)
-        if isEnvious:
-            divinity.reserves -= 2
-        else:
-            divinity.reserves -= 3
+
+        divinity.reserves -= self.procs
         print(self.time)
         divinity.printDps(buffPerc, True, "Divinity (No Reloads)", self.damage_times, column)
 
@@ -601,7 +617,7 @@ class EdgeTransitDiv(GrenadeLauncher):
 class WendigoCloud(GrenadeLauncher):
     def __init__(self):
         self.mag_size = 6
-        self.reserves = 25
+        self.reserves = 26
         super().__init__(self.reserves)
         self.time_between_shots = 19/60
         self.base_damage = self.adaptive_spike_damage * self.surgex3_damage_buff

@@ -9,20 +9,21 @@ class Sniper(Weapon.Weapon):
         self.sniper_72_damage  = 20319
         self.whisper_damage    = 35020
         self.cloudstrike_storm_damage = (11287 + 6773)
-        self.still_hunt_nighthawk_damage = 224313
+        self.still_hunt_nighthawk_damage = 150273
         self.still_hunt_shot_1 = 33732
         self.still_hunt_shot_2 = 48911
         self.still_hunt_shot_3 = 64090
         self.darci_damage      = 21538
         self.izi_damage_4x     = 75206
         self.izi_damage_3x     = 37012
+        self.izi_damage_2x     = 28077
 
 
 #140s
 #####################################################################################################################################
 class CloudStrike(Sniper):
     def __init__(self):
-        self.reserves = 33  # 31 / 37
+        self.reserves = 41  # 32
         super().__init__(self.reserves)
         self.mag_size = 7
         self.base_damage = self.sniper_140_damage * self.surgex3_damage_buff #bug damage = 1.03
@@ -55,7 +56,7 @@ class CloudStrike(Sniper):
 
 class FathersSin(Sniper):
     def __init__(self):
-        self.reserves = 30
+        self.reserves = 25
         super().__init__(self.reserves)
         self.base_damage = self.sniper_140_damage * self.surgex3_damage_buff
         self.time_between_shots = 25.5/60
@@ -83,7 +84,7 @@ class FathersSin(Sniper):
 
 class Ikelos(Sniper):
     def __init__(self):
-        self.reserves = 30  # 43
+        self.reserves = 24  # 43
         super().__init__(self.reserves)
         self.base_damage = self.sniper_140_damage * self.surgex3_damage_buff 
         self.time_between_shots = 25.5/60
@@ -113,7 +114,7 @@ class Ikelos(Sniper):
 
 class Irukandji(Sniper):
     def __init__(self):
-        self.reserves = 30  # 27 56 / 43 / 52 / 39
+        self.reserves = 24 
         super().__init__(self.reserves)
         self.base_damage = self.sniper_140_damage * self.surgex3_damage_buff * self.firing_line_damage_buff
         self.time_between_shots = 25.5/60
@@ -139,32 +140,33 @@ class Irukandji(Sniper):
 
 class SupremacyBait(Sniper):
     def __init__(self):
-        self.reserves = 30
+        self.reserves = 23
         super().__init__(self.reserves)
         self.base_damage = self.sniper_140_damage
         self.time_between_shots = 25.5/60
         self.reload_time = 104/60
         self.mag_size_initial = 22
         self.mag_size_subsequent = 22
-        self.charge_time = 70/60
-
-    def printDps(self, buffPerc = 1.25, name="Supremacy (Rewind Bait) No Surges", damageTimes=[], placeInColumn=None):
+        self.reload_num_appear = 35.5/60
+    def printDps(self, buffPerc = 1.25, name="Supremacy (Rewind Bait) No Surges", damageTimes=[], placeInColumn=None, Primary_Damage=0, Special_Damage=0, Primary_To_Special=40/60, Special_To_Heavy=40/60, Heavy_To_Primary=40/60, charge_time=None):
         self._preparePrintDps_(name, damageTimes, placeInColumn)
-        self.time += self.charge_time
+        bait_tuple = [(Primary_To_Special, Primary_Damage * buffPerc),
+                        (Special_To_Heavy, Special_Damage * buffPerc), (Heavy_To_Primary, 0)]
 
-        def damagePerShot(shots_fired, shots_fired_this_mag):
-            if (shots_fired == 0 or shots_fired > 21):
+        def damagePerShot(is_proc_shot, bait_time, shots_fired, shots_fired_this_mag):
+            if (self.time < bait_time + 11 and not is_proc_shot):
+                return self.base_damage * buffPerc * self.bait_damage_buff
+            else:
                 return self.base_damage * buffPerc
-            return self.base_damage * buffPerc * self.bait_damage_buff
-        self.processSimpleDamageLoop(self.mag_size_initial, self.mag_size_subsequent,
-                                     self.time_between_shots, self.reload_time, damagePerShot)
+        self.processBaitDamageLoop(bait_tuple, self.mag_size_initial, self.mag_size_subsequent,
+                                     self.time_between_shots, self.reload_time, damagePerShot, 11)
         print(self.damage_times)
         return self.excel.closeExcel(self.damage_times)
 
 
 class SupremacyTremors(Sniper):
     def __init__(self):
-        self.reserves = 30
+        self.reserves = 23
         super().__init__(self.reserves)
         self.base_damage = self.sniper_140_damage
         self.time_between_shots = 25.5/60
@@ -192,7 +194,7 @@ class SupremacyTremors(Sniper):
 
 class SupremacyFTTC(Sniper):
     def __init__(self):
-        self.reserves = 30
+        self.reserves = 23
         super().__init__(self.reserves)
         self.base_damage = self.sniper_140_damage
         self.time_between_shots = 25.5/60
@@ -219,7 +221,7 @@ class SupremacyFTTC(Sniper):
 
 class NaeemsLance(Sniper):
     def __init__(self):
-        self.reserves = 30
+        self.reserves = 23
         super().__init__(self.reserves)
         self.base_damage = self.sniper_140_damage * self.surgex3_damage_buff
         self.time_between_shots = 25.5/60
@@ -245,7 +247,7 @@ class NaeemsLance(Sniper):
 #####################################################################################################################################
 class Fugue(Sniper):
     def __init__(self):
-        self.reserves = 23
+        self.reserves = 19
         super().__init__(self.reserves)
         self.base_damage = self.sniper_90_damage * self.surgex3_damage_buff * self.firing_line_damage_buff
         self.time_between_shots = 40/60
@@ -262,6 +264,25 @@ class Fugue(Sniper):
             self.mag_size_initial, self.mag_size_subsequent, damagePerShot, shots_to_refund=4)
         print(self.damage_times)
         return self.excel.closeExcel(self.damage_times)
+class EmbracedIdentity(Sniper):
+    def __init__(self):
+        self.reserves = 19
+        super().__init__(self.reserves)
+        self.base_damage = self.sniper_90_damage * self.surgex3_damage_buff
+        self.time_between_shots = 40/60
+        self.reload_time = 123/60
+        self.mag_size_initial = self.reserves
+        self.mag_size_subsequent = self.reserves
+
+    def printDps(self, buffPerc = 1.25, name="Embraced Identity (Rewind FTTC)", damageTimes=[], placeInColumn=None):
+        self._preparePrintDps_(name, damageTimes, placeInColumn)
+
+        def damagePerShot(shots_fired, shots_fired_this_mag):
+            return self.base_damage * buffPerc
+        self.processFTTCoTTLoop(
+            self.mag_size_initial, self.mag_size_subsequent, damagePerShot, shots_to_refund=4)
+        print(self.damage_times)
+        return self.excel.closeExcel(self.damage_times)
 #####################################################################################################################################
 
 
@@ -269,7 +290,7 @@ class Fugue(Sniper):
 #####################################################################################################################################
 class Succession(Sniper):
     def __init__(self):
-        self.reserves = 20
+        self.reserves = 17
         super().__init__(self.reserves)
         self.time_between_shots = 50/60
         self.reload_time = 119/60
@@ -286,19 +307,40 @@ class Succession(Sniper):
                                      self.time_between_shots, self.reload_time, damagePerShot)
         print(self.damage_times)
         return self.excel.closeExcel(self.damage_times)
+class CriticalAnomoly(Sniper):
+    def __init__(self):
+        self.reserves = 17
+        super().__init__(self.reserves)
+        self.time_between_shots = 50/60
+        self.reload_time = 119/60
+        self.mag_size_initial = self.reserves
+        self.mag_size_subsequent = self.reserves
+        self.base_damage = self.sniper_72_damage * self.surgex3_damage_buff
+
+    def printDps(self, buffPerc = 1.25, name="Critical Anomoly (Rewind FTTC)", damageTimes=[], placeInColumn=None):
+        self._preparePrintDps_(name, damageTimes, placeInColumn)
+
+        def damagePerShot(shots_fired, shots_fired_this_mag):
+            return self.base_damage * buffPerc
+        self.processFTTCoTTLoop(
+            self.mag_size_initial, self.mag_size_subsequent, damagePerShot, shots_to_refund=4)
+        print(self.damage_times)
+        return self.excel.closeExcel(self.damage_times)
 #####################################################################################################################################
 
 #Exotics
 #####################################################################################################################################
 class Izi(Sniper):
-    def __init__(self, reserves=21):
+    def __init__(self, reserves=19):
         self.reserves = reserves
         super().__init__(self.reserves)
         self.health_bar_damage = 1.15
         self.damage_4x = self.izi_damage_4x * self.health_bar_damage * self.surgex3_damage_buff
         self.damage_3x = self.izi_damage_3x * self.health_bar_damage * self.surgex3_damage_buff
+        self.damage_2x = self.izi_damage_2x * self.health_bar_damage * self.surgex3_damage_buff
         self.num_4x = ((reserves - 1) // 4) + 1
         self.num_3x = ((reserves-1) % 4)//3
+        self.num_2x = ((reserves-1) % 4)//2
         self.reload_shot_time = 210/60
 
     def printDps(self, buffPerc = 1.25, name="Izanagi", damageTimes=[], placeInColumn=None):
@@ -344,7 +386,7 @@ class Whisper(Sniper):
 
 class DARCI(Sniper):
     def __init__(self):
-        self.reserves = 32
+        self.reserves = 29
         super().__init__(self.reserves)
         self.base_damage = self.darci_damage * self.surgex3_damage_buff
         self.charge_time = 26/60
@@ -365,7 +407,7 @@ class DARCI(Sniper):
         return self.excel.closeExcel(self.damage_times)
 class StillHunt(Sniper):
     def __init__(self):
-        self.reserves = 22
+        self.reserves = 21
         super().__init__(self.reserves)
         self.base_damage = self.sniper_90_damage * self.surgex3_damage_buff
         self.nighthawk_damage = self.still_hunt_nighthawk_damage * self.surgex3_damage_buff 
@@ -389,6 +431,7 @@ class StillHunt(Sniper):
             self.damage_done += self.nighthawk_damage * buffPerc
             self.damage_times.append(self.update(self.time, self.damage_done, shots_fired, mag))    
             self.time += self.gg_to_shot
+            shots_fired += 1
             mag_size = 5
         gg_progress = 0
         while shots_fired < self.reserves and self.time < 100:
@@ -439,6 +482,7 @@ class StillHunt(Sniper):
             self.damage_times.append(self.update(self.time, self.damage_done, shots_fired, mag)) 
             self.time += self.gg_to_shot
             mag_size = 3
+            shots_fired += 3
         gg_progress = 0
         while shots_fired < self.reserves and self.time < 100:
             shots_fired_this_mag = 0

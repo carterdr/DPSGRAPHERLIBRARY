@@ -22,7 +22,7 @@ class Shotgun(Weapon.Weapon):
 #####################################################################################################################################
 class Rapid(Shotgun):
     def __init__(self):
-        self.reserves = 25
+        self.reserves = 28
         super().__init__(self.reserves)
         self.time_between_shots = 26/60  # initial shot
         self.reload_time = 41/60  # reload_shot time
@@ -54,7 +54,7 @@ class Rapid(Shotgun):
 #####################################################################################################################################
 class Lightweight(Shotgun):
     def __init__(self):
-        self.reserves = 15
+        self.reserves = 18
         super().__init__(self.reserves)
         self.time_between_shots = 41/60
         self.reload_time = 52/60
@@ -86,7 +86,7 @@ class Lightweight(Shotgun):
 #####################################################################################################################################
 class Aggressive(Shotgun):
     def __init__(self):
-        self.reserves = 18
+        self.reserves = 21
         super().__init__(self.reserves)
         self.time_between_shots = 1
         self.reload_time = 1
@@ -120,7 +120,7 @@ class Aggressive(Shotgun):
 #####################################################################################################################################
 class FILO(Shotgun):
     def __init__(self):
-        self.reserves = 16
+        self.reserves = 19
         super().__init__(self.reserves)
         self.time_between_shots = 40/60
         self.reload_time = 50/60
@@ -140,7 +140,7 @@ class FILO(Shotgun):
 
 class Fortismo(Shotgun):
     def __init__(self, damage_multiplier):
-        self.reserves = 17
+        self.reserves = 19
         super().__init__(self.reserves)
         self.time_between_shots = 54/60
         self.reload_time = 3
@@ -171,7 +171,7 @@ class Fortismo(Shotgun):
     
 class Heritage(Shotgun):
     def __init__(self):
-        self.reserves = 17
+        self.reserves = 20
         super().__init__(self.reserves)
         self.time_between_shots = 40/60
         self.reload_time = 50/60 #reload shot
@@ -193,7 +193,7 @@ class Heritage(Shotgun):
     
 class Nessas(Shotgun):
     def __init__(self):
-        self.reserves = 17
+        self.reserves = 20
         super().__init__(self.reserves)
         self.time_between_shots = 40/60
         self.reload_time = 50/60 #reload shot
@@ -219,7 +219,7 @@ class Nessas(Shotgun):
 #####################################################################################################################################
 class Acrius(Shotgun):
     def __init__(self, melee_shot_time=101/60, shot_melee_shot=104/60):
-        self.reserves = 16
+        self.reserves = 18
         super().__init__(self.reserves)
         self.melee_shot_time = melee_shot_time
         self.shot_melee_shot = shot_melee_shot
@@ -249,7 +249,7 @@ class Acrius(Shotgun):
 
 class FourthHorseMan(Shotgun):
     def __init__(self):
-        self.reserves = 16
+        self.reserves = 18
         super().__init__(self.reserves)
         self.mag_size_initial = 5
         self.mag_size_subsequent = 5

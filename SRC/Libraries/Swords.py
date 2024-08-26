@@ -19,7 +19,7 @@ class Sword(Weapon.Weapon):
         self.ergo_sum_light_attack = 8388
 class ErgoSum(Sword):
     def __init__(self):
-        self.reserves = 39
+        self.reserves = 48
         super().__init__(self.reserves)
         self.initial_delay = 27/60
         self.cast_to_swing = 70/60
@@ -98,7 +98,7 @@ class ErgoSum(Sword):
         return self.excel.closeExcel(self.damage_times)
 class Lament(Sword):
     def __init__(self):
-        self.reserves = 58
+        self.reserves = 65
         super().__init__(self.reserves)
         self.initial_delay = 22/60
         self.attack_sequence = [
@@ -139,7 +139,7 @@ class Lament(Sword):
 
 class Bequest(Sword):
     def __init__(self):
-        self.reserves = 61
+        self.reserves = 69
         super().__init__(self.reserves)
         self.initial_delay = 22/60
         self.time_between_shots = 28/60
@@ -166,7 +166,7 @@ class Bequest(Sword):
 
 class Gullotine(Sword):
     def __init__(self):
-        self.reserves = 61
+        self.reserves = 69
         super().__init__(self.reserves)
         self.initial_delay = 22/60
         self.time_between_shots = 28/60
@@ -198,7 +198,7 @@ class Gullotine(Sword):
 
 class GullotineFrenzyWhirlwind(Sword):
     def __init__(self):
-        self.reserves = 61
+        self.reserves = 69
         super().__init__(self.reserves)
         self.initial_delay = 22/60
         self.time_between_shots = 28/60
@@ -227,7 +227,7 @@ class GullotineFrenzyWhirlwind(Sword):
         return self.excel.closeExcel(self.damage_times)
 class GullotineVorpalWhirlwind(Sword):
     def __init__(self):
-        self.reserves = 61
+        self.reserves = 69
         super().__init__(self.reserves)
         self.initial_delay = 22/60
         self.time_between_shots = 28/60
@@ -258,7 +258,7 @@ class GullotineVorpalWhirlwind(Sword):
     
 class GullotineVorpalSurrounded(Sword):
     def __init__(self):
-        self.reserves = 61
+        self.reserves = 69
         super().__init__(self.reserves)
         self.initial_delay = 22/60
         self.time_between_shots = 28/60
@@ -278,7 +278,7 @@ class GullotineVorpalSurrounded(Sword):
         return self.excel.closeExcel(self.damage_times)
 class GullotineFrenzySurrounded(Sword):
     def __init__(self):
-        self.reserves = 61
+        self.reserves = 69
         super().__init__(self.reserves)
         self.initial_delay = 22/60
         self.time_between_shots = 28/60

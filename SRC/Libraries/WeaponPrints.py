@@ -32,20 +32,18 @@ def printCataclysmicHeavy():
     col = x.printDps(1.25, True, "Cataclysmic (FTTC Bait) + Primaries")
     x = Linears.Cataclysm().printDps(isBnS=False, name= "Cataclysmic (FTTC FF)")
 def printColdComfortHeavy():
-    x = Rockets.ColdComfort(1, 7)
+    x = Rockets.ColdComfort(1, 8)
     x.printDps(1.25, True, "Cold Comfort")     
 
-    x = Rockets.ColdComfort(2, 7)
+    x = Rockets.ColdComfort(2, 8)
     x.printDps(1.25, True, "Cold Comfort")  
     
-    x = Rockets.ColdComfort(3, 7)
+    x = Rockets.ColdComfort(3, 8)
     x.printDps(1.25, True, "Cold Comfort")  
     
-    x = Rockets.ColdComfort(4, 7)
+    x = Rockets.ColdComfort(4, 8)
     x.printDps(1.25, True, "Cold Comfort")   
     
-    
-    Rockets.ColdComfort(4,7).printDps()
     Rockets.BipodColdComfort(7).printDps()
     Rockets.BipodColdComfort(8).printDps()
 def printColdComfortMulti():
@@ -55,7 +53,7 @@ def printColdComfortMulti():
     
     
     
-    x = Rockets.ColdComfort(2, 7)
+    x = Rockets.ColdComfort(2, 8)
     col = x.printDps(1.25, True, "Cold Comfort", [], None, Snipers.Irukandji().base_damage, 0, 41/60, 48/60, 57/60)
     a = Snipers.Irukandji()
     a.reserves-=1
@@ -64,7 +62,7 @@ def printColdComfortMulti():
     
     
     
-    x = Rockets.ColdComfort(2, 7)
+    x = Rockets.ColdComfort(2, 8)
     col = x.printDps(1.25, True, "Cold Comfort", [], None, FusionRifles.Riptide().base_damage, 0, 76/60, 50/60, 82/60, ct)
     a = FusionRifles.Riptide()
     a.reserves-=1
@@ -75,7 +73,7 @@ def printColdComfortMulti():
     
     
     
-    x = Rockets.ColdComfort(3, 7)
+    x = Rockets.ColdComfort(3, 8)
     col = x.printDps(1.25, True, "Cold Comfort", [], None, Snipers.Irukandji().base_damage, 0, 41/60, 48/60, 57/60)
     a = Snipers.Irukandji()
     a.reserves-=1
@@ -84,7 +82,7 @@ def printColdComfortMulti():
 
 
 
-    x = Rockets.ColdComfort(3, 7)
+    x = Rockets.ColdComfort(3, 8)
     col = x.printDps(1.25, True, "Cold Comfort", [], None, FusionRifles.Riptide().base_damage, 0, 76/60, 50/60, 82/60, ct)
     a = FusionRifles.Riptide()
     a.reserves-=1
@@ -93,51 +91,28 @@ def printColdComfortMulti():
 
 
 
-    x = Rockets.ColdComfort(4, 7)
+    x = Rockets.ColdComfort(4, 8)
     col = x.printDps(1.25, True, "Cold Comfort", [], None, Snipers.Irukandji().base_damage, 0, 41/60, 48/60, 57/60)
     a = Snipers.Irukandji()
     a.reserves-=1
     a.mag_size_initial -= 1    
     a.printDps(1.25, name="Irukandj (FTTC FL)", damageTimes=x.damage_times, placeInColumn=col)    
     
-    x = Rockets.ColdComfort(4, 7)
+    x = Rockets.ColdComfort(4, 8)
     col = x.printDps(1.25, True, "Cold Comfort", [], None, FusionRifles.Riptide().base_damage, 0, 76/60, 50/60, 82/60, ct)
     a = FusionRifles.Riptide()
     a.reserves-=1
     a.mag_size_initial -= 1
     a.printDps(1.25, "Riptide (Vorpal)", x.damage_times, col)   
     
-    #10 Res
-    x = Rockets.ColdComfort(2, 10)
-    col = x.printDps(1.25, True, "Cold Comfort", [], None, Snipers.Irukandji().base_damage, 0, 41/60, 48/60, 57/60)
-    a = Snipers.Irukandji()
-    a.reserves-=1
-    a.mag_size_initial -= 1    
-    a.printDps(1.25, name="Irukandj (FTTC FL)", damageTimes=x.damage_times, placeInColumn=col)    
-    
-    
-    x = Rockets.ColdComfort(3, 10)
-    col = x.printDps(1.25, True, "Cold Comfort", [], None, Snipers.Irukandji().base_damage, 0, 41/60, 48/60, 57/60)
-    a = Snipers.Irukandji()
-    a.reserves-=1
-    a.mag_size_initial -= 1    
-    a.printDps(1.25, name="Irukandj (FTTC FL)", damageTimes=x.damage_times, placeInColumn=col)  
-    
-    x = Rockets.ColdComfort(4, 10)
-    col = x.printDps(1.25, True, "Cold Comfort", [], None, Snipers.Irukandji().base_damage, 0, 41/60, 48/60, 57/60)
-    a = Snipers.Irukandji()
-    a.reserves-=1
-    a.mag_size_initial -= 1    
-    a.printDps(1.25, name="Irukandj (FTTC FL)", damageTimes=x.damage_times, placeInColumn=col)   
-    
     
     #EL
-    x = Rockets.ColdComfort(4, 7)
+    x = Rockets.ColdComfort(4, 8)
     col = x.printDps(1.25, False, "Cold Comfort")
     a = FusionRifles.Riptide()
     a.printDps(1.25, "Riptide (Vorpal)", x.damage_times, col)
     
-    x = Rockets.ColdComfort(4, 7)
+    x = Rockets.ColdComfort(4, 8)
     col = x.printDps(1.25, False, "a")
     a = Snipers.Irukandji()
     a.printDps(1.25, name="Irukandj (FTTC FL)", damageTimes=x.damage_times, placeInColumn=col) 
@@ -149,8 +124,6 @@ def printColdComfortMulti():
     a.printDps(1.25, name="Irukandj (FTTC FL)", damageTimes=x.damage_times, placeInColumn=col) 
 def printHotheadHeavy():
     Rockets.Hothead().printDps()
-    
-    Rockets.Hothead(10).printDps()
 
     Rockets.Hothead().printDps(isEL=True)
 def printHotheadMulti():
@@ -166,24 +139,17 @@ def printHotheadMulti():
     col = x.printDps(1.25 * 1.17 / 1.22)
     Snipers.SupremacyFTTC().printDps(1.25 * 1.1, damageTimes=x.damage_times, placeInColumn=col, name="Supremacy (Rewind FTTC) 1 Kinetic Surge")
 
-    
-    x = Rockets.Hothead(10)
-    col = x.printDps()
-    Snipers.CloudStrike().printDps(damageTimes=x.damage_times, placeInColumn=col)
-    
-    x = Rockets.Hothead(10)
-    col = x.printDps()
-    Snipers.SupremacyFTTC().printDps(damageTimes=x.damage_times, placeInColumn=col)
-    
-    x = Rockets.Hothead(10)
-    col = x.printDps(1.25 * 1.17 / 1.22)
-    Snipers.SupremacyFTTC().printDps(1.25 * 1.1, damageTimes=x.damage_times, placeInColumn=col, name="Supremacy (Rewind FTTC) 1 Kinetic Surge")
 def printCruxHeavy():
     Rockets.BipodCrux().printDps()
     
     Rockets.Crux().printDps()
-    Rockets.Crux(10).printDps()
-    Rockets.Crux(10,10,True).printDps()
+    Rockets.Crux().printDps(wolfpacks=False)
+    Rockets.Crux(8,8,True).printDps()
+    Rockets.Crux(8,8,True).printDps(wolfpacks=False)
+    Rockets.Crux(13,7,True).printDps()
+    Rockets.Crux(13,7,True).printDps(wolfpacks=False)
+    Rockets.Crux(13,10,True).printDps()
+    Rockets.Crux(13,10,True).printDps(wolfpacks=False)
 def printCruxMulti():
     x = Rockets.BipodCrux()
     col = x.printDps()
@@ -194,7 +160,11 @@ def printCruxMulti():
     x = Rockets.Crux()
     col = x.printDps()
     Snipers.CloudStrike().printDps(damageTimes=x.damage_times, placeInColumn=col)
-
+    
+    x = Rockets.Crux()
+    col = x.printDps(wolfpacks=False)
+    Snipers.CloudStrike().printDps(damageTimes=x.damage_times, placeInColumn=col)
+    
     x = Rockets.Crux()
     col = x.printDps()
     Snipers.SupremacyFTTC().printDps(damageTimes=x.damage_times, placeInColumn=col)
@@ -206,15 +176,19 @@ def printCruxMulti():
 
 
 
-    x = Rockets.Crux(10)
+    x = Rockets.Crux(8,8,True)
     col = x.printDps()
     Snipers.CloudStrike().printDps(damageTimes=x.damage_times, placeInColumn=col)
     
-    x = Rockets.Crux(10)
+    x = Rockets.Crux(8,8,True)
+    col = x.printDps(wolfpacks=False)
+    Snipers.CloudStrike().printDps(damageTimes=x.damage_times, placeInColumn=col)
+    
+    x = Rockets.Crux(8,8,True)
     col = x.printDps()
     Snipers.SupremacyFTTC().printDps(damageTimes=x.damage_times, placeInColumn=col)
     
-    x = Rockets.Crux(10)
+    x = Rockets.Crux(8,8,True)
     col = x.printDps(1.25 / 1.22 * 1.17)
     Snipers.SupremacyFTTC().printDps(1.1 * 1.25, name = "Supremacy (Rewind FTTC) 1 Kinetic Surge", damageTimes=x.damage_times, placeInColumn=col)
 
@@ -222,18 +196,44 @@ def printCruxMulti():
     
     
     
-    x = Rockets.Crux(10,10,True)
+    x = Rockets.Crux(13,7,True)
     col = x.printDps()
     Snipers.CloudStrike().printDps(damageTimes=x.damage_times, placeInColumn=col)
 
-    x = Rockets.Crux(10,10,True)
+    x = Rockets.Crux(13,7,True)
+    col = x.printDps(wolfpacks=False)
+    Snipers.CloudStrike().printDps(damageTimes=x.damage_times, placeInColumn=col)
+
+    x = Rockets.Crux(13,7,True)
     col = x.printDps()
     Snipers.SupremacyFTTC().printDps(damageTimes=x.damage_times, placeInColumn=col)
 
 
-    x = Rockets.Crux(10,10,True)
+    x = Rockets.Crux(13,7,True)
     col = x.printDps(1.25 / 1.22 * 1.17)
-    Snipers.SupremacyFTTC().printDps(1.1 * 1.25, name = "Supremacy (Rewind FTTC) 1 Kinetic Surge", damageTimes=x.damage_times, placeInColumn=col)   
+    Snipers.SupremacyFTTC().printDps(1.1 * 1.25, name = "Supremacy (Rewind FTTC) 1 Kinetic Surge", damageTimes=x.damage_times, placeInColumn=col) 
+    
+    
+    x = Rockets.Crux(13,10,True)
+    col = x.printDps(name= "Crux (Prepped Clown 10 EL 13 Reserves")
+    Snipers.CloudStrike().printDps(damageTimes=x.damage_times, placeInColumn=col)
+
+    x = Rockets.Crux(13,10,True)
+    col = x.printDps(name= "Crux (Prepped Clown 10 EL 13 Reserves")
+    Snipers.SupremacyFTTC().printDps(damageTimes=x.damage_times, placeInColumn=col)\
+        
+    x = Rockets.Crux(13,10,True)
+    col = x.printDps(1.25 / 1.22 * 1.17, name= "Crux (Prepped Clown 10 EL 13 Reserves)")
+    Snipers.SupremacyFTTC().printDps(1.1 * 1.25, name = "Supremacy (Rewind FTTC) 1 Kinetic Surge", damageTimes=x.damage_times, placeInColumn=col)     
+
+    Rockets.CruxCloudRotation().printDps()
+    Rockets.CruxCloudRotation().printDps(wolfpacks=False)
+    
+    Rockets.CruxCloudRotation(13).printDps()
+    Rockets.CruxCloudRotation(13).printDps(wolfpacks=False)
+    Rockets.CruxCloudRotation(13, 10).printDps()
+    Rockets.CruxCloudRotation(13, 10).printDps(wolfpacks=False)
+    
 def printScintillationHeavy():
     x = Linears.Scintillation()
     col = x.printDps(1.25, True, "Scintillation (Rewind Bait) + Primaries")
@@ -373,7 +373,8 @@ def printSpecialWeapons():
     
     Linears.Arbalest().printDps()
     FusionRifles.Cartesian().printDps()
-
+    Snipers.CriticalAnomoly().printDps()
+    
     Snipers.CloudStrike().printDps()
     Snipers.CloudStrike().printDps(1.25/1.22, name="Cloudstrike (No Surges)")
     
@@ -383,6 +384,8 @@ def printSpecialWeapons():
     TraceRifles.Divinity().printDps(no_reload=True)
 
     GrenadeLaunchers.DoubleFire().printDps()
+    
+    Snipers.EmbracedIdentity().printDps()
     
     FusionRifles.Eremite().printDps()
     
@@ -478,7 +481,7 @@ def printHeavies():
     
     printCataclysmicHeavy()
     
-    GrenadeLaunchers.Cataphract().printDps(mag_size=7)
+    GrenadeLaunchers.Cataphract().printDps(mag_size=8, isSpike=False)
     GrenadeLaunchers.Cataphract().printDps()
     GrenadeLaunchers.Cataphract().printDps(isSpike=False,mag_size=24)
 
@@ -516,11 +519,11 @@ def printHeavies():
     MachineGuns.GrandOverture().printDps(preLoaded=True)
 
     Rockets.Ghally().printDps()
-    Rockets.Ghally(12).printDps()
     
     printHotheadHeavy()
     
     Swords.Lament().printDps()
+    Bow.LeviathansBreath().printDps()
     
     printMicrochasmHeavy()
     
@@ -581,13 +584,9 @@ def printApexMulti():
     Rockets.BaitApexSupremRotation().printDps(oneKineticSurge=False)
     Rockets.BaitApexSupremRotation().printDps(oneKineticSurge=True)
 
-    Rockets.BaitApexSupremRotation(9).printDps(oneKineticSurge=False)
-    Rockets.BaitApexSupremRotation(9).printDps(oneKineticSurge=True)
     
     Rockets.ELApexSupremRotation().printDps(oneKineticSurge=False)
     Rockets.ELApexSupremRotation().printDps(oneKineticSurge=True)
-    Rockets.ELApexSupremRotation(9).printDps(oneKineticSurge=True)
-    Rockets.ELApexSupremRotation(9,9).printDps(oneKineticSurge=True)
 
     x = Rockets.BipodApex()
     col = x.printDps()
@@ -602,8 +601,16 @@ def printApexMulti():
     FusionRifles.Merciless().printDps(damageTimes=x.damage_times, placeInColumn=col)
     
 def printCataphractMulti():
-    GrenadeLaunchers.Cataphract().printDps(mag_size=7, isScatterSignal=True)
+    GrenadeLaunchers.Cataphract().printDps(mag_size=8, isEuphony=True,isEvolution=False)
+    GrenadeLaunchers.Cataphract().printDps(mag_size=8, isEuphony=True, isEvolution=True)
+    GrenadeLaunchers.Cataphract().printDps(mag_size=8, isScatterSignal=True)
+    
+    GrenadeLaunchers.Cataphract().printDps(isEuphony=True,isEvolution=False)
+    GrenadeLaunchers.Cataphract().printDps(isEuphony=True, isEvolution=True)
     GrenadeLaunchers.Cataphract().printDps(isScatterSignal=True)
+    
+    GrenadeLaunchers.Cataphract().printDps(isSpike=False,mag_size=24,isEuphony=True,isEvolution=False)
+    GrenadeLaunchers.Cataphract().printDps(isSpike=False,mag_size=24,isEuphony=True, isEvolution=True)
     GrenadeLaunchers.Cataphract().printDps(isSpike=False,mag_size=24,isScatterSignal=True)
 def printEdgeTransitMulti():
 
@@ -651,31 +658,27 @@ def printGjallyMulti():
     Rockets.GjallyTremors().printDps(oneKineticSurge=False)
     Rockets.GjallyTremors().printDps(oneKineticSurge=True)
 def printIziRotMulti():
-    Rockets.IziRocket(rocket_reserves=7,oneKineticSurge=False).printDps()
-    Rockets.IziRocket(rocket_reserves=7,oneKineticSurge=True).printDps()
-    Rockets.IziRocket(rocket_reserves=9,oneKineticSurge=False).printDps()
-    Rockets.IziRocket(rocket_reserves=9,oneKineticSurge=True).printDps()
+    Rockets.IziRocket(rocket_reserves=8,oneKineticSurge=False).printDps()
+    Rockets.IziRocket(rocket_reserves=8,oneKineticSurge=True).printDps()
     
-    Rockets.IziELRocket(rocket_reserves=7,oneKineticSurge=False).printDps()
-    Rockets.IziELRocket(rocket_reserves=7,oneKineticSurge=True).printDps()
-    Rockets.IziELRocket(rocket_reserves=9,oneKineticSurge=False).printDps()
-    Rockets.IziELRocket(rocket_reserves=9,oneKineticSurge=True).printDps()
+    Rockets.IziELRocket(rocket_reserves=8,oneKineticSurge=False).printDps()
+    Rockets.IziELRocket(rocket_reserves=8,oneKineticSurge=True).printDps()
 def printMicrochasmMulti():
     x = TraceRifles.Microchasm()
     col = x.printDps()
-    Snipers.SupremacyFTTC().printDps(1.25 * 1.22,damageTimes=x.damage_times,placeInColumn=col)
+    Snipers.SupremacyFTTC().printDps(1.25 * 1.22,damageTimes=x.damage_times,placeInColumn=col, name="Supremacy (Rewind FTTC)")
     
     x = TraceRifles.Microchasm()
     col = x.printDps(super_buff=False,cenotaph=True)
-    Snipers.SupremacyFTTC().printDps(1.25 * 1.22,damageTimes=x.damage_times,placeInColumn=col)
+    Snipers.SupremacyFTTC().printDps(1.25 * 1.22,damageTimes=x.damage_times,placeInColumn=col, name="Supremacy (Rewind FTTC)")
     
     x = TraceRifles.Microchasm()
     col = x.printDps(super_buff=True,cenotaph=False)
-    Snipers.SupremacyFTTC().printDps(1.25 * 1.22,damageTimes=x.damage_times,placeInColumn=col)
+    Snipers.SupremacyFTTC().printDps(1.25 * 1.22,damageTimes=x.damage_times,placeInColumn=col, name="Supremacy (Rewind FTTC)")
         
     x = TraceRifles.Microchasm()
     col = x.printDps(super_buff=True,cenotaph=True)
-    Snipers.SupremacyFTTC().printDps(1.25 * 1.22,damageTimes=x.damage_times,placeInColumn=col)
+    Snipers.SupremacyFTTC().printDps(1.25 * 1.22,damageTimes=x.damage_times,placeInColumn=col, name="Supremacy (Rewind FTTC)")
 def printMultiWeapons():
     
     x = FusionRifles.OneThousandVoices()
@@ -806,22 +809,10 @@ def printAbilities():
     Abilities.SilenceAndSquall().printDps(isStarEaters=True, isDuraceFissures=True, isRuin=False)
     Abilities.SilenceAndSquall().printDps(isStarEaters=True, isDuraceFissures=False, isRuin=True)
 def printStillHuntApex():
-    Rockets.StillHuntApex(22, 7, 7).printDPSNoHolster(wolfpack=True, prepped=False)
-    Rockets.StillHuntApex(22, 7, 7).printDPSNoHolster(wolfpack=True, prepped=True)
+    Rockets.StillHuntApex(21, 8, 7).printDPSNoHolster(wolfpack=True, prepped=False)
+    Rockets.StillHuntApex(21, 8, 7).printDPSNoHolster(wolfpack=True, prepped=True)
 
 
-    Rockets.StillHuntApex(24, 9, 7).printDPSNoHolster(wolfpack=True, prepped=False)
-    Rockets.StillHuntApex(24, 9, 7).printDPSNoHolster(wolfpack=True, prepped=True)
-
-
-
-    Rockets.StillHuntApex(22, 7, 7).printDpsHolster(wolfpack=True, prepped=False)
-
-    Rockets.StillHuntApex(22, 7, 7).printDpsHolster(wolfpack=True, prepped=True)
-    Rockets.StillHuntApex(22, 7, 7).printDpsHolster(wolfpack=False, prepped=True)
-
-    Rockets.StillHuntApex(24, 9, 7).printDpsHolster(wolfpack=True, prepped=False)
-
-    Rockets.StillHuntApex(24, 9, 7).printDpsHolster(wolfpack=True, prepped=True)
-
-    Rockets.StillHuntApex(24, 9, 9).printDpsHolster(wolfpack=True, prepped=True)
+    Rockets.StillHuntApex(21, 8, 7).printDpsHolster(wolfpack=True, prepped=False)
+    Rockets.StillHuntApex(21, 8, 7).printDpsHolster(wolfpack=True, prepped=True)
+    Rockets.StillHuntApex(21, 8, 7).printDpsHolster(wolfpack=False, prepped=True)

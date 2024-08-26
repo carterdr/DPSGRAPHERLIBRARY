@@ -297,8 +297,8 @@ class SilenceAndSquall(Ability):
         return col
 class TwlightArsenal(Ability):
     def __init__(self):
-        self.damage_stareaters = 423501 * 1.675 / Weapon.story_mission_to_raid_scalar
-        self.damage_base = 423501 / Weapon.story_mission_to_raid_scalar
+        self.damage_stareaters = 423501 * 1.675 / Weapon.story_mission_to_raid_scalar * 1.2
+        self.damage_base = 423501 / Weapon.story_mission_to_raid_scalar * 1.2
         self.duration = 228/60
         super().__init__()
 

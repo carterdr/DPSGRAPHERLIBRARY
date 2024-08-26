@@ -35,14 +35,14 @@ class Linear(Weapon.Weapon):
 
 class Cataclysm(Linear):
     def __init__(self):
-        self.reserves = 32
+        self.reserves = 37
         super().__init__(self.reserves)
         self.charge_time = .5
         self.time_between_shots = 63/60
         self.reload_time = 1.52
         self.mag_size_initial = 10
         self.mag_size_subsequent = 10
-        self.bNs_reload_time_lunas = 47/60
+        self.reload_num_appear = 50/60
         self.base_damage = self.precision_ctmw_damage * self.surgex3_damage_buff
         
         
@@ -58,7 +58,7 @@ class Cataclysm(Linear):
                 else:
                     return self.base_damage * buffPerc
             self.processBaitDamageLoop(bait_tuple, self.mag_size_initial, self.mag_size_subsequent,
-                                       self.time_between_shots, self.bNs_reload_time_lunas, damagePerShot)
+                                       self.time_between_shots, self.reload_time, damagePerShot)
             return self.excel.closeExcel(self.damage_times)
         else:
             name = "Cataclysm (FTTC FF)"
@@ -77,7 +77,7 @@ class Cataclysm(Linear):
 class Taipan(Linear):
     def __init__(self, isaccelerated = True, ctmw = True):
         if (isaccelerated):
-            self.reserves = 20
+            self.reserves = 23
             self.mag_size_initial = 6
             super().__init__(self.reserves)
             if ctmw:
@@ -91,7 +91,7 @@ class Taipan(Linear):
                 self.time_between_shots = 64/60
                 self.name = "Taipan (TT FL Accel)"
         else:
-            self.reserves = 19
+            self.reserves = 21
             self.mag_size_initial = 7
             super().__init__(self.reserves)
             if ctmw: 
@@ -126,7 +126,7 @@ class Taipan(Linear):
 class Reeds(Linear):
     def __init__(self, isaccelerated = True, ctmw = True):
         if (isaccelerated):
-            self.reserves = 21
+            self.reserves = 24
             self.mag_size_initial = 5
             super().__init__(self.reserves)
             if ctmw:
@@ -140,7 +140,7 @@ class Reeds(Linear):
                 self.time_between_shots = 64/60
                 self.name = "Reeds (TT FL Accel)"
         else:
-            self.reserves = 19
+            self.reserves = 22
             self.mag_size_initial = 7
             super().__init__(self.reserves)
             if ctmw: 
@@ -177,7 +177,7 @@ class Reeds(Linear):
 #####################################################################################################################################
 class Briars(Linear):
     def __init__(self):
-        self.reserves = 19
+        self.reserves = 21
         super().__init__(self.reserves)
         self.charge_time = 28/60
         self.time_between_shots = 86/60
@@ -201,7 +201,7 @@ class Briars(Linear):
     
 class DoomedPartitioner(Linear):
     def __init__(self, mag_start = 14):
-        self.reserves = 19
+        self.reserves = 21
         super().__init__(self.reserves)
         self.charge_time = 28/60
         self.time_between_shots = 86/60
@@ -232,7 +232,7 @@ class DoomedPartitioner(Linear):
         return self.excel.closeExcel(self.damage_times)
 class Scintillation(Linear):
     def __init__(self):
-        self.reserves = 20
+        self.reserves = 23
         super().__init__(self.reserves)
         self.charge_time = 26/60
         self.time_between_shots = 82/60
@@ -288,7 +288,7 @@ class Scintillation(Linear):
             return col
 class StormChaser(Linear):
     def __init__(self):
-        self.reserves = 19
+        self.reserves = 21
         super().__init__(self.reserves)
         self.charge_time = 28/60
         self.time_between_shots = 86/60
@@ -316,7 +316,7 @@ class StormChaser(Linear):
 #####################################################################################################################################
 class Arbalest(Linear):
     def __init__(self):
-        self.reserves = 20
+        self.reserves = 22
         super().__init__(self.reserves)
         self.charge_time = .533
         self.time_between_shots = 63/60
@@ -341,7 +341,7 @@ class Arbalest(Linear):
     
 class Lorentz(Linear):
     def __init__(self):
-        self.reserves = 20
+        self.reserves = 22
         super().__init__(self.reserves)
         self.charge_time = 33/60
         self.time_between_shots = 64/60
@@ -365,7 +365,7 @@ class Lorentz(Linear):
         return self.excel.closeExcel(self.damage_times)
 class Euphony(Linear):
     def __init__(self):
-        self.reserves = 20
+        self.reserves = 23
         super().__init__(self.reserves)
         self.charge_time = 30/60
         self.time_between_shots = 88/60
@@ -503,7 +503,7 @@ class Euphony(Linear):
 #####################################################################################################################################   
 class QueenBreaker(Linear):
     def __init__(self):
-        self.reserves = 24
+        self.reserves = 27
         super().__init__(self.reserves)
         self.charge_time_short = 21/60
         self.charge_time_long = 39/60
@@ -539,7 +539,7 @@ class QueenBreaker(Linear):
     
 class Sleeper(Linear):
     def __init__(self):
-        self.reserves = 13 #16
+        self.reserves = 16 #16
         super().__init__(self.reserves)
         self.charge_time = 33/60
         self.time_between_shots = 78/60
