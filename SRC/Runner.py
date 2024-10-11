@@ -4,10 +4,7 @@ from Libraries import Excel as ExcelModule
 import matplotlib.pyplot as plt
 ExcelModule.Excel.clearExcel()
 ExcelModule.Excel.createTime()
-Snipers.CloudStrike().printDps()
-Linears.Euphony().printDps(evolution=True)
-Linears.Euphony().printDps(evolution=False)
-
+GrenadeLaunchers.Prospector().printDps()
 ExcelModule.Excel.displayData()
 
 

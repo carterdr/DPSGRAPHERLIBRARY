@@ -23,7 +23,7 @@ class Sniper(Weapon.Weapon):
 #####################################################################################################################################
 class CloudStrike(Sniper):
     def __init__(self):
-        self.reserves = 41  # 32
+        self.reserves = 36  # 32
         super().__init__(self.reserves)
         self.mag_size = 7
         self.base_damage = self.sniper_140_damage * self.surgex3_damage_buff #bug damage = 1.03
@@ -56,7 +56,7 @@ class CloudStrike(Sniper):
 
 class FathersSin(Sniper):
     def __init__(self):
-        self.reserves = 25
+        self.reserves = 33
         super().__init__(self.reserves)
         self.base_damage = self.sniper_140_damage * self.surgex3_damage_buff
         self.time_between_shots = 25.5/60
@@ -84,7 +84,7 @@ class FathersSin(Sniper):
 
 class Ikelos(Sniper):
     def __init__(self):
-        self.reserves = 24  # 43
+        self.reserves = 33  # 43
         super().__init__(self.reserves)
         self.base_damage = self.sniper_140_damage * self.surgex3_damage_buff 
         self.time_between_shots = 25.5/60
@@ -114,7 +114,7 @@ class Ikelos(Sniper):
 
 class Irukandji(Sniper):
     def __init__(self):
-        self.reserves = 24 
+        self.reserves = 33
         super().__init__(self.reserves)
         self.base_damage = self.sniper_140_damage * self.surgex3_damage_buff * self.firing_line_damage_buff
         self.time_between_shots = 25.5/60
@@ -140,7 +140,7 @@ class Irukandji(Sniper):
 
 class SupremacyBait(Sniper):
     def __init__(self):
-        self.reserves = 23
+        self.reserves = 32
         super().__init__(self.reserves)
         self.base_damage = self.sniper_140_damage
         self.time_between_shots = 25.5/60
@@ -166,7 +166,7 @@ class SupremacyBait(Sniper):
 
 class SupremacyTremors(Sniper):
     def __init__(self):
-        self.reserves = 23
+        self.reserves = 32
         super().__init__(self.reserves)
         self.base_damage = self.sniper_140_damage
         self.time_between_shots = 25.5/60
@@ -194,7 +194,7 @@ class SupremacyTremors(Sniper):
 
 class SupremacyFTTC(Sniper):
     def __init__(self):
-        self.reserves = 23
+        self.reserves = 32
         super().__init__(self.reserves)
         self.base_damage = self.sniper_140_damage
         self.time_between_shots = 25.5/60
@@ -221,7 +221,7 @@ class SupremacyFTTC(Sniper):
 
 class NaeemsLance(Sniper):
     def __init__(self):
-        self.reserves = 23
+        self.reserves = 32
         super().__init__(self.reserves)
         self.base_damage = self.sniper_140_damage * self.surgex3_damage_buff
         self.time_between_shots = 25.5/60
@@ -247,7 +247,7 @@ class NaeemsLance(Sniper):
 #####################################################################################################################################
 class Fugue(Sniper):
     def __init__(self):
-        self.reserves = 19
+        self.reserves = 25
         super().__init__(self.reserves)
         self.base_damage = self.sniper_90_damage * self.surgex3_damage_buff * self.firing_line_damage_buff
         self.time_between_shots = 40/60
@@ -266,7 +266,7 @@ class Fugue(Sniper):
         return self.excel.closeExcel(self.damage_times)
 class EmbracedIdentity(Sniper):
     def __init__(self):
-        self.reserves = 19
+        self.reserves = 25
         super().__init__(self.reserves)
         self.base_damage = self.sniper_90_damage * self.surgex3_damage_buff
         self.time_between_shots = 40/60
@@ -290,7 +290,7 @@ class EmbracedIdentity(Sniper):
 #####################################################################################################################################
 class Succession(Sniper):
     def __init__(self):
-        self.reserves = 17
+        self.reserves = 22
         super().__init__(self.reserves)
         self.time_between_shots = 50/60
         self.reload_time = 119/60
@@ -309,7 +309,7 @@ class Succession(Sniper):
         return self.excel.closeExcel(self.damage_times)
 class CriticalAnomoly(Sniper):
     def __init__(self):
-        self.reserves = 17
+        self.reserves = 22
         super().__init__(self.reserves)
         self.time_between_shots = 50/60
         self.reload_time = 119/60
@@ -331,7 +331,7 @@ class CriticalAnomoly(Sniper):
 #Exotics
 #####################################################################################################################################
 class Izi(Sniper):
-    def __init__(self, reserves=19):
+    def __init__(self, reserves=23):
         self.reserves = reserves
         super().__init__(self.reserves)
         self.health_bar_damage = 1.15
@@ -365,7 +365,7 @@ class Izi(Sniper):
 
 class Whisper(Sniper):
     def __init__(self):
-        self.reserves = 29
+        self.reserves = 31
         super().__init__(self.reserves)
         self.base_damage = self.whisper_damage * self.surgex3_damage_buff 
         self.charge_time = 74/60
@@ -386,7 +386,7 @@ class Whisper(Sniper):
 
 class DARCI(Sniper):
     def __init__(self):
-        self.reserves = 29
+        self.reserves = 35
         super().__init__(self.reserves)
         self.base_damage = self.darci_damage * self.surgex3_damage_buff
         self.charge_time = 26/60
@@ -407,7 +407,7 @@ class DARCI(Sniper):
         return self.excel.closeExcel(self.damage_times)
 class StillHunt(Sniper):
     def __init__(self):
-        self.reserves = 21
+        self.reserves = 24
         super().__init__(self.reserves)
         self.base_damage = self.sniper_90_damage * self.surgex3_damage_buff
         self.nighthawk_damage = self.still_hunt_nighthawk_damage * self.surgex3_damage_buff 

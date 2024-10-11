@@ -17,13 +17,15 @@ class GrenadeLauncher(Weapon.Weapon):
         self.anarch_tick = 2*3128
         self.anarch_initial = 2*493
         self.anarch_end =  2*2224
-        self.parasite_damage = (45977 + 12678)
-        self.prospector_damage = (795 + 15179 + 3693 + 573*5)
+        self.parasite_damage = (43779 + 15942)
+        self.prospector_damage = (15358 + 4608 + (3971 + 159) * 3)
         #specless
-        self.adaptive_spike_damage = (6186 + 18139)
-        self.adaptive_el_spike_damage = (32695 + 3468)
-        self.adaptive_damage = (18139 + 5499)
-        self.adaptive_el_damage = (32695 + 3082)
+        self.adaptive_spike_damage = (7093 + 17274)
+        self.adaptive_el_spike_damage = (31132 + 4360)
+        self.adaptive_damage = (17274 + 6305)
+        self.adaptive_el_damage = (31132 + 3876)
+        self.rapid_gl_spike_damage = (13670 + 7285)
+        self.rapid_gl_damage = (13670 + 6476)
         
 #Specials        
 #####################################################################################################################################
@@ -230,6 +232,39 @@ class Interferance(GrenadeLauncher):
                                      self.time_between_shots, self.reload_time, damagePerShot)
         print(self.damage_times)
         return self.excel.closeExcel(self.damage_times)
+class Koraxis(GrenadeLauncher):
+    def __init__(self):
+        self.reserves = 33
+        super().__init__(self.reserves)
+        self.mag_size_initial = 7
+        self.mag_size_subsequent = 7
+        self.base_damage = self.rapid_gl_spike_damage * self.surgex3_damage_buff
+        self.time_between_shots = 30/60
+        self.reload_time = 123/60
+
+    def printDps(self, buffPerc = 1.25, isSpike = True, isEnvious = True, mag_size = 16, isFrenzy = False, isSurr = True, name="Koraxis Distress", damageTimes=[], placeInColumn=None):
+        spike_text = " Spike" if isSpike else ""
+        damage_buff = 1
+        if isFrenzy:
+            name += f" ({mag_size} Mag Frenzy{spike_text})"
+            damage_buff = self.vorpal_damage_buff
+        elif isSurr:
+            name += f" ({mag_size} Mag Surrounded{spike_text})"
+            damage_buff = self.surrounded_enhanced_damage_buff
+        self._preparePrintDps_(name, damageTimes, placeInColumn)
+        
+        if not isSpike:
+            self.base_damage = self.rapid_gl_damage * self.surgex3_damage_buff
+            self.mag_size_subsequent = 8
+            self.mag_size_initial = 8
+            self.reserves = 36 
+        if isEnvious:
+            self.mag_size_initial = mag_size
+        def damagePerShot(shots_fired, shots_fired_this_mag):
+            return self.base_damage * buffPerc * damage_buff
+        self.processSimpleDamageLoop(self.mag_size_initial, self.mag_size_subsequent,
+                                     self.time_between_shots, self.reload_time, damagePerShot)
+        return self.excel.closeExcel(self.damage_times)
 
 
 class Regnant(GrenadeLauncher):
@@ -342,10 +377,10 @@ class Parasite(GrenadeLauncher):
     
 class Prospector(GrenadeLauncher):
     def __init__(self):
-        self.reserves = 38
+        self.reserves = 32
         super().__init__(self.reserves)
-        self.mag_size_initial = 8
-        self.mag_size_subsequent = 8
+        self.mag_size_initial = 6
+        self.mag_size_subsequent = 6
         self.base_damage = self.prospector_damage * self.surgex3_damage_buff
         self.reload_time = 129/60
         self.time_between_shots = 23/60
@@ -445,7 +480,7 @@ class EdgeTransitSupremacyRotation(GrenadeLauncher):
                 break 
             self.time += cata_to_suprem
             print("swapping to suprem")
-            for shot in range(6):
+            for shot in range(8):
                 self.damage_done += sniper_damage
                 self.damage_times.append(self.update(self.time, self.damage_done, shots_fired, 1))
                 suprem.reserves-=1

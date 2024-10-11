@@ -101,3 +101,27 @@ class FinalWarning(ExoticPrimary):
             self.time += self.reload_speed
         print(self.damage_times)
         return self.excel.closeExcel(self.damage_times)
+class ChoirOfOne(ExoticPrimary):
+    def __init__(self):
+        self.reserves = 40
+        super().__init__(self.reserves)
+        self.base_damage = (14288 + 1581) * self.surgex3_damage_buff
+        self.base_outrange = 5 * (2858 + 275) * self.surgex3_damage_buff
+        self.reload_time = 62.5/60
+        self.time_between_shots = 15.5/60
+        self.mag_size_initial = 5
+        self.mag_size_subsequent = 5
+
+    def printDps(self, buffPerc = 1.25, outOfRange=True, name="Choir Of One", damageTimes=[], placeInColumn=None):
+        if outOfRange:
+            name += " (Out of Range)"
+        self._preparePrintDps_(name, damageTimes, placeInColumn)
+        def damagePerShot(shots_fired, shots_fired_this_mag):
+            damage_done = self.base_damage * buffPerc
+            if outOfRange:
+                damage_done = self.base_outrange * buffPerc
+            return damage_done
+        self.processSimpleDamageLoop(self.mag_size_initial, self.mag_size_subsequent,
+                                     self.time_between_shots, self.reload_time, damagePerShot)
+        print(self.damage_times)
+        return self.excel.closeExcel(self.damage_times)

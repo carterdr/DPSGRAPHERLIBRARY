@@ -373,10 +373,14 @@ def printSpecialWeapons():
     
     Linears.Arbalest().printDps()
     FusionRifles.Cartesian().printDps()
-    Snipers.CriticalAnomoly().printDps()
+    
+    ExoticPrimaries.ChoirOfOne().printDps(outOfRange=False)
+    ExoticPrimaries.ChoirOfOne().printDps(outOfRange=True)
     
     Snipers.CloudStrike().printDps()
     Snipers.CloudStrike().printDps(1.25/1.22, name="Cloudstrike (No Surges)")
+    
+    Snipers.CriticalAnomoly().printDps()
     
     Rockets.CruxSTLDPS().printDps()
 
@@ -522,6 +526,15 @@ def printHeavies():
     
     printHotheadHeavy()
     
+    GrenadeLaunchers.Koraxis().printDps(isSpike=True, isFrenzy= True, mag_size= 7)
+    GrenadeLaunchers.Koraxis().printDps(isSpike=True, isSurr=True, mag_size= 7)
+    GrenadeLaunchers.Koraxis().printDps(isSpike=False, isFrenzy= True, mag_size= 8)
+    GrenadeLaunchers.Koraxis().printDps(isSpike=False, isSurr=True, mag_size= 8)
+    GrenadeLaunchers.Koraxis().printDps(isSpike=True, isFrenzy= True, mag_size= 21, isEnvious=True)
+    GrenadeLaunchers.Koraxis().printDps(isSpike=True, isSurr=True, mag_size= 21, isEnvious=True)
+    GrenadeLaunchers.Koraxis().printDps(isSpike=False, isFrenzy= True, mag_size= 24, isEnvious=True)
+    GrenadeLaunchers.Koraxis().printDps(isSpike=False, isSurr=True, mag_size= 24, isEnvious=True)
+
     Swords.Lament().printDps()
     Bow.LeviathansBreath().printDps()
     

@@ -26,11 +26,11 @@ class WardensLaw(LuckyPants):
         def damagePerShot(shots_fired, shots_fired_this_mag):
             damage_per_shot = 0
             if (shots_fired >= 10 and shots_fired <= 26):
-                damage_per_shot = self.base_damage * buffPerc * 7
+                damage_per_shot = self.base_damage * buffPerc * 5.5
             elif (shots_fired == 0 or shots_fired > 26):
                 damage_per_shot = self.base_damage * buffPerc
             else:
-                damage_per_shot = self.base_damage * buffPerc * (1 + shots_fired * .6)
+                damage_per_shot = self.base_damage * buffPerc * (1 + shots_fired * .45)
             return damage_per_shot
         rotations = 0
         while self.time < 100 and (rotations < max_rotations or max_rotations == -1):
@@ -117,11 +117,11 @@ class Malfeasance(LuckyPants):
                 damage_done += self.explosion_damage
                 print("explosion")
             if (shots_fired >= 10 and shots_fired <= 16):
-                damage_done += self.buffed_damage * 7
+                damage_done += self.buffed_damage * 5.5
             elif (shots_fired == 0 or shots_fired >= 17):
                 damage_done += self.buffed_damage
             else:
-                damage_done += self.buffed_damage * (1 + shots_fired * .6)
+                damage_done += self.buffed_damage * (1 + shots_fired * .45)
             return damage_done
         while self.time < 100:
             self.processSimpleDamageLoop(

@@ -26,8 +26,7 @@ class Excel():
     def getOpenColumn(sheet):
         column = 2         
         while(not sheet.cell(1,column).value==None):
-            if(not sheet.cell(1,column).value==None):
-                column+=1  
+            column+=1  
         return column    
     def getExcelPath():
         caller_directory = os.path.dirname(os.path.realpath(__file__))
@@ -45,22 +44,19 @@ class Excel():
         wb.save(file_path)
     def closeExcel(self, damagetimes):
         damagetimes = self._removeDupeValues(damagetimes)
-        cumulative_damage = 0 
-
 
         if damagetimes:
-            first_time = damagetimes[0][0] + 1
+            first_time_row = damagetimes[0][0] + 1
         else:
-            first_time = 1002  # If there are no damage times, set to the last row
+            first_time_row = 1002  # If there are no damage times, set to the last row
 
         # Initialize column with zeros up to the first damage time
-        for row in range(2, first_time + 1):
+        for row in range(2, first_time_row + 1):
             if self.sh1.cell(row, self.column).value is None:
                 self.sh1.cell(row, self.column).value = 0
                 
         for i in range(0,len(damagetimes)):
             current_time, value = damagetimes[i]
-            cumulative_damage += value
             if i == len(damagetimes)-1:
                 next_time = 1002
             else:
@@ -68,7 +64,7 @@ class Excel():
             for row in range(current_time + 1, next_time + 1):  # Update from the previous time + 1 to the current time + 1
                 if self.sh1.cell(row, self.column).value is None:
                     self.sh1.cell(row, self.column).value = 0
-                self.sh1.cell(row, self.column).value += cumulative_damage
+                self.sh1.cell(row, self.column).value += value
         self.wb.save(self.file_path)
         return self.column
 
@@ -77,25 +73,11 @@ class Excel():
         #remove dupes
         for time, damage in damagetimes:
             damage = int(format(damage * Weapon.story_mission_to_raid_scalar, ".0f"))
-            if time not in newTimes:
-                newTimes[time] = damage 
-            if newTimes[time] < damage:
+            if time not in newTimes or newTimes[time] < damage:
                 newTimes[time] = damage
-        new_damage_times = []
-        for time in sorted(newTimes.keys()):
-            new_damage_times.append((time, newTimes[time]))
-        damagetimes = new_damage_times
-        #change format
-        newTimes = {}
-        cumulative_damage = 0    
-        for time, damage in damagetimes:
-            if time < 1002:
-                newTimes[time] = damage - cumulative_damage
-                cumulative_damage = damage
-        newDamageTimes = []
-        for time in sorted(newTimes.keys()):
-            newDamageTimes.append((time, newTimes[time]))
-        return newDamageTimes
+
+        
+        return sorted(newTimes.items())
 
     def clearExcel():
         print(Excel.getExcelPath())

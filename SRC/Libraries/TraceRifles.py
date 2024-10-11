@@ -3,7 +3,7 @@ from Libraries import Weapon
 
 class Microchasm(Weapon.Weapon):
     def __init__(self):
-        self.reserves = 360  # 447
+        self.reserves = 402 # 447
         super().__init__(self.reserves)
         self.reload_time = 75/60
         self.time_between_shots = 4/60
@@ -35,7 +35,7 @@ class Microchasm(Weapon.Weapon):
 
 class Divinity(Weapon.Weapon):
     def __init__(self):
-        self.reserves = 447  # 447
+        self.reserves = 499  # 447
         super().__init__(self.reserves)
         self.reload_time = 84/60
         self.time_between_shots_initial = 5/60

@@ -3,7 +3,7 @@ from Libraries import Weapon
 
 class LeviathansBreath(Weapon.Weapon):
     def __init__(self):
-        self.reserves = 15
+        self.reserves = 16
         super().__init__(self.reserves)
         self.mag_size_initial = self.reserves
         self.mag_size_subsequent = self.reserves
