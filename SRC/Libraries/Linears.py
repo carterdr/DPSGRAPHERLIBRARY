@@ -1,5 +1,7 @@
 from Libraries import Weapon
 from Libraries import Abilities
+from Libraries.DamageResult import DamageResult
+from Libraries.config import print_update
 
 class Linear(Weapon.Weapon):
     def __init__(self, reserves):
@@ -29,7 +31,7 @@ class Linear(Weapon.Weapon):
         self.sleeper_damage = 53781
         self.queens_slow = 38236
         self.queens_fast = 27614
-    
+        self.category = "h"
 #Precisions
 #####################################################################################################################################
 
@@ -46,33 +48,32 @@ class Cataclysm(Linear):
         self.base_damage = self.precision_ctmw_damage * self.surgex3_damage_buff
         
         
-    def printDps(self, buffPerc = 1.25, isBnS=True, name="Cataclysm", damageTimes=[], placeInColumn=None, Primary_Damage=0, Special_Damage=0, Primary_To_Special=40/60, Special_To_Heavy=78/60, Heavy_To_Primary=40/60):
-        if (isBnS):
-            self._preparePrintDps_(name, damageTimes, placeInColumn)
-            bait_tuple = [(Primary_To_Special, Primary_Damage * buffPerc),
-                          (Special_To_Heavy, Special_Damage * buffPerc), (Heavy_To_Primary, 0)]
+    def calculate(self, buff_perc = 1.25, is_bns=True, name="Cataclysm", prev_result=DamageResult(), primary_damage=0, special_damage=0, primary_to_special=40/60, special_to_heavy=78/60, heavy_to_primary=40/60):
+        if (is_bns):
+            self._prepare_calculation(prev_result)
+            bait_tuple = [(primary_to_special, primary_damage * buff_perc),
+                          (special_to_heavy, special_damage * buff_perc), (heavy_to_primary, 0)]
 
-            def damagePerShot(is_proc_shot, bait_time, shots_fired, shots_fired_this_mag):
+            def damage_per_shot_function(is_proc_shot, bait_time, shots_fired, shots_fired_this_mag):
                 if (self.time < bait_time + 10 and not is_proc_shot):
-                    return self.base_damage * buffPerc * self.bait_damage_buff
+                    return self.base_damage * buff_perc * self.bait_damage_buff
                 else:
-                    return self.base_damage * buffPerc
+                    return self.base_damage * buff_perc
             self.processBaitDamageLoop(bait_tuple, self.mag_size_initial, self.mag_size_subsequent,
-                                       self.time_between_shots, self.reload_time, damagePerShot)
-            return self.excel.closeExcel(self.damage_times)
+                                       self.time_between_shots, self.reload_time, damage_per_shot_function)
+            return self.fill_gaps(self.damage_times, name, self.category)
         else:
             name = "Cataclysm (FTTC FF)"
-            self._preparePrintDps_(name, damageTimes, placeInColumn)
+            self._prepare_calculation(prev_result)
 
-            def damagePerShot(shots_fired, shots_fired_this_mag):
+            def damage_per_shot_function(shots_fired, shots_fired_this_mag):
                 if (shots_fired >= 3):
-                    return self.base_damage * self.focused_furry_damage_buff * buffPerc
+                    return self.base_damage * self.focused_furry_damage_buff * buff_perc
                 else:
-                    return self.base_damage * buffPerc
+                    return self.base_damage * buff_perc
             self.processSimpleDamageLoop(self.mag_size_initial, self.mag_size_subsequent,
-                                         self.time_between_shots, self.reload_time, damagePerShot)
-            print(self.damage_times)
-            return self.excel.closeExcel(self.damage_times)
+                                         self.time_between_shots, self.reload_time, damage_per_shot_function)
+            return self.fill_gaps(self.damage_times, name, self.category)
 
 class Taipan(Linear):
     def __init__(self, isaccelerated = True, ctmw = True):
@@ -109,18 +110,17 @@ class Taipan(Linear):
         self.base_damage *= self.surgex3_damage_buff * self.firing_line_damage_buff
 
 
-    def printDps(self, buffPerc = 1.25, damageTimes=[], placeInColumn=None):
+    def calculate(self, buff_perc = 1.25, prev_result=DamageResult()):
         name = self.name
-        self._preparePrintDps_(name, damageTimes, placeInColumn)
+        self._prepare_calculation(prev_result)
         if self.time != 0:
             self.time -= .5
         self.time += self.charge_time
 
-        def damagePerShot(shots_fired, shots_fired_this_mag):
-            return self.base_damage * buffPerc
-        self.processFTTCoTTLoop(self.mag_size_initial, self.mag_size_subsequent, damagePerShot, 3)
-        print(self.damage_times)
-        return self.excel.closeExcel(self.damage_times)
+        def damage_per_shot_function(shots_fired, shots_fired_this_mag):
+            return self.base_damage * buff_perc
+        self.processFTTCoTTLoop(self.mag_size_initial, self.mag_size_subsequent, damage_per_shot_function, 3)
+        return self.fill_gaps(self.damage_times, name, self.category)
 
 
 class Reeds(Linear):
@@ -158,18 +158,17 @@ class Reeds(Linear):
         self.base_damage *= self.surgex3_damage_buff * self.firing_line_damage_buff
 
 
-    def printDps(self, buffPerc = 1.25, damageTimes=[], placeInColumn=None):
+    def calculate(self, buff_perc = 1.25, prev_result=DamageResult()):
         name = self.name
-        self._preparePrintDps_(name, damageTimes, placeInColumn)
+        self._prepare_calculation(prev_result)
         if self.time != 0:
             self.time -= .5
         self.time += self.charge_time
 
-        def damagePerShot(shots_fired, shots_fired_this_mag):
-            return self.base_damage * buffPerc
-        self.processFTTCoTTLoop(self.mag_size_initial, self.mag_size_subsequent, damagePerShot, 3)
-        print(self.damage_times)
-        return self.excel.closeExcel(self.damage_times)
+        def damage_per_shot_function(shots_fired, shots_fired_this_mag):
+            return self.base_damage * buff_perc
+        self.processFTTCoTTLoop(self.mag_size_initial, self.mag_size_subsequent, damage_per_shot_function, 3)
+        return self.fill_gaps(self.damage_times, name, self.category)
 #####################################################################################################################################
 
 
@@ -186,18 +185,17 @@ class Briars(Linear):
         self.mag_size_initial = 12
         self.mag_size_subsequent = 12
 
-    def printDps(self, buffPerc = 1.25, name="Briars (Surrounded Rewind)", damageTimes=[], placeInColumn=None):
-        self._preparePrintDps_(name, damageTimes, placeInColumn)
+    def calculate(self, buff_perc = 1.25, name="Briars (Surrounded Rewind)", prev_result=DamageResult()):
+        self._prepare_calculation(prev_result)
         if self.time != 0:
             self.time -= .5
         self.time += self.charge_time
 
-        def damagePerShot(shots_fired, shots_fired_this_mag):
-            return self.base_damage * buffPerc
+        def damage_per_shot_function(shots_fired, shots_fired_this_mag):
+            return self.base_damage * buff_perc
         self.processSimpleDamageLoop(self.mag_size_initial, self.mag_size_subsequent,
-                                     self.time_between_shots, self.reload_time, damagePerShot)
-        print(self.damage_times)
-        return self.excel.closeExcel(self.damage_times)
+                                     self.time_between_shots, self.reload_time, damage_per_shot_function)
+        return self.fill_gaps(self.damage_times, name, self.category)
     
 class DoomedPartitioner(Linear):
     def __init__(self, mag_start = 14):
@@ -211,25 +209,24 @@ class DoomedPartitioner(Linear):
         self.mag_size_subsequent = 7
 
 
-    def printDps(self, buffPerc = 1.25, name="DoomedParitioner (Recon Precision)", damageTimes=[], placeInColumn=None):
+    def calculate(self, buff_perc = 1.25, name="DoomedParitioner (Recon Precision)", prev_result=DamageResult()):
         mag_perk = "Recon" if self.mag_size_initial == 14 else "Envious"
         name = f"DoomedPartitioner ({self.mag_size_initial} Mag {mag_perk} Precision)"
-        self._preparePrintDps_(name, damageTimes, placeInColumn)
+        self._prepare_calculation(prev_result)
         if self.time != 0:
             self.time -= .5
         self.time += self.charge_time
 
-        def damagePerShot(shots_fired, shots_fired_this_mag):
+        def damage_per_shot_function(shots_fired, shots_fired_this_mag):
             if (shots_fired_this_mag == 0):
-                return self.base_damage * buffPerc * ((1/3) + (1/3) * 1.05 + (1/3) * 1.1)
+                return self.base_damage * buff_perc * ((1/3) + (1/3) * 1.05 + (1/3) * 1.1)
             elif (shots_fired_this_mag == 1):
-                return self.base_damage * buffPerc * ((1/3) * 1.15 + (1/3) * 1.2 + (1/3) * 1.25)
+                return self.base_damage * buff_perc * ((1/3) * 1.15 + (1/3) * 1.2 + (1/3) * 1.25)
             else:
-                return self.base_damage * buffPerc * 1.3
+                return self.base_damage * buff_perc * 1.3
         self.processSimpleDamageLoop(self.mag_size_initial, self.mag_size_subsequent,
-                                     self.time_between_shots, self.reload_time, damagePerShot)
-        print(self.damage_times)
-        return self.excel.closeExcel(self.damage_times)
+                                     self.time_between_shots, self.reload_time, damage_per_shot_function)
+        return self.fill_gaps(self.damage_times, name, self.category)
 class Scintillation(Linear):
     def __init__(self):
         self.reserves = 23
@@ -241,51 +238,50 @@ class Scintillation(Linear):
         self.mag_size_initial = self.reserves
         self.mag_size_subsequent = self.reserves
 
-    def printDps(self, buffPerc = 1.25, isBnS=True, name="Scintillation (Rewind Bait)", damageTimes=[], placeInColumn=None, Primary_Damage=0, Special_Damage=0, Primary_To_Special=40/60, Special_To_Heavy=77/60, Heavy_To_Primary=82/60):
+    def calculate(self, buff_perc = 1.25, is_bns=True, name="Scintillation (Rewind Bait)", prev_result=DamageResult(), primary_damage=0, special_damage=0, primary_to_special=40/60, special_to_heavy=77/60, heavy_to_primary=82/60):
         #heavy_to_primary = 0 because bug
-        if (isBnS):
-            self._preparePrintDps_(name, damageTimes, placeInColumn)
-            bait_tuple = [(Primary_To_Special, Primary_Damage * buffPerc),
-                          (Special_To_Heavy, Special_Damage * buffPerc), (Heavy_To_Primary, 0)]
+        if (is_bns):
+            self._prepare_calculation(prev_result)
+            bait_tuple = [(primary_to_special, primary_damage * buff_perc),
+                          (special_to_heavy, special_damage * buff_perc), (heavy_to_primary, 0)]
 
-            def damagePerShot(is_proc_shot, bait_time, shots_fired, shots_fired_this_mag):
+            def damage_per_shot_function(is_proc_shot, bait_time, shots_fired, shots_fired_this_mag):
                 if (self.time < bait_time + 11 and not is_proc_shot):
-                    return self.base_damage * buffPerc * self.bait_damage_buff
+                    return self.base_damage * buff_perc * self.bait_damage_buff
                 else:
-                    return (1/3) * (self.base_damage * buffPerc) + (2/3) * (self.base_damage * buffPerc * self.bait_damage_buff)
+                    return (1/3) * (self.base_damage * buff_perc) + (2/3) * (self.base_damage * buff_perc * self.bait_damage_buff)
             self.processBaitDamageLoop(bait_tuple, self.mag_size_initial, self.mag_size_subsequent,
-                                       self.time_between_shots, self.reload_time, damagePerShot,11)
-            return self.excel.closeExcel(self.damage_times)
+                                       self.time_between_shots, self.reload_time, damage_per_shot_function,11)
+            return self.fill_gaps(self.damage_times, name, self.category)
         else:
             name = "Scintillation (Rewind FL)"
-            self._preparePrintDps_(name, damageTimes, placeInColumn)
+            self._prepare_calculation(prev_result)
             self.time += self.charge_time
-            def damagePerShot(shots_fired, shots_fired_this_mag):
-                return self.base_damage * buffPerc * self.firing_line_damage_buff
+            def damage_per_shot_function(shots_fired, shots_fired_this_mag):
+                return self.base_damage * buff_perc * self.firing_line_damage_buff
             self.processSimpleDamageLoop(self.mag_size_initial, self.mag_size_subsequent,
-                                         self.time_between_shots, self.reload_time, damagePerShot)
-            print(self.damage_times)
-            return self.excel.closeExcel(self.damage_times)
-    def printDpsEuphonyBait(self, buffPerc = 1.25, evolution=True, name="Scintillation (Rewind Bait)", damageTimes=[], placeInColumn=None, Primary_Damage=0, Special_Damage=0, Primary_To_Special=68/60, Special_To_Heavy=77/60, Heavy_To_Primary=110/60):
-            self._preparePrintDps_(name, damageTimes, placeInColumn)
-            Primary_Damage = Euphony().base_damage * buffPerc
-            bait_tuple = [(Primary_To_Special, Primary_Damage * buffPerc),
-                          (Special_To_Heavy, Special_Damage * buffPerc), (Heavy_To_Primary, 0)]
+                                         self.time_between_shots, self.reload_time, damage_per_shot_function)
+            return self.fill_gaps(self.damage_times, name, self.category)
+    def calculateEuphonyBait(self, buff_perc = 1.25, evolution=True, name="Scintillation (Rewind Bait)", prev_result=DamageResult(), primary_damage=0, special_damage=0, primary_to_special=68/60, special_to_heavy=77/60, heavy_to_primary=110/60):
+            self._prepare_calculation(prev_result)
+            primary_damage = Euphony().base_damage * buff_perc
+            bait_tuple = [(primary_to_special, primary_damage * buff_perc),
+                          (special_to_heavy, special_damage * buff_perc), (heavy_to_primary, 0)]
             self.time += Euphony().charge_time
-            def damagePerShot(is_proc_shot, bait_time, shots_fired, shots_fired_this_mag):
+            def damage_per_shot_function(is_proc_shot, bait_time, shots_fired, shots_fired_this_mag):
                 if (self.time < bait_time + 11 and not is_proc_shot):
-                    return self.base_damage * buffPerc * self.bait_damage_buff
+                    return self.base_damage * buff_perc * self.bait_damage_buff
                 else:
-                    return (1/3) * (self.base_damage * buffPerc) + (2/3) * (self.base_damage * buffPerc * self.bait_damage_buff)
+                    return (1/3) * (self.base_damage * buff_perc) + (2/3) * (self.base_damage * buff_perc * self.bait_damage_buff)
             self.processBaitDamageLoop(bait_tuple, self.mag_size_initial, self.mag_size_subsequent,
-                                       self.time_between_shots, self.reload_time, damagePerShot,11)
+                                       self.time_between_shots, self.reload_time, damage_per_shot_function,11)
             
-            col = self.excel.closeExcel(self.damage_times)
+            result = self.fill_gaps(self.damage_times, name, self.category)
             euphony = Euphony()
             euphony.reserves -= 3
             euphony.mag_size_initial -= 3
-            euphony.printDps(buffPerc=buffPerc,evolution=evolution,damageTimes=self.damage_times, placeInColumn=col)
-            return col
+            result.add(euphony.calculate(buff_perc=buff_perc,evolution=evolution, prev_result=result))
+            return result
 class StormChaser(Linear):
     def __init__(self):
         self.reserves = 21
@@ -298,18 +294,17 @@ class StormChaser(Linear):
         self.mag_size_subsequent = 9
 
 
-    def printDps(self, buffPerc = 1.25, name="Stormchaser (Clown FL)", damageTimes=[], placeInColumn=None):
-        self._preparePrintDps_(name, damageTimes, placeInColumn)
+    def calculate(self, buff_perc = 1.25, name="Stormchaser (Clown FL)", prev_result=DamageResult()):
+        self._prepare_calculation(prev_result)
         if self.time != 0:
             self.time -= .5
         self.time += self.charge_time
 
-        def damagePerShot(shots_fired, shots_fired_this_mag):
-            return self.base_damage * buffPerc
+        def damage_per_shot_function(shots_fired, shots_fired_this_mag):
+            return self.base_damage * buff_perc
         self.processSimpleDamageLoop(self.mag_size_initial, self.mag_size_subsequent,
-                                     self.time_between_shots, self.reload_time, damagePerShot)
-        print(self.damage_times)
-        return self.excel.closeExcel(self.damage_times)
+                                     self.time_between_shots, self.reload_time, damage_per_shot_function)
+        return self.fill_gaps(self.damage_times, name, self.category)
 #####################################################################################################################################
 
 #Exotic Specials
@@ -324,20 +319,19 @@ class Arbalest(Linear):
         self.mag_size_initial = 6
         self.mag_size_subsequent = 6
         self.base_damage = self.arbalest_damage * self.surgex3_damage_buff 
+        self.category = "s"
 
-
-    def printDps(self, buffPerc = 1.25, name="Arbalest", damageTimes=[], placeInColumn=None):
-        self._preparePrintDps_(name, damageTimes, placeInColumn)
+    def calculate(self, buff_perc = 1.25, name="Arbalest", prev_result=DamageResult()):
+        self._prepare_calculation(prev_result)
         if self.time != 0:
             self.time -= .5
         self.time += self.charge_time
 
-        def damagePerShot(shots_fired, shots_fired_this_mag):
-            return self.base_damage * buffPerc
+        def damage_per_shot_function(shots_fired, shots_fired_this_mag):
+            return self.base_damage * buff_perc
         self.processSimpleDamageLoop(self.mag_size_initial, self.mag_size_subsequent,
-                                     self.time_between_shots, self.reload_time, damagePerShot)
-        print(self.damage_times)
-        return self.excel.closeExcel(self.damage_times)
+                                     self.time_between_shots, self.reload_time, damage_per_shot_function)
+        return self.fill_gaps(self.damage_times, name, self.category)
     
 class Lorentz(Linear):
     def __init__(self):
@@ -349,20 +343,19 @@ class Lorentz(Linear):
         self.base_damage = self.lorentz_damage * self.surgex3_damage_buff
         self.mag_size_initial = 6
         self.mag_size_subsequent = 6
+        self.category = "s"
 
-
-    def printDps(self, buffPerc = 1.25, lorentzBuff=False, name="Lorentz", damageTimes=[], placeInColumn=None):
-        self._preparePrintDps_(name, damageTimes, placeInColumn)
+    def calculate(self, buff_perc = 1.25, lorentzBuff=False, name="Lorentz", prev_result=DamageResult()):
+        self._prepare_calculation(prev_result)
         if self.time != 0:
             self.time -= .5
         self.time += self.charge_time
 
-        def damagePerShot(shots_fired, shots_fired_this_mag):
-            return self.base_damage * buffPerc
+        def damage_per_shot_function(shots_fired, shots_fired_this_mag):
+            return self.base_damage * buff_perc
         self.processSimpleDamageLoop(self.mag_size_initial, self.mag_size_subsequent,
-                                     self.time_between_shots, self.reload_time, damagePerShot)
-        print(self.damage_times)
-        return self.excel.closeExcel(self.damage_times)
+                                     self.time_between_shots, self.reload_time, damage_per_shot_function)
+        return self.fill_gaps(self.damage_times, name, self.category)
 class Euphony(Linear):
     def __init__(self):
         self.reserves = 23
@@ -373,44 +366,45 @@ class Euphony(Linear):
         self.base_damage = self.euphony_damage * self.surgex3_damage_buff
         self.mag_size_initial = 6
         self.mag_size_subsequent = 6
+        self.category = "s"
 
-
-    def printDps(self, buffPerc = 1.25, evolution = False, startWithMax = False, name="Euphony", damageTimes=[], placeInColumn=None):
+    def calculate(self, buff_perc = 1.25, evolution = False, start_with_max = False, name="Euphony", prev_result=DamageResult()):
         triple_threadling_damage = self.threadling_grenade_evolution_damage if evolution else self.threadling_grenade_damage
-        max_text = " 25 Stacks Start" if startWithMax else ""
-        if startWithMax and not evolution:
+        max_text = " 25 Stacks Start" if start_with_max else ""
+        if start_with_max and not evolution:
             max_text = max_text[1:]
         evolution_text = "Evolution" if evolution else ""
-        l_paren = "(" if (startWithMax or evolution) else ""
-        r_paren = ")" if (startWithMax or evolution) else ""
+        l_paren = "(" if (start_with_max or evolution) else ""
+        r_paren = ")" if (start_with_max or evolution) else ""
         name = f"Euphony {l_paren}{evolution_text}{max_text}{r_paren}"
-        self._preparePrintDps_(name, damageTimes, placeInColumn)
+        self._prepare_calculation(prev_result)
         if self.time != 0:
             self.time -= .5
         self.time += self.charge_time
-        self.damage_buff = 1.5 if startWithMax else 1
-        def damagePerShot(shots_fired, shots_fired_this_mag):
+        self.damage_buff = 1.5 if start_with_max else 1
+        def damage_per_shot_function(shots_fired, shots_fired_this_mag):
             if shots_fired % 2 == 1 and shots_fired > 1:
                 self.damage_buff += .02 * 3
                 if self.damage_buff > 1.5:
                     self.damage_buff = 1.5
-                print(f"{self.damage_buff}, {shots_fired}")
-            damage_done = self.base_damage * self.damage_buff * buffPerc
+                if print_update:
+                    print(f"{self.damage_buff}, {shots_fired}")
+            damage_done = self.base_damage * self.damage_buff * buff_perc
             if shots_fired % 2 == 1:
-                print("threadling damage")
+                if print_update:
+                    print("threadling damage")
                 damage_done += triple_threadling_damage
             return damage_done
         self.processSimpleDamageLoop(self.mag_size_initial, self.mag_size_subsequent,
-                                     self.time_between_shots, self.reload_time, damagePerShot)
-        print(self.damage_times)
-        return self.excel.closeExcel(self.damage_times)
-    def printDpsApotheosisRotation(self, buffPerc = 1.25, evolution = False, exclude_super_damage = False, name="Euphony (NeedleStorm Apotheosis Rotation (No Prepped Threadling No Rift))", damageTimes=[], placeInColumn=None):
+                                     self.time_between_shots, self.reload_time, damage_per_shot_function)
+        return self.fill_gaps(self.damage_times, name, self.category)
+    def calculateApotheosisRotation(self, buff_perc = 1.25, evolution = False, exclude_super_damage = False, name="Euphony (NeedleStorm Apotheosis Rotation (No Prepped Threadling No Rift))", prev_result=DamageResult()):
         super_damage = Abilities.NeedleStorm().damage_fragment if evolution else Abilities.NeedleStorm().damage_base
         triple_threadling_damage = self.threadling_grenade_evolution_damage if evolution else self.threadling_grenade_damage
         evolution_text = " Evolution" if evolution else ""
         super_text = " Excluding Super Damage" if exclude_super_damage else ""
         name = f"Euphony (Apotheosis Rotation (No Prepped Threadling No Rift){evolution_text}{super_text})"
-        self._preparePrintDps_(name, damageTimes, placeInColumn)
+        self._prepare_calculation(prev_result)
         
         
         damage_buff = 1
@@ -438,7 +432,7 @@ class Euphony(Linear):
         self.time += 90/60
         
         #linear 1
-        self.damage_done += self.base_damage * buffPerc * damage_buff
+        self.damage_done += self.base_damage * buff_perc * damage_buff
         self.damage_times.append(self.update(self.time, self.damage_done, 1, 1))
         damage_buff += .02 * 3 #from grenade 2
         
@@ -452,7 +446,7 @@ class Euphony(Linear):
         self.time += 90/60
 
         #linear 2
-        self.damage_done += self.base_damage * buffPerc * damage_buff + triple_threadling_damage
+        self.damage_done += self.base_damage * buff_perc * damage_buff + triple_threadling_damage
         self.damage_times.append(self.update(self.time, self.damage_done, 1, 1))
         damage_buff += .02 * 3 #from grenade 3
         damage_buff += .02 * 3 #from linear
@@ -466,20 +460,20 @@ class Euphony(Linear):
         self.time += 90/60
         
         #linear 3
-        self.damage_done += self.base_damage * buffPerc * damage_buff
+        self.damage_done += self.base_damage * buff_perc * damage_buff
         self.damage_times.append(self.update(self.time, self.damage_done, 1, 1))
         damage_buff += .02 * 3 #from previous grenade
         
         self.time += self.time_between_shots
         
         #linear 4       
-        self.damage_done += self.base_damage * buffPerc * damage_buff + triple_threadling_damage
+        self.damage_done += self.base_damage * buff_perc * damage_buff + triple_threadling_damage
         self.damage_times.append(self.update(self.time, self.damage_done, 1, 1))
 
         self.time += self.time_between_shots    
     
         #linear 5
-        self.damage_done += self.base_damage * buffPerc * damage_buff
+        self.damage_done += self.base_damage * buff_perc * damage_buff
         self.damage_times.append(self.update(self.time, self.damage_done, 1, 1))
         damage_buff = 1.50 #from linear 
         
@@ -488,15 +482,14 @@ class Euphony(Linear):
         
         self.mag_size_initial = 4
         self.reserves-=5
-        def damagePerShot(shots_fired, shots_fired_this_mag):
-            damage_done = self.base_damage * damage_buff * buffPerc
+        def damage_per_shot_function(shots_fired, shots_fired_this_mag):
+            damage_done = self.base_damage * damage_buff * buff_perc
             if shots_fired % 2 == 0:
                 damage_done += triple_threadling_damage
             return damage_done
         self.processSimpleDamageLoop(self.mag_size_initial, self.mag_size_subsequent,
-                                     self.time_between_shots, self.reload_time, damagePerShot)
-        print(self.damage_times)
-        return self.excel.closeExcel(self.damage_times)
+                                     self.time_between_shots, self.reload_time, damage_per_shot_function)
+        return self.fill_gaps(self.damage_times, name, self.category)
 #####################################################################################################################################
 
 #Exotic Heavies
@@ -517,25 +510,24 @@ class QueenBreaker(Linear):
         self.mag_size_subsequent = 5
 
 
-    def printDps(self, buffPerc = 1.25, isHighRPM=False, name="QueenBreaker", damageTimes=[], placeInColumn=None):
-        name += f" (High RPM Mode)" if isHighRPM else f" (Low RPM Mode)"
-        self._preparePrintDps_(name, damageTimes, placeInColumn)
-        charge_time = self.charge_time_short if isHighRPM else self.charge_time_long
+    def calculate(self, buff_perc = 1.25, is_high_rpm=False, name="QueenBreaker", prev_result=DamageResult()):
+        name += f" (High RPM Mode)" if is_high_rpm else f" (Low RPM Mode)"
+        self._prepare_calculation(prev_result)
+        charge_time = self.charge_time_short if is_high_rpm else self.charge_time_long
         self.time += charge_time
-        self.base_damage = self.base_damage_short if isHighRPM else self.base_damage_long
+        self.base_damage = self.base_damage_short if is_high_rpm else self.base_damage_long
         self.reload_time = (
-            self.reload_time_short if isHighRPM else self.reload_time_long)
-        self.time_between_shots = self.time_between_shots_short if isHighRPM else self.time_between_shots_long
+            self.reload_time_short if is_high_rpm else self.reload_time_long)
+        self.time_between_shots = self.time_between_shots_short if is_high_rpm else self.time_between_shots_long
         if self.time != 0:
             self.time -= .5
         self.time += charge_time
 
-        def damagePerShot(shots_fired, shots_fired_this_mag):
-            return self.base_damage * buffPerc
+        def damage_per_shot_function(shots_fired, shots_fired_this_mag):
+            return self.base_damage * buff_perc
         self.processSimpleDamageLoop(self.mag_size_initial, self.mag_size_subsequent,
-                                     self.time_between_shots, self.reload_time, damagePerShot)
-        print(self.damage_times)
-        return self.excel.closeExcel(self.damage_times)
+                                     self.time_between_shots, self.reload_time, damage_per_shot_function)
+        return self.fill_gaps(self.damage_times, name, self.category)
     
 class Sleeper(Linear):
     def __init__(self):
@@ -549,18 +541,17 @@ class Sleeper(Linear):
         self.mag_size_subsequent = 4
 
 
-    def printDps(self, buffPerc = 1.25, name="Sleeper", damageTimes=[], placeInColumn=None):
-        self._preparePrintDps_(name, damageTimes, placeInColumn)
+    def calculate(self, buff_perc = 1.25, name="Sleeper", prev_result=DamageResult()):
+        self._prepare_calculation(prev_result)
         if self.time != 0:
             self.time -= .5
         self.time += self.charge_time
 
-        def damagePerShot(shots_fired, shots_fired_this_mag):
-            return self.base_damage * buffPerc
+        def damage_per_shot_function(shots_fired, shots_fired_this_mag):
+            return self.base_damage * buff_perc
         self.processSimpleDamageLoop(self.mag_size_initial, self.mag_size_subsequent,
-                                     self.time_between_shots, self.reload_time, damagePerShot)
-        print(self.damage_times)
-        return self.excel.closeExcel(self.damage_times)
+                                     self.time_between_shots, self.reload_time, damage_per_shot_function)
+        return self.fill_gaps(self.damage_times, name, self.category)
 
 
 

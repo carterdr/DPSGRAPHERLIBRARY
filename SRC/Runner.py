@@ -1,11 +1,15 @@
 
-from Libraries import Abilities, Bow, ExoticPrimaries, functions, FusionRifles, GrenadeLaunchers, Linears, LuckyPants, MachineGuns, Rockets, Shotguns, Snipers, Swords, TraceRifles, Weapon, WeaponPrints, MultiPersonWeaponPrints
-from Libraries import Excel as ExcelModule
+from Libraries import Abilities, Bow, ExoticPrimaries, functions, FusionRifles, GrenadeLaunchers, Linears, LuckyPants, MachineGuns, Rockets, Shotguns, Snipers, Swords, TraceRifles, Weapon, SaveWeaponsToDatabase, SaveMultiPersonToDatabase, SaveAll
+from Libraries import Database as d
+from Libraries.DamageResult import DamageResult 
+from Libraries import Excel as e
 import matplotlib.pyplot as plt
-ExcelModule.Excel.clearExcel()
-ExcelModule.Excel.createTime()
-GrenadeLaunchers.Prospector().printDps()
-ExcelModule.Excel.displayData()
+
+
+e.clear_excel()
+e.create_time()
+SaveAll.save_everything()
+e.display_data()
 
 
 

@@ -1,5 +1,5 @@
 from Libraries import Weapon
-
+from Libraries.DamageResult import DamageResult
 
 class Shotgun(Weapon.Weapon):
     def __init__(self, reserves):
@@ -18,6 +18,7 @@ class Shotgun(Weapon.Weapon):
         self.horseman_bs = (12 * 1240.5) 
         self.lordow_damage = 3095
         self.lordow_perk_damage = 4332
+        self.category = "s"
 #Rapids
 #####################################################################################################################################
 class Rapid(Shotgun):
@@ -31,21 +32,20 @@ class Rapid(Shotgun):
         self.base_damage_bs = self.rapid_damage_bs * self.vorpal_damage_buff * self.surgex3_damage_buff
         self.base_damage_hs = self.rapid_damage_hs * self.vorpal_damage_buff * self.surgex3_damage_buff
 
-    def printDps(self, buffPerc = 1.25, isHS=False, name="Rapid SG (Vorpal)", damageTimes=[], placeInColumn=None):
+    def calculate(self, buff_perc = 1.25, is_hs=False, name="Rapid SG (Vorpal)", prev_result=DamageResult()):
         damage_per_shot = self.base_damage_bs
-        if isHS:
+        if is_hs:
             name = "Rapid SG (Vorpal + HS)"
             damage_per_shot = self.base_damage_hs
         else:
             name = "Rapid SG (Vorpal + BS)"
-        self._preparePrintDps_(name, damageTimes, placeInColumn)
+        self._prepare_calculation(prev_result)
 
         def damagePerShot(shots_fired, shots_fired_this_mag):
-            return damage_per_shot * buffPerc
+            return damage_per_shot * buff_perc
         self.processSimpleDamageLoop(self.mag_size_initial, self.mag_size_subsequent,
                                      self.time_between_shots, self.reload_time, damagePerShot)
-        print(self.damage_times)
-        return self.excel.closeExcel(self.damage_times)
+        return self.fill_gaps(self.damage_times, name, self.category)
 #####################################################################################################################################
 1769.5
 
@@ -63,21 +63,20 @@ class Lightweight(Shotgun):
         self.base_damage_bs = self.lightweight_damage_bs * self.surgex3_damage_buff * self.vorpal_damage_buff
         self.base_damage_hs = self.lightweight_damage_hs * self.surgex3_damage_buff * self.vorpal_damage_buff
 
-    def printDps(self, buffPerc = 1.25, isHS=False, name="Lightweight", damageTimes=[], placeInColumn=None):
+    def calculate(self, buff_perc = 1.25, is_hs=False, name="Lightweight", prev_result=DamageResult()):
         damage_per_shot = self.base_damage_bs
-        if isHS:
+        if is_hs:
             name = "Lightweight SG (Vorpal + HS)"
             damage_per_shot = self.base_damage_hs
         else:
             name = "Lightweight SG (Vorpal + BS)"
-        self._preparePrintDps_(name, damageTimes, placeInColumn)
+        self._prepare_calculation(prev_result)
 
         def damagePerShot(shots_fired, shots_fired_this_mag):
-            return damage_per_shot * buffPerc
+            return damage_per_shot * buff_perc
         self.processSimpleDamageLoop(self.mag_size_initial, self.mag_size_subsequent,
                                      self.time_between_shots, self.reload_time, damagePerShot)
-        print(self.damage_times)
-        return self.excel.closeExcel(self.damage_times)
+        return self.fill_gaps(self.damage_times, name, self.category)
 #####################################################################################################################################
 
 
@@ -95,21 +94,20 @@ class Aggressive(Shotgun):
         self.base_damage_bs = self.aggressive_damage_bs * self.surgex3_damage_buff * self.vorpal_damage_buff
         self.base_damage_hs = self.aggressive_damage_hs * self.surgex3_damage_buff * self.vorpal_damage_buff
 
-    def printDps(self, buffPerc = 1.25, isHS=False, name="Aggressive SG", damageTimes=[], placeInColumn=None):
+    def calculate(self, buff_perc = 1.25, is_hs=False, name="Aggressive SG", prev_result=DamageResult()):
         damage_per_shot = self.base_damage_bs
-        if isHS:
+        if is_hs:
             name = "Aggressive SG (Vorpal + HS)"
             damage_per_shot = self.base_damage_hs
         else:
             name = "Aggressive SG (Vorpal + BS)"
-        self._preparePrintDps_(name, damageTimes, placeInColumn)
+        self._prepare_calculation(prev_result)
 
         def damagePerShot(shots_fired, shots_fired_this_mag):
-            return damage_per_shot * buffPerc
+            return damage_per_shot * buff_perc
         self.processSimpleDamageLoop(self.mag_size_initial, self.mag_size_subsequent,
                                      self.time_between_shots, self.reload_time, damagePerShot)
-        print(self.damage_times)
-        return self.excel.closeExcel(self.damage_times)
+        return self.fill_gaps(self.damage_times, name, self.category)
 
 
 
@@ -128,15 +126,14 @@ class FILO(Shotgun):
         self.mag_size_subsequent = 1
         self.base_damage = self.slug_damage * self.surgex3_damage_buff * self.vorpal_damage_buff
 
-    def printDps(self, buffPerc = 1.25, name="FILO (Vorpal)", damageTimes=[], placeInColumn=None):
-        self._preparePrintDps_(name, damageTimes, placeInColumn)
+    def calculate(self, buff_perc = 1.25, name="FILO (Vorpal)", prev_result=DamageResult()):
+        self._prepare_calculation(prev_result)
 
         def damagePerShot(shots_fired, shots_fired_this_mag):
-            return self.base_damage * buffPerc
+            return self.base_damage * buff_perc
         self.processSimpleDamageLoop(self.mag_size_initial, self.mag_size_subsequent,
                                      self.time_between_shots, self.reload_time, damagePerShot)
-        print(self.damage_times)
-        return self.excel.closeExcel(self.damage_times)
+        return self.fill_gaps(self.damage_times, name, self.category)
 
 class Fortismo(Shotgun):
     def __init__(self, damage_multiplier):
@@ -149,25 +146,24 @@ class Fortismo(Shotgun):
         self.damage_multiplier = damage_multiplier
         self.base_damage = self.slug_damage * self.surgex3_damage_buff
 
-    def printDps(self, buffPerc = 1.25, name="Fortismo (FTTC ", damageTimes=[], placeInColumn=None):
-        # buffPerc is like well
+    def calculate(self, buff_perc = 1.25, name="Fortismo (FTTC ", prev_result=DamageResult()):
+        # buff_perc is like well
         if self.damage_multiplier == 1.2:
             name += "FF)"
         elif self.damage_multiplier == 1.15:
             name += "Vorpal)"
-        self._preparePrintDps_(name, damageTimes, placeInColumn)
+        self._prepare_calculation(prev_result)
 
         def damagePerShot(shots_fired, shots_fired_this_mag):
             if self.damage_multiplier == 1.2:
                 if shots_fired >= 3:
-                    return self.damage_multiplier * self.base_damage * buffPerc
+                    return self.damage_multiplier * self.base_damage * buff_perc
             elif self.damage_multiplier == 1.15:
-                return self.damage_multiplier * self.base_damage * buffPerc
-            return self.base_damage * buffPerc
+                return self.damage_multiplier * self.base_damage * buff_perc
+            return self.base_damage * buff_perc
         self.processFTTCoTTLoop(
             self.mag_size_initial, self.mag_size_subsequent, damagePerShot, shots_to_refund=4)
-        print(self.damage_times)
-        return self.excel.closeExcel(self.damage_times)
+        return self.fill_gaps(self.damage_times, name, self.category)
     
 class Heritage(Shotgun):
     def __init__(self):
@@ -179,17 +175,16 @@ class Heritage(Shotgun):
         self.mag_size_subsequent = 1
         self.base_damage = self.slug_damage * self.surgex3_damage_buff
 
-    def printDps(self, buffPerc = 1.25, name="Hertiage (Recon Recomb)", damageTimes=[], placeInColumn=None):
-        self._preparePrintDps_(name, damageTimes, placeInColumn)
+    def calculate(self, buff_perc = 1.25, name="Hertiage (Recon Recomb)", prev_result=DamageResult()):
+        self._prepare_calculation(prev_result)
 
         def damagePerShot(shots_fired, shots_fired_this_mag):
             if shots_fired == 0:
-                return self.base_damage * buffPerc * 2
-            return self.base_damage * buffPerc
+                return self.base_damage * buff_perc * 2
+            return self.base_damage * buff_perc
         self.processSimpleDamageLoop(self.mag_size_initial, self.mag_size_subsequent,
                                      self.time_between_shots, self.reload_time, damagePerShot)
-        print(self.damage_times)
-        return self.excel.closeExcel(self.damage_times)
+        return self.fill_gaps(self.damage_times, name, self.category)
     
 class Nessas(Shotgun):
     def __init__(self):
@@ -201,15 +196,14 @@ class Nessas(Shotgun):
         self.mag_size_subsequent = 1
         self.base_damage = self.slug_damage * self.surgex3_damage_buff * self.vorpal_damage_buff
 
-    def printDps(self, buffPerc = 1.25, name="Nessas (Recon Vorpal)", damageTimes=[], placeInColumn=None):
-        self._preparePrintDps_(name, damageTimes, placeInColumn)
+    def calculate(self, buff_perc = 1.25, name="Nessas (Recon Vorpal)", prev_result=DamageResult()):
+        self._prepare_calculation(prev_result)
 
         def damagePerShot(shots_fired, shots_fired_this_mag):
-            return self.base_damage * buffPerc
+            return self.base_damage * buff_perc
         self.processSimpleDamageLoop(self.mag_size_initial, self.mag_size_subsequent,
                                      self.time_between_shots, self.reload_time, damagePerShot)
-        print(self.damage_times)
-        return self.excel.closeExcel(self.damage_times)
+        return self.fill_gaps(self.damage_times, name, self.category)
 #####################################################################################################################################
 
 
@@ -228,24 +222,24 @@ class Acrius(Shotgun):
         self.mag_size_subsequent = 3
         self.base_damage_bs = self.acrius_damage_bs  * self.surgex3_damage_buff
         self.base_damage_hs = self.acrius_damage_hs * self.surgex3_damage_buff
+        self.category = "h"
 
-    def printDps(self, buffPerc = 1.25, isHS=True, name="Acrius", damageTimes=[], placeInColumn=None):
+    def calculate(self, buff_perc = 1.25, is_hs=True, name="Acrius", prev_result=DamageResult()):
         damage_per_shot = self.base_damage_bs
-        if isHS:
+        if is_hs:
             name = "Acrius (Trench HS)"
             damage_per_shot = self.base_damage_hs
         else:
             name = "Acrius (Trench BS)"
-        self._preparePrintDps_(name, damageTimes, placeInColumn)
+        self._prepare_calculation(prev_result)
         self.time += self.melee_shot_time
         self.reload_time = self.shot_melee_shot
 
         def damagePerShot(shots_fired, shots_fired_this_mag):
-            return damage_per_shot * buffPerc * self.trench_damage_buff
+            return damage_per_shot * buff_perc * self.trench_damage_buff
         self.processSimpleDamageLoop(self.mag_size_initial, self.mag_size_subsequent,
                                      self.time_between_shots, self.reload_time, damagePerShot)
-        print(self.damage_times)
-        return self.excel.closeExcel(self.damage_times)
+        return self.fill_gaps(self.damage_times, name, self.category)
 
 class FourthHorseMan(Shotgun):
     def __init__(self):
@@ -261,35 +255,30 @@ class FourthHorseMan(Shotgun):
         self.reload_time_lunas = 162/60
         self.single_shot_reload_time = 53/60  # just to know
         
-    def printDps(self, buffPerc = 1.25, isHS=False, isRainOF=False, isDodge=False,  name="FourthHorseman", damageTimes=[], placeInColumn=None):
+    def calculate(self, buff_perc = 1.25, is_hs=False, is_rain_of=False, is_dodge=False,  name="FourthHorseman", prev_result=DamageResult()):
         self.reload_time = self.reload_time_lunas
-        if (isRainOF):
+        if (is_rain_of):
             self.reload_time = self.rainOF_reload_time
-        elif (isDodge):
+        elif (is_dodge):
             self.reload_time = self.dodge_reload_time
-        damage_per_shot = self.base_damage_bs * buffPerc
-        if isHS:
-            damage_per_shot = self.base_damage_hs * buffPerc
-        self._preparePrintDps_(name, damageTimes, placeInColumn)
+        damage_per_shot = self.base_damage_bs * buff_perc
+        if is_hs:
+            damage_per_shot = self.base_damage_hs * buff_perc
+        self._prepare_calculation(prev_result)
 
         def damagePerShot(shots_fired, shots_fired_this_mag):
             if (shots_fired_this_mag == 1):
-                print(damage_per_shot * 1.18)
                 return damage_per_shot * 1.18
             elif (shots_fired_this_mag == 2):
-                print(damage_per_shot * 1.39)
                 return damage_per_shot * 1.39
             elif (shots_fired_this_mag == 3):
-                print(damage_per_shot * 1.59)
                 return damage_per_shot * 1.59
             elif (shots_fired_this_mag == 4):
-                print(damage_per_shot * 1.81)
                 return damage_per_shot * 1.81
             return damage_per_shot
         self.processSimpleDamageLoop(self.mag_size_initial, self.mag_size_subsequent,
                                      self.time_between_shots, self.reload_time, damagePerShot)
-        print(self.damage_times)
-        return self.excel.closeExcel(self.damage_times)
+        return self.fill_gaps(self.damage_times, name, self.category)
 class LordOfWolves(Shotgun):
     def __init__(self):
         self.reserves = 120
@@ -307,14 +296,14 @@ class LordOfWolves(Shotgun):
         self.mag_size_subsequent = self.burst_size
 
 
-    def printDps(self, buffPerc = 1.25, hasPerk=True, name="Lord Of Wolves", damageTimes=[], placeInColumn=None):
+    def calculate(self, buff_perc = 1.25, hasPerk=True, name="Lord Of Wolves", prev_result=DamageResult()):
         name = "Lord Of Wolves (Release the Wolves)" if hasPerk else "Lord Of Wolves"
-        self._preparePrintDps_(name, damageTimes, placeInColumn)
+        self._prepare_calculation(prev_result)
         self.base_damage = self.base_damage_perk if hasPerk else self.base_damage
         self.burst_cooldown = self.burst_cooldown_perk if hasPerk else self.burst_cooldown
         reload_time = self.reload_time_perk if hasPerk else self.reload_time
         def damagePerShot(shots_fired, shots_fired_this_mag):
-            return self.base_damage * buffPerc
+            return self.base_damage * buff_perc
         self.reserves_true = self.reserves
         self.reserves = self.mag_size
         while self.reserves_true > 0:
@@ -322,6 +311,5 @@ class LordOfWolves(Shotgun):
                                      self.time_between_shots, self.burst_cooldown, damagePerShot)
             self.time += reload_time
             self.reserves_true -= self.mag_size
-        print(self.damage_times)
-        return self.excel.closeExcel(self.damage_times)
+        return self.fill_gaps(self.damage_times, name, self.category)
 #####################################################################################################################################

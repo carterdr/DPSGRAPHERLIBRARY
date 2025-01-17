@@ -1,5 +1,5 @@
 from Libraries import Weapon
-
+from Libraries.DamageResult import DamageResult
 
 class Fusions(Weapon.Weapon):
     def __init__(self, reserves):
@@ -17,7 +17,7 @@ class Fusions(Weapon.Weapon):
                                   (5389 + 5435 + 5482 + 5528 + 5574), 
                                   (5158 + 5204 + 5250 + 5297 + 5343),
                                   (5112 * 5)]
-
+        self.category = "s"
 #Rapids
 #####################################################################################################################################
 class Cartesian(Fusions):
@@ -26,23 +26,23 @@ class Cartesian(Fusions):
         super().__init__(self.reserves)
         self.charge_time = 27/60
         self.time_between_shots = 59/60
+        self.reload_cancel_time = 30/60
         self.reload_time = 90/60
         self.mag_size_initial = 7
         self.mag_size_subsequent = 7
         self.base_damage = self.rapid_accel_damage * self.vorpal_damage_buff * self.surgex3_damage_buff
 
-    def printDps(self, buffPerc = 1.25, name="Cartesian (Vorpal)", damageTimes=[], placeInColumn=None):
-        self._preparePrintDps_(name, damageTimes, placeInColumn)
+    def calculate(self, buff_perc = 1.25, name="Cartesian (Vorpal)", prev_result=DamageResult()):
+        self._prepare_calculation(prev_result)
         if self.time != 0:
             self.time -= .5
         self.time += self.charge_time
 
-        def damagePerShot(shots_fired, shots_fired_this_mag):
-            return self.base_damage * buffPerc
+        def damage_per_shot_function(shots_fired, shots_fired_this_mag):
+            return self.base_damage * buff_perc
         self.processSimpleDamageLoop(self.mag_size_initial, self.mag_size_subsequent,
-                                     self.time_between_shots, self.reload_time, damagePerShot)
-        print(self.damage_times)
-        return self.excel.closeExcel(self.damage_times)
+                                     self.time_between_shots, self.reload_time, damage_per_shot_function)
+        return self.fill_gaps(self.damage_times, name, self.category)
 
 class Iterative(Fusions):
     def __init__(self):
@@ -56,21 +56,20 @@ class Iterative(Fusions):
         self.mag_size_subsequent = 7
         self.base_damage = self.rapid_accel_damage * self.surgex3_damage_buff
 
-    def printDps(self, buffPerc = 1.25, name="IterativeLoop", damageTimes=[], placeInColumn=None):
-        self._preparePrintDps_(name, damageTimes, placeInColumn)
+    def calculate(self, buff_perc = 1.25, name="IterativeLoop", prev_result=DamageResult()):
+        self._prepare_calculation(prev_result)
         if self.time != 0:
             self.time -= .5
         self.time += self.charge_time
 
-        def damagePerShot(shots_fired, shots_fired_this_mag):
+        def damage_per_shot_function(shots_fired, shots_fired_this_mag):
             if shots_fired_this_mag == 1 or shots_fired_this_mag == 4:
                 return self.base_damage + self.mini_rocket
             else:
                 return self.base_damage
         self.processSimpleDamageLoop(self.mag_size_initial, self.mag_size_subsequent,
-                                     self.time_between_shots, self.reload_time, damagePerShot)
-        print(self.damage_times)
-        return self.excel.closeExcel(self.damage_times)
+                                     self.time_between_shots, self.reload_time, damage_per_shot_function)
+        return self.fill_gaps(self.damage_times, name, self.category)
 
 class Riptide(Fusions):
     def __init__(self):
@@ -83,18 +82,17 @@ class Riptide(Fusions):
         self.mag_size_subsequent = 7
         self.base_damage = self.rapid_accel_damage * self.vorpal_damage_buff * self.surgex3_damage_buff
 
-    def printDps(self, buffPerc = 1.25, name="Riptide (Vorpal)", damageTimes=[], placeInColumn=None):
-        self._preparePrintDps_(name, damageTimes, placeInColumn)
+    def calculate(self, buff_perc = 1.25, name="Riptide (Vorpal)", prev_result=DamageResult()):
+        self._prepare_calculation(prev_result)
         if self.time != 0:
             self.time -= .5
         self.time += self.charge_time
 
-        def damagePerShot(shots_fired, shots_fired_this_mag):
-            return self.base_damage * buffPerc
+        def damage_per_shot_function(shots_fired, shots_fired_this_mag):
+            return self.base_damage * buff_perc
         self.processSimpleDamageLoop(self.mag_size_initial, self.mag_size_subsequent,
-                                     self.time_between_shots, self.reload_time, damagePerShot)
-        print(self.damage_times)
-        return self.excel.closeExcel(self.damage_times)
+                                     self.time_between_shots, self.reload_time, damage_per_shot_function)
+        return self.fill_gaps(self.damage_times, name, self.category)
 
 class ScatterSignal(Fusions):
     def __init__(self):
@@ -107,21 +105,20 @@ class ScatterSignal(Fusions):
         self.mag_size_subsequent = 18
         self.base_damage = self.rapid_damage *self.surgex3_damage_buff
 
-    def printDps(self, buffPerc = 1.25, name="Scatter Signal (Overflow CB)", damageTimes=[], placeInColumn=None):
-        self._preparePrintDps_(name, damageTimes, placeInColumn)
+    def calculate(self, buff_perc = 1.25, name="Scatter Signal (Overflow CB)", prev_result=DamageResult()):
+        self._prepare_calculation(prev_result)
         if self.time != 0:
             self.time -= .5
         self.time += self.charge_time
 
-        def damagePerShot(shots_fired, shots_fired_this_mag):
+        def damage_per_shot_function(shots_fired, shots_fired_this_mag):
             if shots_fired_this_mag > 0:
-                return self.base_damage * buffPerc * self.controled_burst_damage_buff
+                return self.base_damage * buff_perc * self.controled_burst_damage_buff
             else:
-                return self.base_damage * buffPerc
+                return self.base_damage * buff_perc
         self.processSimpleDamageLoop(
-            self.mag_size_initial, self.mag_size_subsequent, self.time_between_shots, self.reload_time, damagePerShot)
-        print(self.damage_times)
-        return self.excel.closeExcel(self.damage_times)
+            self.mag_size_initial, self.mag_size_subsequent, self.time_between_shots, self.reload_time, damage_per_shot_function)
+        return self.fill_gaps(self.damage_times, name, self.category)
 #####################################################################################################################################
 
 
@@ -137,21 +134,20 @@ class Techeun(Fusions):
         self.mag_size_subsequent = self.reserves
         self.base_damage = self.adaptive_damage *self.surgex3_damage_buff
 
-    def printDps(self, buffPerc = 1.25, name="Techeun (Rewind CB)", damageTimes=[], placeInColumn=None):
-        self._preparePrintDps_(name, damageTimes, placeInColumn)
+    def calculate(self, buff_perc = 1.25, name="Techeun (Rewind CB)", prev_result=DamageResult()):
+        self._prepare_calculation(prev_result)
         if self.time != 0:
             self.time -= .5
         self.time += self.charge_time
 
-        def damagePerShot(shots_fired, shots_fired_this_mag):
+        def damage_per_shot_function(shots_fired, shots_fired_this_mag):
             if shots_fired > 0:
-                return self.base_damage * buffPerc * 1.2
+                return self.base_damage * buff_perc * 1.2
             else:
-                return self.base_damage * buffPerc
+                return self.base_damage * buff_perc
         self.processSimpleDamageLoop(
-            self.mag_size_initial, self.mag_size_subsequent, self.time_between_shots, 0, damagePerShot)
-        print(self.damage_times)
-        return self.excel.closeExcel(self.damage_times)
+            self.mag_size_initial, self.mag_size_subsequent, self.time_between_shots, 0, damage_per_shot_function)
+        return self.fill_gaps(self.damage_times, name, self.category)
 #####################################################################################################################################
 
 
@@ -167,21 +163,20 @@ class Eremite(Fusions):
         self.mag_size_subsequent = self.reserves
         self.base_damage = self.high_impact_damage * self.surgex3_damage_buff
 
-    def printDps(self, buffPerc = 1.25, name="Eremite (Envious CB)", damageTimes=[], placeInColumn=None):
-        self._preparePrintDps_(name, damageTimes, placeInColumn)
+    def calculate(self, buff_perc = 1.25, name="Eremite (Envious CB)", prev_result=DamageResult()):
+        self._prepare_calculation(prev_result)
         if self.time != 0:
             self.time -= .5
         self.time += self.charge_time
 
-        def damagePerShot(shots_fired, shots_fired_this_mag):
+        def damage_per_shot_function(shots_fired, shots_fired_this_mag):
             if shots_fired > 0:
-                return self.base_damage * buffPerc * 1.2
+                return self.base_damage * buff_perc * 1.2
             else:
-                return self.base_damage * buffPerc
+                return self.base_damage * buff_perc
         self.processSimpleDamageLoop(
-            self.mag_size_initial, self.mag_size_subsequent, self.time_between_shots, 0, damagePerShot)
-        print(self.damage_times)
-        return self.excel.closeExcel(self.damage_times)
+            self.mag_size_initial, self.mag_size_subsequent, self.time_between_shots, 0, damage_per_shot_function)
+        return self.fill_gaps(self.damage_times, name, self.category)
 #####################################################################################################################################
 
 #Exotics
@@ -203,31 +198,30 @@ class Merciless(Fusions):
         self.mag_size_initial = 8
         self.mag_size_subsequent = 8
 
-    def printDps(self, buffPerc = 1.25, name="Merciless", damageTimes=[], placeInColumn=None):
-        self._preparePrintDps_(name, damageTimes, placeInColumn)
+    def calculate(self, buff_perc = 1.25, name="Merciless", prev_result=DamageResult()):
+        self._prepare_calculation(prev_result)
         if self.time != 0:
             self.time -= .5
         self.time += self.charge_time
 
-        def damagePerShot(shots_fired, shots_fired_this_mag):
+        def damage_per_shot_function(shots_fired, shots_fired_this_mag):
             damage_done = 0
             if (shots_fired == 0):
                 self.time_between_shots = self.time_one_to_two
-                damage_done = self.shotOne_damage * buffPerc
+                damage_done = self.shotOne_damage * buff_perc
             elif (shots_fired == 1):
                 self.time_between_shots = self.time_two_to_three
-                damage_done = self.shotTwo_damage * buffPerc
+                damage_done = self.shotTwo_damage * buff_perc
             elif (shots_fired == 2):
                 self.time_between_shots = self.time_between_shots_max
-                damage_done = self.shotThree_damage * buffPerc
+                damage_done = self.shotThree_damage * buff_perc
             else:
                 self.time_between_shots = self.time_between_shots_max
-                damage_done = self.base_damage * buffPerc
+                damage_done = self.base_damage * buff_perc
             return damage_done
         self.processSimpleDamageLoop(self.mag_size_initial, self.mag_size_subsequent,
-                                     self.time_between_shots, self.reload_time, damagePerShot)
-        print(self.damage_times)
-        return self.excel.closeExcel(self.damage_times)
+                                     self.time_between_shots, self.reload_time, damage_per_shot_function)
+        return self.fill_gaps(self.damage_times, name, self.category)
 
 class OneThousandVoices(Fusions):
     def __init__(self):
@@ -240,21 +234,20 @@ class OneThousandVoices(Fusions):
         self.mag_size_subsequent = 4
         self.base_damage = self.oneK_damage * self.surgex3_damage_buff
         self.ignition_damage = self.oneK_ignition_damage * self.surgex3_damage_buff
-
-    def printDps(self, buffPerc = 1.25, isAshes=False, name="1K", damageTimes=[], placeInColumn=None):
-        name = f"1k ({'Ashes' if isAshes else 'No Ashes'})"
-        self._preparePrintDps_(name, damageTimes, placeInColumn)
+        self.category = "h"
+    def calculate(self, buff_perc = 1.25, is_ashes=False, name="1K", prev_result=DamageResult()):
+        name = f"1k ({'Ashes' if is_ashes else 'No Ashes'})"
+        self._prepare_calculation(prev_result)
         if self.time != 0:
             self.time -= .5
         self.time += self.charge_time
 
-        def damagePerShot(shots_fired, shots_fired_this_mag):
-            if (isAshes):
-                return (self.base_damage + self.ignition_damage) * buffPerc
+        def damage_per_shot_function(shots_fired, shots_fired_this_mag):
+            if (is_ashes):
+                return (self.base_damage + self.ignition_damage) * buff_perc
             else:
-                return (self.base_damage + (self.ignition_damage if (shots_fired % 2 == 0) else 0)) * buffPerc
+                return (self.base_damage + (self.ignition_damage if (shots_fired % 2 == 0) else 0)) * buff_perc
         self.processSimpleDamageLoop(self.mag_size_initial, self.mag_size_subsequent,
-                                     self.time_between_shots, self.reload_time, damagePerShot)
-        print(self.damage_times)
-        return self.excel.closeExcel(self.damage_times)
+                                     self.time_between_shots, self.reload_time, damage_per_shot_function)
+        return self.fill_gaps(self.damage_times, name, self.category)
 #####################################################################################################################################

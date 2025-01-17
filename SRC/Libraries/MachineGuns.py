@@ -1,6 +1,6 @@
 from Libraries import Weapon
-
-
+from Libraries.DamageResult import DamageResult
+from Libraries.config import print_update
 class MachineGun(Weapon.Weapon):
     def __init__(self, reserves):
         super().__init__(reserves)
@@ -10,6 +10,7 @@ class MachineGun(Weapon.Weapon):
         self.grand_shot = 13241
         self.tlord_lightning = 4832
         self.tlord_shot = 2750
+        self.category = "h"
 #Rapids
 #####################################################################################################################################
 class Retrofit(MachineGun):
@@ -22,16 +23,15 @@ class Retrofit(MachineGun):
         self.base_damage = self.rapid_damage * self.surgex3_damage_buff
         self.reload_time = 215/60
 
-    def printDps(self, buffPerc = 1.25, mag_size = 115, name="Retrofit (FTTC TL)", damageTimes=[], placeInColumn=None):
-        self._preparePrintDps_(name, damageTimes, placeInColumn)
+    def calculate(self, buff_perc = 1.25, mag_size = 115, name="Retrofit (FTTC TL)", prev_result=DamageResult()):
+        self._prepare_calculation(prev_result)
         self.mag_size_initial = mag_size
         self.mag_size_subsequent = mag_size
-        def damagePerShot(shots_fired, shots_fired_this_mag):
-            return (1 + self.getTargetLockBonus(shots_fired_this_mag / self.mag_size_initial)) * self.base_damage * buffPerc
+        def damage_per_shot_function(shots_fired, shots_fired_this_mag):
+            return (1 + self.getTargetLockBonus(shots_fired_this_mag / self.mag_size_initial)) * self.base_damage * buff_perc
         self.processFTTCoTTLoop(
-            self.mag_size_initial, self.mag_size_subsequent, damagePerShot, shots_to_refund=4)
-        print(self.damage_times)
-        return self.excel.closeExcel(self.damage_times)
+            self.mag_size_initial, self.mag_size_subsequent, damage_per_shot_function, shots_to_refund=4)
+        return self.fill_gaps(self.damage_times, name, self.category)
 
     def getTargetLockBonus(self, magPercent):
         if (magPercent < .125):
@@ -60,13 +60,13 @@ class GrandOverture(MachineGun):
         self.barrage_end_to_shoot = 6/60
         self.barrage_length = 77/60
 
-    def printDps(self, buffPerc = 1.25, preLoaded=False, name="GrandOverture", damageTimes=[], placeInColumn=None):
+    def calculate(self, buff_perc = 1.25, preLoaded=False, name="GrandOverture", prev_result=DamageResult()):
         if preLoaded:
             name = "GrandOverture (PreLoaded)"
-        self._preparePrintDps_(name, damageTimes, placeInColumn)
+        self._prepare_calculation(prev_result)
         if preLoaded:
             self.reserves -= 20
-            self.damage_done += self.rocket_barrage_damage * buffPerc
+            self.damage_done += self.rocket_barrage_damage * buff_perc
             self.damage_times.append(self.update(
                 self.time, self.damage_done, 0, 1))
             self.time += self.barrage_length + self.barrage_end_to_shoot
@@ -77,7 +77,7 @@ class GrandOverture(MachineGun):
         mag_size = self.mag_size_initial
         while shots_fired < self.reserves and self.time < 100:
             for shots_fired_this_mag in range(mag_size):
-                damage_per_shot = self.base_damage * buffPerc
+                damage_per_shot = self.base_damage * buff_perc
                 self.damage_done += damage_per_shot
                 shots_fired += 1
                 self.damage_times.append(self.update(
@@ -85,19 +85,23 @@ class GrandOverture(MachineGun):
                 if (shots_fired == self.reserves or shots_fired_this_mag == mag_size - 1):
                     break
                 self.time += self.time_between_shots
-                print(f"      - Between shots {self.time_between_shots} | Damage: {damage_per_shot}")
+                if print_update:
+                    print(f"      - Between shots {self.time_between_shots} | Damage: {damage_per_shot}")
             self.time += self.change_mode_time
-            self.damage_done += self.rocket_barrage_damage*buffPerc
-            print(f"      - Barrage {self.time_between_shots} | Damage: {self.rocket_barrage_damage * buffPerc}")
+            self.damage_done += self.rocket_barrage_damage*buff_perc
+            if print_update:
+                print(f"      - Barrage {self.time_between_shots} | Damage: {self.rocket_barrage_damage * buff_perc}")
             self.damage_times.append(self.update(
                 self.time, self.damage_done, shots_fired, mag))
             if (shots_fired == self.reserves):
                 break
             self.time += self.reload_time
-            print(f"      - Reloading {self.reload_time} | Damage: 0")
+            if print_update:
+                print(f"      - Reloading {self.reload_time} | Damage: 0")
             mag += 1
-        print(self.damage_done)
-        return self.excel.closeExcel(self.damage_times)
+        if print_update:
+            print(self.damage_done)
+        return self.fill_gaps(self.damage_times, name, self.category)
 
 
 class ThunderLord(MachineGun):
@@ -112,8 +116,8 @@ class ThunderLord(MachineGun):
         self.lightning = self.tlord_lightning * self.surgex3_damage_buff
         self.reload_time = 214/60
 
-    def printDps(self, buffPerc = 1.25, name="ThunderLord", damageTimes=[], placeInColumn=None):
-        self._preparePrintDps_(name, damageTimes, placeInColumn)
+    def calculate(self, buff_perc = 1.25, name="ThunderLord", prev_result=DamageResult()):
+        self._prepare_calculation(prev_result)
         self.time_between_shots = self.time_between_shots_initial
         shots_fired = 0
         mags = 1
@@ -129,9 +133,9 @@ class ThunderLord(MachineGun):
                 elif (mag_shots == 26):
                     self.time_between_shots = self.time_between_shots_2nd
                 if (mag_shots % 10 == 0):
-                    self.damage_done += self.lightning * buffPerc
+                    self.damage_done += self.lightning * buff_perc
                     current_mag_size += 7
-                damage_per_shot = self.base_damage * buffPerc
+                damage_per_shot = self.base_damage * buff_perc
                 self.damage_done += damage_per_shot
                 self.damage_times.append(self.update(
                     self.time, self.damage_done, shots_fired, mags))
@@ -142,8 +146,7 @@ class ThunderLord(MachineGun):
             self.time += self.reload_time
             mags += 1
             self.time_between_shots = self.time_between_shots_initial
-        print(self.damage_times)
-        return self.excel.closeExcel(self.damage_times)
+        return self.fill_gaps(self.damage_times, name, self.category)
 class Xenophage(MachineGun):
     def __init__(self):
         self.reserves = 31
@@ -154,16 +157,15 @@ class Xenophage(MachineGun):
         self.mag_size_initial = 13
         self.mag_size_subsequent = 13
 
-    def printDps(self, buffPerc = 1.25, noReload=False, name="Xenophage", damageTimes=[], placeInColumn=None):
-        if noReload:
+    def calculate(self, buff_perc = 1.25, no_reload=False, name="Xenophage", prev_result=DamageResult()):
+        if no_reload:
             name += " (No Reloads)"
-        self._preparePrintDps_(name, damageTimes, placeInColumn)
-        if noReload:
+        self._prepare_calculation(prev_result)
+        if no_reload:
             self.mag_size_initial = self.reserves
-        def damagePerShot(shots_fired, shots_fired_this_mag):
-            return self.base_damage * buffPerc
+        def damage_per_shot_function(shots_fired, shots_fired_this_mag):
+            return self.base_damage * buff_perc
         self.processSimpleDamageLoop(self.mag_size_initial, self.mag_size_subsequent,
-                                     self.time_between_shots, self.reload_time, damagePerShot)
-        print(self.damage_times)
-        return self.excel.closeExcel(self.damage_times)
+                                     self.time_between_shots, self.reload_time, damage_per_shot_function)
+        return self.fill_gaps(self.damage_times, name, self.category)
 #####################################################################################################################################
