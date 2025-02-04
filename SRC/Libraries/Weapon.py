@@ -1,3 +1,4 @@
+import math
 import numpy
 from Libraries import Excel, DamageResult, Database
 from Libraries.config import print_when_filling, story_mission_to_raid_scalar, print_update
@@ -21,6 +22,7 @@ class Weapon:
         self.excel = None    
         self.reserves = reserves
         self.reload_num_appear = 0
+        self.procs = 0
     def _prepare_calculation(self, last_time):   
             self.damage_times = []
             self.time = 0
@@ -56,6 +58,7 @@ class Weapon:
                     break    
             mag_size = subsequent_mag
             mag += 1
+
     def processBaitDamageLoop(self, bait_tuple, inital_mag, subsequent_mag, time_btwn_shots, reload_time, damage_per_shot_function, bait_duration = 10, dont_reproc = False):
         mag_size = inital_mag
         shots_fired = 0
@@ -91,6 +94,7 @@ class Weapon:
                     if print_update:
                       print(f"      - Between shots {self.time_between_shots} | Damage: {damage_per_shot}")   
                     break    
+                #break out early situations
                 if not dont_reproc and (self.time + time_btwn_shots > bait_time + bait_duration) and (shots_fired_this_mag != mag_size - 1 or mag_size == 1) and shots_fired != self.reserves - 1:
                     if shots_fired_this_mag == mag_size-1:
                         self.time += self.reload_num_appear   
@@ -106,7 +110,7 @@ class Weapon:
                     self.procs += 1
                     is_proc_shot = True
                 elif(shots_fired_this_mag == mag_size-1):
-                    
+                    #if need to reload, but bait will run out after
                     if self.time + reload_time > bait_time + bait_duration and self.time < bait_time + bait_duration and (mag_size != 1 or (mag_size == 1 and shots_fired != self.reserves - 1)):
                         new_time = bait_time + bait_duration + (1/60)
                         if self.reload_num_appear + self.time > bait_time + bait_duration:
@@ -125,6 +129,7 @@ class Weapon:
                         bait_time = procBait()
                         self.procs += 1
                         is_proc_shot = True
+                    #if need to reload and bait wont run out after
                     else:
                         if print_update:
                             print(f"      - Reloading {self.reload_time} | Damage: {damage_per_shot}")
@@ -137,6 +142,139 @@ class Weapon:
                     break    
             mag_size = subsequent_mag
             mag += 1
+
+    def processEnviousArsenalBaitDamageLoop(self, bait_tuple, inital_mag, subsequent_mag, time_btwn_shots, damage_per_shot_function, bait_duration = 10):
+        """
+        Simulates the damage loop for Envious Arsenal with BAIT mechanics.
+
+        Logic:
+        - Tracks the damage dealt over time while managing the BAIT timer and magazine reloading.
+        - Reprocs BAIT when all three weapons are used or when specific conditions are met.
+        - Handles shooting, reloading, and switching between the initial and subsequent magazine sizes.
+
+        Parameters:
+        - bait_tuple: Tuple containing time and damage values for the other weapons (used to trigger BAIT).
+        - inital_mag: The size of the initial magazine.
+        - subsequent_mag: The size of subsequent magazines.
+        - time_btwn_shots: Time delay between consecutive shots.
+        - damage_per_shot_function: Function to calculate damage for each shot.
+        - bait_duration: Duration for which BAIT remains active (default = 10 seconds).
+        """
+
+        # Initialize variables
+        mag_size = inital_mag  # Current magazine size
+        shots_fired = 0  # Tracks the total number of shots fired
+        weapons_shot_for_bait = set()  # Tracks which weapons have been shot for BAIT
+        bait_proc_time = 0  # Tracks when BAIT was last triggered
+        total_bait_proc_time = bait_tuple[0][0] + bait_tuple[1][0] + bait_tuple[2][0]
+        
+        # Function to check if BAIT should be reprocced
+        def check_bait_proc():
+            """
+            Reprocs BAIT if the timer has expired and all three weapons have been used.
+            Resets the `weapons_shot_for_bait` set and updates `bait_time`.
+            """
+            nonlocal bait_proc_time
+            if len(weapons_shot_for_bait) == 3:
+                bait_proc_time = self.time
+                weapons_shot_for_bait.clear()
+                if print_update:
+                    print(f"      - Proccing bait at {self.time}")
+                    print(f"---------------------")
+
+        # Function to simulate shooting other guns (required to reproc BAIT)
+        def shootOtherGuns():
+            """
+            Simulates shooting the two other weapons to reproc BAIT.
+            Updates damage, time, and `weapons_shot_for_bait` accordingly.
+            """
+            self.procs += 1
+            if print_update:
+                print(f"---------------------")
+                print(f"      - Shooting other guns")
+
+            for weapon, damage_time in zip(["k", "e"], bait_tuple):  # Iterate over two weapons
+                self.damage_done += damage_time[1]  # Add damage from the weapon
+                self.damage_times.append(self.update(self.time, self.damage_done, 0, 0))  # Log damage event
+                if print_update:
+                    print(f"      - Adding Time {damage_time[0]}")
+                if self.time > bait_proc_time + bait_duration or bait_proc_time == 0:  # Check if BAIT can be reprocced
+                    weapons_shot_for_bait.add(weapon)
+                    check_bait_proc()
+                self.time += damage_time[0]  # Increment time for shooting the weapon
+            if print_update:
+                print(f"      - Swapping to bait weapon at {self.time}")
+                print(f"---------------------")
+            return self.time
+
+        # Initial BAIT proc
+        shootOtherGuns()
+        weapons_shot_for_bait.add("h")  # Track this weapon usage
+        check_bait_proc()
+        self.procs = 1  # Tracks the number of times BAIT has been reprocced
+        mag = 1  # Tracks the current magazine
+        is_proc_shot = True  # Indicates if the shot is a proc shot
+        # Main loop to simulate shooting and reloading
+        while shots_fired < self.reserves and self.time < 100:  # Continue until reserves are depleted or time limit is reached
+            for shots_fired_this_mag in range(mag_size):  # Loop through all shots in the magazine
+
+                # Check if BAIT timer has expired before this shot
+                if self.time > bait_proc_time + bait_duration:
+                    if print_update:
+                        print(f"      - Bait Expired at {bait_proc_time + bait_duration}")
+                    remaining_shots = self.reserves - shots_fired
+                    # Calculate the number of magazines needed
+                    mags_if_shoot = math.ceil((remaining_shots - 1) / mag_size)
+                    mags_if_reproc = math.ceil(remaining_shots / mag_size)
+                    mags_if_shoot = math.ceil((remaining_shots - 1) / mag_size)
+                    # Decide whether to shoot the shot or reproc
+                    if mags_if_shoot < mags_if_reproc or len(weapons_shot_for_bait) == 2:
+                        if print_update:
+                            print(f"      - Shooting to reduce mags at {self.time}")
+                        weapons_shot_for_bait.add("h")  # Mark bait weapon used
+                        check_bait_proc()
+                        is_proc_shot = True  # Mark the next shot as a proc shot
+                    else:
+                        if print_update:
+                            print(f"      - Reproccing BAIT at {self.time}")
+                        break
+
+                
+                # Calculate damage for this shot
+                damage_per_shot = damage_per_shot_function(is_proc_shot, bait_proc_time, shots_fired, shots_fired_this_mag)
+                self.damage_done += damage_per_shot
+                shots_fired += 1
+                self.damage_times.append(self.update(self.time, self.damage_done, shots_fired, mag))  # Log damage event
+                is_proc_shot = False  # Reset proc shot flag
+                if shots_fired == self.reserves:
+                    break
+                # Update time for the shot or reload
+                if shots_fired_this_mag == mag_size - 1:  # Last shot in the magazine
+                    if mag_size == 1:
+                        if print_update:
+                            print(f"      - Performing an Envious Reload Mag is Empty at {self.time}")
+                    elif self.time + bait_tuple[2][0] < bait_proc_time + bait_duration and self.time + total_bait_proc_time > bait_proc_time + bait_duration:
+                        if print_update:
+                            print(f"      - Performing an Envious Reload Mag WITH STALL is Empty at {self.time}")
+                        self.time = bait_proc_time + bait_duration + (1/60)
+                    else:
+                        if print_update:
+                            print(f"      - Performing an Envious Reload Mag is Empty at {self.time}")
+                else:
+                    self.time += time_btwn_shots  # Add time between shots
+                    if print_update:
+                        print(f"      - Between shots {time_btwn_shots} | Damage: {damage_per_shot}")
+
+            # Exit if all reserves have been used
+            if shots_fired == self.reserves:
+                break
+
+            # Update magazine size and simulate shooting other guns
+            mag_size = subsequent_mag
+            mag += 1
+            self.time += bait_tuple[2][0]
+            shootOtherGuns()
+
     def processFTTCoTTLoop(self, inital_mag, subsequent_mag, damage_per_shot_function, shots_to_refund):
         #save base values
         #

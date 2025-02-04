@@ -14,7 +14,7 @@ class WardensLaw(LuckyPants):
         super().__init__(self.reserves)
         self.mag_size = 26
         self.bursts = self.mag_size//2
-        self.base_damage = 1853 * self.surgex3_damage_buff
+        self.base_damage = 2138 * self.surgex3_damage_buff
         self.time_between_shots = 6/60  # time between bursts
         self.burst_cooldown = 21/60
         self.reload_time = 86/60
@@ -85,8 +85,8 @@ class Malfeasance(LuckyPants):
         self.reserves = 20
         super().__init__(self.reserves)
         self.mag_size = 20
-        self.explosion_damage = 5 * 2416 * self.surgex3_damage_buff
-        self.base_damage = 2633 * self.surgex3_damage_buff
+        self.explosion_damage = 5 * 2368 * self.surgex3_damage_buff
+        self.base_damage = 2858 * self.surgex3_damage_buff
         self.time_between_shots = 20.5/60
         self.category = "e"
     def calculate(self, buff_perc = 1.25, is_blighted=False, is_taken=True, name="Malfeasance", prev_result=DamageResult()):

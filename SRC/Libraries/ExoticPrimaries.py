@@ -15,7 +15,9 @@ class Outbreak(ExoticPrimary):
         self.reload_time = 71/60
         self.mag_size_initial = 34
         self.mag_size_subsequent = 34
-        self.base_damage = 869 * 3 * self.surgex3_damage_buff
+        self.base_damage = 946 * 3 * self.surgex3_damage_buff
+        self.nanite_damage = 1161 * 3 * self.surgex3_damage_buff
+        #bursts per nanite, 4 bursts : 2.5 nanites
 
     def calculate(self, buff_perc = 1.25, people=6, name="Outbreak (Solo)", prev_result=DamageResult()):
         self.damage_bonus = 1
@@ -26,12 +28,16 @@ class Outbreak(ExoticPrimary):
 
         def damage_per_shot_function(shots_fired, shots_fired_this_mag):
             damage_done = self.base_damage*self.damage_bonus*buff_perc
+            if shots_fired % 4 == 0:
+                damage_done += 2.5 * self.nanite_damage * buff_perc
             if (self.damage_bonus <= 4.5):
-                if (shots_fired == math.ceil(7/people)):
-                    self.damage_bonus = 2.5
+                if (shots_fired == math.ceil(4/people)):
+                    self.damage_bonus = 1 + (.3 * 2.5)
+                elif (shots_fired == math.ceil(8/people)):
+                    self.damage_bonus = 1 + 1.5
                 else:
-                    if ((shots_fired - math.ceil(7/people)) % 4 == 0):
-                        self.damage_bonus += .02*3*people
+                    if ((shots_fired - math.ceil(8/people)) % 4 == 0):
+                        self.damage_bonus += .021 *2.5 * people
                         if (self.damage_bonus > 4.5):
                             self.damage_bonus = 4.5
             return damage_done
@@ -42,9 +48,9 @@ class ToM(ExoticPrimary):
     def __init__(self):
         super().__init__(100000)
         self.time_between_shots = 14/60
-        self.base_damage = 1634 * self.surgex3_damage_buff 
-        self.final_round_damage = 3595 * self.surgex3_damage_buff
-        self.blight_damage = (8478 + 910 * 8 + 76) * self.surgex3_damage_buff
+        self.base_damage = 1750 * self.surgex3_damage_buff 
+        self.final_round_damage = 3849 * self.surgex3_damage_buff
+        self.blight_damage = (7891 + 847 * 8 + 71) * self.surgex3_damage_buff
 
     def calculate(self, buff_perc = 1.25, isBuffed=False, isBuffing=False, name="ToM", prev_result=DamageResult()):
         self._prepare_calculation(prev_result)
@@ -85,7 +91,7 @@ class FinalWarning(ExoticPrimary):
         self.reload_speed = 154/60
         self.burst_size = 10
         self.bursts_per_mag = 2
-        self.base_damage = 5795 * self.surgex3_damage_buff * 1.05
+        self.base_damage = 6452 * self.surgex3_damage_buff
 
 
     def calculate(self, buff_perc = 1.25, name="FinalWarning", prev_result=DamageResult()):
@@ -109,6 +115,7 @@ class ChoirOfOne(ExoticPrimary):
         self.mag_size_initial = 5
         self.mag_size_subsequent = 5
         self.category = "s"
+        self.reload_num_appear = 34/60
     def calculate(self, buff_perc = 1.25, out_of_range=True, name="Choir Of One", prev_result=DamageResult()):
         if out_of_range:
             name += " (Out of Range)"

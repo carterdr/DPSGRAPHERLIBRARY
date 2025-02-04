@@ -4,6 +4,7 @@ from Libraries.config import print_to_sheet_when_saving, print_name_when_saving
 from Libraries.Excel import print_to_sheet
 from dotenv import load_dotenv
 import os
+load_dotenv()
 # Initialize the Cloud SQL Connector
 credentials_path = "key.json"
 credentials = service_account.Credentials.from_service_account_file(credentials_path)

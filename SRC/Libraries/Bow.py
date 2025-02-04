@@ -10,7 +10,7 @@ class LeviathansBreath(Weapon.Weapon):
         self.mag_size_subsequent = self.reserves
         self.charge_time = 95/60
         self.time_between_shots = 86/60
-        self.base_damage = (25548 + 33852 + 2755 + 44) * 1.04 * self.surgex3_damage_buff #bug damage = 1.05
+        self.base_damage = (24976 + 33852 + 2755 + 44) * 1.04 * self.surgex3_damage_buff #bug damage = 1.05
         self.category = "h"
     def calculate(self, buff_perc = 1.25, name="Leviathans Breath", prev_result=DamageResult()):
         self._prepare_calculation(prev_result)

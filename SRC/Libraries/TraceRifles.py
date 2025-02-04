@@ -42,9 +42,9 @@ class Divinity(Weapon.Weapon):
         self.time_between_shots = self.time_between_shots_initial
         self.mag_size_inital = 194
         self.mag_size_subsequent = 194
-        self.base_damage = 339 * self.surgex3_damage_buff
-        self.shooting_bubble_damage = 440 * self.surgex3_damage_buff
-        self.bubble_pop_damage = 20979 * self.surgex3_damage_buff
+        self.base_damage = 440 * self.surgex3_damage_buff
+        self.shooting_bubble_damage = 520 * self.surgex3_damage_buff
+        self.bubble_pop_damage = 20661 * self.surgex3_damage_buff
         self.category = "s"
     def calculate(self, buff_perc = 1.25, no_reload=False, name="Divinity", prev_result=DamageResult()):
         if no_reload:

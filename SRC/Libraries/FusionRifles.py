@@ -1,6 +1,6 @@
 from Libraries import Weapon
 from Libraries.DamageResult import DamageResult
-
+import numpy
 class Fusions(Weapon.Weapon):
     def __init__(self, reserves):
         self.controled_burst_damage_buff = 1.2
@@ -9,14 +9,14 @@ class Fusions(Weapon.Weapon):
         self.rapid_damage = 2351 * 9
         self.rapid_mini_rocket_damage = 3676 + 3702
         self.adaptive_damage = 3189 * 7
-        self.adaptive_accel_damage = 3125 * 7
-        self.high_impact_damage = 5718 * 5
+        self.adaptive_accel_damage = 3250 * 7
+        self.high_impact_damage = 5709 * 5
         self.oneK_damage = (435+5652) * 10
         self.oneK_ignition_damage = 24925
-        self.merciless_damages = [(5619 + 5665 + 5712 + 5758 + 5804),
+        self.merciless_damages = numpy.array([(5619 + 5665 + 5712 + 5758 + 5804),
                                   (5389 + 5435 + 5482 + 5528 + 5574), 
                                   (5158 + 5204 + 5250 + 5297 + 5343),
-                                  (5112 * 5)]
+                                  (5112 * 5)]) * (5642/5619)
         self.category = "s"
 #Rapids
 #####################################################################################################################################
@@ -31,6 +31,7 @@ class Cartesian(Fusions):
         self.mag_size_initial = 7
         self.mag_size_subsequent = 7
         self.base_damage = self.rapid_accel_damage * self.vorpal_damage_buff * self.surgex3_damage_buff
+        self.reload_num_appear = 60/60
 
     def calculate(self, buff_perc = 1.25, name="Cartesian (Vorpal)", prev_result=DamageResult()):
         self._prepare_calculation(prev_result)
@@ -195,9 +196,10 @@ class Merciless(Fusions):
         self.base_damage = self.merciless_damages[3] * self.surgex3_damage_buff
         self.time_between_shots = 0
         self.reload_time = 89/60
+        self.reload_num_appear = 60/60
         self.mag_size_initial = 8
         self.mag_size_subsequent = 8
-
+ 
     def calculate(self, buff_perc = 1.25, name="Merciless", prev_result=DamageResult()):
         self._prepare_calculation(prev_result)
         if self.time != 0:
@@ -225,7 +227,7 @@ class Merciless(Fusions):
 
 class OneThousandVoices(Fusions):
     def __init__(self):
-        self.reserves = 11
+        self.reserves = 12
         super().__init__(self.reserves)
         self.charge_time = 42/60
         self.time_between_shots = 105/60
@@ -246,7 +248,7 @@ class OneThousandVoices(Fusions):
             if (is_ashes):
                 return (self.base_damage + self.ignition_damage) * buff_perc
             else:
-                return (self.base_damage + (self.ignition_damage if (shots_fired % 2 == 0) else 0)) * buff_perc
+                return (self.base_damage + (self.ignition_damage if (shots_fired % 2 == 1) else 0)) * buff_perc
         self.processSimpleDamageLoop(self.mag_size_initial, self.mag_size_subsequent,
                                      self.time_between_shots, self.reload_time, damage_per_shot_function)
         return self.fill_gaps(self.damage_times, name, self.category)

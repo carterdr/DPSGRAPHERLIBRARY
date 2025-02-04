@@ -5,19 +5,20 @@ class Shotgun(Weapon.Weapon):
     def __init__(self, reserves):
         self.trench_damage_buff = 1.5
         super().__init__(reserves)
-        self.rapid_damage_bs = 12 * 1124.5
-        self.rapid_damage_hs = 14949
-        self.lightweight_damage_bs = 12 * 1499.5
-        self.lightweight_damage_hs = 19933
-        self.aggressive_damage_bs = 1820.5 * 12
-        self.aggressive_damage_hs = 24196
-        self.slug_damage = 20900
-        self.acrius_damage_hs = 41262 + 7485
-        self.acrius_damage_bs = ((2483*15) + 7485)
-        self.horseman_hs = 16493
-        self.horseman_bs = (12 * 1240.5) 
-        self.lordow_damage = 3095
-        self.lordow_perk_damage = 4332
+        self.rapid_damage_bs = 12 * 1217.5
+        self.rapid_damage_hs = 16187
+        self.lightweight_damage_bs = 12 * 1579.5
+        self.lightweight_damage_hs = 20993
+        self.aggressive_damage_bs = 1834 * 12
+        self.aggressive_damage_hs = 24377
+        self.slug_damage = 20931
+        self.slayers_bouncers = 1840 * 7
+        self.acrius_damage_hs = 41579 + 7485
+        self.acrius_damage_bs = ((2503*15) + 7485)
+        self.horseman_hs = 18340
+        self.horseman_bs = (12 * 1379.5) 
+        self.lordow_damage = 4844
+        self.lordow_perk_damage = 8462
         self.category = "s"
 #Rapids
 #####################################################################################################################################
@@ -311,5 +312,25 @@ class LordOfWolves(Shotgun):
                                      self.time_between_shots, self.burst_cooldown, damagePerShot)
             self.time += reload_time
             self.reserves_true -= self.mag_size
+        return self.fill_gaps(self.damage_times, name, self.category)
+class SlayersFang(Shotgun):
+    def __init__(self):
+        self.reserves = 21
+        super().__init__(self.reserves)
+        self.time_between_shots = 48/60
+        self.reload_time = 76/60 
+        self.mag_size_initial = 7
+        self.mag_size_subsequent = 7
+        self.base_damage = (self.slug_damage + self.slayers_bouncers) * self.surgex3_damage_buff
+
+    def calculate(self, buff_perc = 1.25, name="Slayers Fang", prev_result=DamageResult()):
+        self._prepare_calculation(prev_result)
+
+        def damagePerShot(shots_fired, shots_fired_this_mag):
+            if shots_fired == 0:
+                return self.base_damage * buff_perc * 2
+            return self.base_damage * buff_perc
+        self.processSimpleDamageLoop(self.mag_size_initial, self.mag_size_subsequent,
+                                     self.time_between_shots, self.reload_time, damagePerShot)
         return self.fill_gaps(self.damage_times, name, self.category)
 #####################################################################################################################################

@@ -306,13 +306,24 @@ def calculate_crux_supremacy_rocket_div():
 def calculate_cataphract():
     name = "5 (Cataphract (21 Mag Bait Spike) + Scatter Signal (Overflow CB)) + (Tractor + Scatter Signal (Overflow CB))) + 2 Nighthawk"
     result = DamageResult()
-    result.add(GrenadeLaunchers.Cataphract().calculate(is_scatter_signal=True, buff_perc=1.25 *3 * 1.3))
+    x = GrenadeLaunchers.Cataphract()
+    y = FusionRifles.ScatterSignal()
+    x_result = x.calculate(1.25 *3 * 1.3, 21, True, "Cataphract", DamageResult(), FusionRifles.ScatterSignal().base_damage, 0, 50/60, 50/60, 75/60,FusionRifles.ScatterSignal().charge_time)
+    y.reserves -= x.procs
+    y.mag_size_initial -= x.procs
+    x_result.add(y.calculate(1.25 *3 * 1.3, prev_result=x_result))
+    result.add(x_result)
     
-    x = Abilities.GoldenGun()
-    x.damage_nighthawk *= (2 * 1.3)
-    x = x.calculate()
-    x.add(GrenadeLaunchers.Cataphract().calculate(is_scatter_signal=True, buff_perc=1.25 *2 * 1.3,prev_result = x))
-    result.add(x)
+    z = Abilities.GoldenGun()
+    z.damage_nighthawk *= (2 * 1.3)
+    z_result = z.calculate()
+    x = GrenadeLaunchers.Cataphract()
+    y = FusionRifles.ScatterSignal()
+    x_result = x.calculate(1.25 * 2 * 1.3, 21, True, "Cataphract", z_result, FusionRifles.ScatterSignal().base_damage, 0, 50/60, 50/60, 75/60,FusionRifles.ScatterSignal().charge_time)
+    y.reserves -= x.procs
+    y.mag_size_initial -= x.procs
+    z_result.add(x_result).add(y.calculate(1.25 * 2 * 1.3, prev_result=x_result))
+    result.add(z_result)
     
     result.add(FusionRifles.ScatterSignal().calculate(buff_perc=1.25 * 1.3))
     result.save_custom(name, "mp")
@@ -352,14 +363,14 @@ def calculate_edge_transit():
     x1 = Abilities.GoldenGun()
     x1.damage_nighthawk *= 1.15
     x1 = x1.calculate(is_nighthawk=True)
-    x1.add(GrenadeLaunchers.EdgeTransitSupremacyRotation().calculate(is_spike=False, one_kinetic_surge=False, prev_result = x1, buff_perc=1.25 * 1.15))
+    x1.add(GrenadeLaunchers.EdgeTransitAutoSupremacyRotation().calculate(is_spike=False, one_kinetic_surge=False, prev_result = x1, buff_perc=1.25 * 1.15))
     
     
     x2 = Abilities.Tether().calculate(is_deadfall=True)
-    x2.add(GrenadeLaunchers.EdgeTransitSupremacyRotation().calculate(is_spike=False, one_kinetic_surge=False, prev_result = x2, buff_perc=1.25 * 1.15))
+    x2.add(GrenadeLaunchers.EdgeTransitAutoSupremacyRotation().calculate(is_spike=False, one_kinetic_surge=False, prev_result = x2, buff_perc=1.25 * 1.15))
     result.add(x1).add(x2)
     
-    result.add(GrenadeLaunchers.EdgeTransitSupremacyRotation().calculate(is_spike=False, one_kinetic_surge=False, buff_perc=1.25 * 3 * 1.15))
+    result.add(GrenadeLaunchers.EdgeTransitAutoSupremacyRotation().calculate(is_spike=False, one_kinetic_surge=False, buff_perc=1.25 * 3 * 1.15))
         
     result.add(TraceRifles.Divinity().calculate(no_reload=True))
     result.save_custom(name, "mp")

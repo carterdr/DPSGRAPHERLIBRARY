@@ -8,29 +8,29 @@ class Linear(Weapon.Weapon):
         super().__init__(reserves)
         self.firing_line_damage_buff = 1.213
         
-        self.precision_accel_ctmw_damage = 25282
-        self.precision_ctmw_damage = 25798
-        self.precision_accel_damage = 26073
-        self.precision_base_damage = 26605
+        self.precision_accel_ctmw_damage = 27875
+        self.precision_ctmw_damage = 28443
+        self.precision_accel_damage = 28747
+        self.precision_base_damage = 29920
+
+        self.aggressive_damage = 13926 * 3 
+        self.aggressive_accel_damage = 13647 * 3 
+        self.aggressive_ctmw_damage = 13630 * 3 
+        self.aggressive_ctmw_accel_damage = 13357 * 3
+        self.aggressive_ctmw_accel_adeptct_damage = 13357 * 3
         
-        self.aggressive_damage = 12630 * 3
-        self.aggressive_accel_damage = 12378 * 3
-        self.aggressive_ctmw_damage = 12362 * 3
-        self.aggressive_ctmw_accel_damage = 12115 * 3
-        self.aggressive_ctmw_accel_adeptct_damage = 12115 * 3
-        
-        self.arbalest_damage = 22614
-        self.lorentz_damage = 22614
-        
-        
-        self.euphony_damage = 10524 * 3
-        self.threadling_grenade_damage = 6883*3
-        self.threadling_grenade_evolution_damage = 9155*3
+        self.arbalest_damage = 24933
+        self.lorentz_damage = 24933
         
         
-        self.sleeper_damage = 53781
-        self.queens_slow = 38236
-        self.queens_fast = 27614
+        self.euphony_damage = 11172 * 3
+        self.threadling_grenade_damage = 6883*3 
+        self.threadling_grenade_evolution_damage = 9155*3 
+        
+        
+        self.sleeper_damage = 59297
+        self.queens_normal = 42156
+        self.queens_burst = 18346*3
         self.category = "h"
 #Precisions
 #####################################################################################################################################
@@ -498,32 +498,41 @@ class QueenBreaker(Linear):
     def __init__(self):
         self.reserves = 27
         super().__init__(self.reserves)
-        self.charge_time_short = 21/60
-        self.charge_time_long = 39/60
-        self.time_between_shots_short = 51/60
-        self.time_between_shots_long = 70/60
-        self.reload_time_short = 100/60
-        self.reload_time_long = 119/60
-        self.base_damage_short = self.queens_fast * self.surgex3_damage_buff
-        self.base_damage_long = self.queens_slow * self.surgex3_damage_buff
-        self.mag_size_initial = 5
-        self.mag_size_subsequent = 5
+        self.charge_time_normal = 37/60
+        self.charge_time_burst = 32/60
+        self.time_between_shots_normal = 70/60
+        self.time_between_shots_burst = 88/60
+        self.time_between_shots_burst_secondary = 75/60
+        self.reload_time_normal = 113/60
+        self.reload_time_burst = 121/60 #decreased time
+        self.base_damage_normal = self.queens_normal * self.surgex3_damage_buff
+        self.base_damage_burst = self.queens_burst * self.surgex3_damage_buff
+        self.mag_size_initial_normal = 5
+        self.mag_size_subsequent_normal = 5
+        self.mag_size_initial = 9 #Guess
+        self.mag_size_subsequent = 9 #Guess
 
 
-    def calculate(self, buff_perc = 1.25, is_high_rpm=False, name="QueenBreaker", prev_result=DamageResult()):
-        name += f" (High RPM Mode)" if is_high_rpm else f" (Low RPM Mode)"
+    def calculate(self, buff_perc = 1.25, is_burst_mode=True, name="QueenBreaker", prev_result=DamageResult()):
+        name += f" (Burst Mode)" if is_burst_mode else f" (Normal Mode)"
         self._prepare_calculation(prev_result)
-        charge_time = self.charge_time_short if is_high_rpm else self.charge_time_long
+        charge_time = self.charge_time_normal if is_burst_mode else self.charge_time_burst
         self.time += charge_time
-        self.base_damage = self.base_damage_short if is_high_rpm else self.base_damage_long
+        self.base_damage = self.base_damage_normal if is_burst_mode else self.base_damage_burst
         self.reload_time = (
-            self.reload_time_short if is_high_rpm else self.reload_time_long)
-        self.time_between_shots = self.time_between_shots_short if is_high_rpm else self.time_between_shots_long
+            self.reload_time_normal if is_burst_mode else self.reload_time_burst)
+        self.time_between_shots = self.time_between_shots_normal if is_burst_mode else self.time_between_shots_burst
+        if not is_burst_mode:
+            self.mag_size_initial = self.mag_size_initial_normal
+            self.mag_size_subsequent = self.mag_size_subsequent_normal
+        
         if self.time != 0:
             self.time -= .5
         self.time += charge_time
 
         def damage_per_shot_function(shots_fired, shots_fired_this_mag):
+            if is_burst_mode and shots_fired == 1:
+                self.time_between_shots = self.time_between_shots_burst_secondary
             return self.base_damage * buff_perc
         self.processSimpleDamageLoop(self.mag_size_initial, self.mag_size_subsequent,
                                      self.time_between_shots, self.reload_time, damage_per_shot_function)

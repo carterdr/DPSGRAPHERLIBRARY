@@ -27,6 +27,30 @@ def _calculate_cataclysmic_bait_multi() :
 def _calculate_cataclysmic_heavy():
     Linears.Cataclysm().calculate(1.25, True, "Cataclysmic (FTTC Bait) + Primaries").save()
     Linears.Cataclysm().calculate(is_bns=False, name= "Cataclysmic (FTTC FF)").save()
+def _calculate_tomorrows_answer():
+    Rockets.TomorrowsAnswer().calculate().save()
+    
+    x = Rockets.TomorrowsAnswer()
+    result = x.calculate(1.25, "Tomorrows Answer (EA Bait)", DamageResult(), Snipers.SupremacyFTTC().base_damage)
+    y = Snipers.SupremacyFTTC()
+    y.reserves -= x.procs
+    result.add(y.calculate(prev_result=result)).save()
+    
+    x = Rockets.TomorrowsAnswer().calculate(1.25, "Tomorrows Answer (EA Bait) + Icebreaker (All Shatter Shots) + Double Fire GL (Vorpal)", DamageResult(), GrenadeLaunchers.DoubleFire().base_damage / x.surgex3_damage_buff, Snipers.IceBreaker().frozen_damage / x.surgex3_damage_buff).save()
+def _calculate_hezen_vengeance():
+    Rockets.HezenVengeance().calculate().save()
+    
+    x = Rockets.HezenVengeance()
+    result = x.calculate(1.25, "Hezen Vengeance (EA Bait)", DamageResult(), Snipers.SupremacyFTTC().base_damage)
+    y = Snipers.SupremacyFTTC()
+    y.reserves -= x.procs
+    result.add(y.calculate(prev_result=result)).save()
+    
+    x = Rockets.HezenVengeance()
+    result = x.calculate(1.25, "Hezen Vengeance (EA Bait)", DamageResult(), Snipers.SupremacyFTTC().base_damage)
+    y = Snipers.Ikelos()
+    y.reserves -= x.procs
+    result.add(y.calculate(prev_result=result)).save()
 def _calculate_cold_comfort_heavy():
     Rockets.ColdComfort(1, 8).calculate(1.25, True, "Cold Comfort").save()
 
@@ -40,6 +64,129 @@ def _calculate_cold_comfort_heavy():
     Rockets.BipodColdComfort(7).calculate().save()
     
     Rockets.BipodColdComfort(8).calculate().save()
+def _calculate_vs_chill_multi():
+    ct = FusionRifles.Riptide().charge_time
+    
+    GrenadeLaunchers.VSChillInhibitor().calculate(mag_size=6).save()
+    GrenadeLaunchers.VSChillInhibitor().calculate(mag_size=8).save()
+    x = GrenadeLaunchers.VSChillInhibitor()
+    y = Snipers.Irukandji()
+    result = x.calculate(1.25, 6, "VS-Chill Inhibitor", DamageResult(), Snipers.Irukandji().base_damage)
+    y.reserves -= x.procs
+    y.mag_size_initial -= x.procs
+    result.add(y.calculate(prev_result=result)).save()
+    
+    x = GrenadeLaunchers.VSChillInhibitor()
+    y = Snipers.Irukandji()
+    result = x.calculate(1.25, 8, "VS-Chill Inhibitor", DamageResult(), Snipers.Irukandji().base_damage)
+    y.reserves -= x.procs
+    y.mag_size_initial -= x.procs
+    result.add(y.calculate(prev_result=result)).save()
+    
+    
+    x = GrenadeLaunchers.VSChillInhibitor()
+    y = FusionRifles.Riptide()
+    result = x.calculate(1.25, 6, "VS-Chill Inhibitor", DamageResult(), FusionRifles.Riptide().base_damage, 0, 76/60, 50/60, 82/60, ct)
+    y.reserves -= x.procs
+    y.mag_size_initial -= x.procs
+    result.add(y.calculate(prev_result=result)).save()
+    
+    x = GrenadeLaunchers.VSChillInhibitor()
+    y = FusionRifles.Riptide()
+    result = x.calculate(1.25, 8, "VS-Chill Inhibitor", DamageResult(), FusionRifles.Riptide().base_damage, 0, 76/60, 50/60, 82/60, ct)
+    y.reserves -= x.procs
+    y.mag_size_initial -= x.procs
+    result.add(y.calculate(prev_result=result)).save()
+    
+
+    x = GrenadeLaunchers.VSChillInhibitor()
+    y = Snipers.SupremacyFTTC()
+    result = x.calculate(1.25, 6, "VS-Chill Inhibitor", DamageResult(), Snipers.SupremacyFTTC().base_damage)
+    y.reserves -= x.procs
+    result.add(y.calculate(prev_result=result)).save()
+    
+    x = GrenadeLaunchers.VSChillInhibitor()
+    y = Snipers.SupremacyFTTC()
+    result = x.calculate(1.25, 8, "VS-Chill Inhibitor", DamageResult(), Snipers.SupremacyFTTC().base_damage)
+    y.reserves -= x.procs
+    result.add(y.calculate(prev_result=result)).save()
+def _calculate_wicked_sister_multi():
+    GrenadeLaunchers.WickedSister().calculate(is_spike=True).save()
+    GrenadeLaunchers.WickedSister().calculate(is_spike=False).save()
+    
+    x = GrenadeLaunchers.WickedSister()
+    y = Linears.Euphony()
+    result = x.calculate(1.25, True, "Wicked Sister", DamageResult(), Linears.Euphony().base_damage, 0, 68/60, 50/60, 75/60, y.charge_time)
+    y.reserves -= x.procs
+    y.mag_size_initial -= x.procs
+    result.add(y.calculate(prev_result=result)).save()
+    
+    x = GrenadeLaunchers.WickedSister()
+    y = Linears.Euphony()
+    result = x.calculate(1.25, False, "Wicked Sister", DamageResult(), Linears.Euphony().base_damage, 0, 68/60, 50/60, 75/60, y.charge_time)
+    y.reserves -= x.procs
+    y.mag_size_initial -= x.procs
+    result.add(y.calculate(prev_result=result)).save()
+    
+    x = GrenadeLaunchers.WickedSister()
+    y = FusionRifles.ScatterSignal()
+    result = x.calculate(1.25, False, "Wicked Sister", DamageResult(), Linears.Euphony().base_damage, 0, 50/60, 50/60, 75/60, y.charge_time)
+    y.reserves -= x.procs
+    y.mag_size_initial -= x.procs
+    result.add(y.calculate(prev_result=result)).save()
+
+    x = GrenadeLaunchers.WickedSister()
+    y = FusionRifles.ScatterSignal()
+    result = x.calculate(1.25, True, "Wicked Sister", DamageResult(), Linears.Euphony().base_damage, 0, 50/60, 50/60, 75/60, y.charge_time)
+    y.reserves -= x.procs
+    y.mag_size_initial -= x.procs
+    result.add(y.calculate(prev_result=result)).save()
+    
+    x = GrenadeLaunchers.WickedSister()
+    y = Snipers.SupremacyFTTC()
+    result = x.calculate(1.25, True, "Wicked Sister", DamageResult(), Snipers.SupremacyFTTC().base_damage)
+    y.reserves -= x.procs
+    result.add(y.calculate(prev_result=result)).save()
+    
+    x = GrenadeLaunchers.WickedSister()
+    y = Snipers.SupremacyFTTC()
+    result = x.calculate(1.25, False, "Wicked Sister", DamageResult(), Snipers.SupremacyFTTC().base_damage)
+    y.reserves -= x.procs
+    result.add(y.calculate(prev_result=result)).save()
+    
+    
+def _calculate_bitter_sweet_multi():
+    GrenadeLaunchers.BitterSweet().calculate(is_spike=True).save()
+    GrenadeLaunchers.BitterSweet().calculate(is_spike=False).save()
+    
+    x = GrenadeLaunchers.BitterSweet()
+    y = Snipers.CloudStrike()
+    result = x.calculate(1.25, True, "Bitter Sweet", DamageResult(), 0, Snipers.CloudStrike().base_damage)
+    y.reserves -= x.procs
+    y.mag_size_initial -= x.procs
+    result.add(y.calculate(prev_result=result)).save()
+    
+    x = GrenadeLaunchers.BitterSweet()
+    y = Snipers.CloudStrike()
+    result = x.calculate(1.25, False, "Bitter Sweet", DamageResult(), 0, Snipers.CloudStrike().base_damage)
+    y.reserves -= x.procs
+    y.mag_size_initial -= x.procs
+    result.add(y.calculate(prev_result=result)).save()
+    
+    x = GrenadeLaunchers.BitterSweet()
+    y = GrenadeLaunchers.ExDiris()
+    result = x.calculate(1.25, False, "Bitter Sweet", DamageResult(), 0, GrenadeLaunchers.ExDiris().base_damage, 50/60, 50/60, 40/60)
+    y.reserves -= x.procs
+    y.mag_size_initial -= x.procs
+    result.add(y.calculate(prev_result=result)).save()
+    
+    x = GrenadeLaunchers.BitterSweet()
+    y = GrenadeLaunchers.ExDiris()
+    result = x.calculate(1.25, True, "Bitter Sweet", DamageResult(), 0, GrenadeLaunchers.ExDiris().base_damage, 50/60, 50/60, 40/60)
+    y.reserves -= x.procs
+    y.mag_size_initial -= x.procs
+    result.add(y.calculate(prev_result=result)).save()
+    
 
 def _calculate_cold_comfort_multi():
     ct = FusionRifles.Riptide().charge_time
@@ -340,6 +487,8 @@ def calculate_special_weapons():
     
     FusionRifles.Eremite().calculate().save()
     
+    GrenadeLaunchers.ExDiris().calculate().save()
+    
     _calculate_ergo_sum()
     
     _calculate_euphony()
@@ -356,6 +505,8 @@ def calculate_special_weapons():
     Snipers.Fugue().calculate().save()
     
     Shotguns.Heritage().calculate().save()
+    
+    Snipers.IceBreaker().calculate().save()
     
     Snipers.Ikelos().calculate().save()
     
@@ -395,6 +546,8 @@ def calculate_special_weapons():
     FusionRifles.ScatterSignal().calculate(buff_perc=1.25/1.22, name="Scatter Signal (Overflow CB)").save()
     
     _calculate_still_hunt()
+    
+    Shotguns.SlayersFang().calculate().save()
     
     Snipers.Succession().calculate().save()
     
@@ -492,7 +645,7 @@ def calculate_heavies():
 
     GrenadeLaunchers.Prospector().calculate().save()
     
-    Linears.QueenBreaker().calculate(is_high_rpm=True).save()
+    Linears.QueenBreaker().calculate(is_burst_mode=True).save()
     Linears.QueenBreaker().calculate().save()
     
     Linears.Reeds(False, False).calculate().save()
@@ -556,19 +709,80 @@ def _calculate_apex_multi():
     x.add(FusionRifles.Merciless().calculate(prev_result=x)).save()
     
 def _calculate_cataphract_multi():
-    GrenadeLaunchers.Cataphract().calculate(mag_size=8, isEuphony=True,isEvolution=False).save()
-    GrenadeLaunchers.Cataphract().calculate(mag_size=8, isEuphony=True, isEvolution=True).save()
-    GrenadeLaunchers.Cataphract().calculate(mag_size=8, is_scatter_signal=True).save()
+    x = GrenadeLaunchers.Cataphract()
+    y = Linears.Euphony()
+    result = x.calculate(1.25, 8, True, "Cataphract", DamageResult(), Linears.Euphony().base_damage, 0, 68/60, 50/60, 75/60, Linears.Euphony().charge_time)
+    y.reserves -= x.procs
+    y.mag_size_initial -= x.procs
+    result.add(y.calculate(1.25, False, prev_result=result)).save()
+
+    x = GrenadeLaunchers.Cataphract()
+    y = Linears.Euphony()
+    result = x.calculate(1.25, 8, True, "Cataphract", DamageResult(), Linears.Euphony().base_damage, 0, 68/60, 50/60, 75/60, Linears.Euphony().charge_time)
+    y.reserves -= x.procs
+    y.mag_size_initial -= x.procs
+    result.add(y.calculate(1.25, True, prev_result=result)).save()
+
+
+    x = GrenadeLaunchers.Cataphract()
+    y = Linears.Euphony()
+    result = x.calculate(1.25, 21, True, "Cataphract", DamageResult(), Linears.Euphony().base_damage, 0, 68/60, 50/60, 75/60, Linears.Euphony().charge_time)
+    y.reserves -= x.procs
+    y.mag_size_initial -= x.procs
+    result.add(y.calculate(1.25, False, prev_result=result)).save()
+
+    x = GrenadeLaunchers.Cataphract()
+    y = Linears.Euphony()
+    result = x.calculate(1.25, 21, True, "Cataphract", DamageResult(), Linears.Euphony().base_damage, 0, 68/60, 50/60, 75/60, Linears.Euphony().charge_time)
+    y.reserves -= x.procs
+    y.mag_size_initial -= x.procs
+    result.add(y.calculate(1.25, True, prev_result=result)).save()
+
+    x = GrenadeLaunchers.Cataphract()
+    y = Linears.Euphony()
+    result = x.calculate(1.25, 24, False, "Cataphract", DamageResult(), Linears.Euphony().base_damage, 0, 68/60, 50/60, 75/60, Linears.Euphony().charge_time)
+    y.reserves -= x.procs
+    y.mag_size_initial -= x.procs
+    result.add(y.calculate(1.25, False, prev_result=result)).save()
+
+    x = GrenadeLaunchers.Cataphract()
+    y = Linears.Euphony()
+    result = x.calculate(1.25, 24, False, "Cataphract", DamageResult(), Linears.Euphony().base_damage, 0, 68/60, 50/60, 75/60, Linears.Euphony().charge_time)
+    y.reserves -= x.procs
+    y.mag_size_initial -= x.procs
+    result.add(y.calculate(1.25, True, prev_result=result)).save()
     
-    GrenadeLaunchers.Cataphract().calculate(isEuphony=True,isEvolution=False).save()
-    GrenadeLaunchers.Cataphract().calculate(isEuphony=True, isEvolution=True).save()
-    GrenadeLaunchers.Cataphract().calculate(is_scatter_signal=True).save()
     
-    GrenadeLaunchers.Cataphract().calculate(is_spike=False,mag_size=24,isEuphony=True,isEvolution=False).save()
-    GrenadeLaunchers.Cataphract().calculate(is_spike=False,mag_size=24,isEuphony=True, isEvolution=True).save()
-    GrenadeLaunchers.Cataphract().calculate(is_spike=False,mag_size=24,is_scatter_signal=True).save()
+    x = GrenadeLaunchers.Cataphract()
+    y = FusionRifles.ScatterSignal()
+    result = x.calculate(1.25, 8, True, "Cataphract", DamageResult(), FusionRifles.ScatterSignal().base_damage, 0, 50/60, 50/60, 75/60,FusionRifles.ScatterSignal().charge_time)
+    y.reserves -= x.procs
+    y.mag_size_initial -= x.procs
+    result.add(y.calculate(1.25, prev_result=result)).save()
+
+    x = GrenadeLaunchers.Cataphract()
+    y = FusionRifles.ScatterSignal()
+    result = x.calculate(1.25, 21, True, "Cataphract", DamageResult(), FusionRifles.ScatterSignal().base_damage, 0, 50/60, 50/60, 75/60,FusionRifles.ScatterSignal().charge_time)
+    y.reserves -= x.procs
+    y.mag_size_initial -= x.procs
+    result.add(y.calculate(1.25, prev_result=result)).save()
+    
+    x = GrenadeLaunchers.Cataphract()
+    y = FusionRifles.ScatterSignal()
+    result = x.calculate(1.25, 24, False, "Cataphract", DamageResult(), FusionRifles.ScatterSignal().base_damage, 0, 50/60, 50/60, 75/60,FusionRifles.ScatterSignal().charge_time)
+    y.reserves -= x.procs
+    y.mag_size_initial -= x.procs
+    result.add(y.calculate(1.25, prev_result=result)).save()
 def _calculate_edge_transit_multi():
 
+    GrenadeLaunchers.EdgeTransitAutoChoirRotation().calculate(is_spike=False, out_of_range=False).save()
+    GrenadeLaunchers.EdgeTransitAutoChoirRotation().calculate(is_spike=False, out_of_range=True).save()
+    GrenadeLaunchers.EdgeTransitAutoChoirRotation().calculate(is_spike=True, out_of_range=False).save()
+    GrenadeLaunchers.EdgeTransitAutoChoirRotation().calculate(is_spike=True, out_of_range=True).save()
+
+    GrenadeLaunchers.EdgeTransitEnviousChoir().calculate(mag_size=24, is_spike=False).save()
+    GrenadeLaunchers.EdgeTransitEnviousChoir().calculate(mag_size=24, is_spike=False, out_of_range=False).save()
+    
     GrenadeLaunchers.EdgeTransitEnviousSupremacy().calculate(mag_size=7).save()
     GrenadeLaunchers.EdgeTransitEnviousSupremacy().calculate(mag_size=7, isKineticSurge=False).save()
     
@@ -581,10 +795,10 @@ def _calculate_edge_transit_multi():
     GrenadeLaunchers.EdgeTransitEnviousSupremacy().calculate(mag_size=24, is_spike=False).save()
     GrenadeLaunchers.EdgeTransitEnviousSupremacy().calculate(mag_size=24, is_spike=False, isKineticSurge=False).save()
 
-    GrenadeLaunchers.EdgeTransitSupremacyRotation().calculate(is_spike=False,one_kinetic_surge=False).save()
-    GrenadeLaunchers.EdgeTransitSupremacyRotation().calculate(is_spike=False,one_kinetic_surge=True).save()
-    GrenadeLaunchers.EdgeTransitSupremacyRotation().calculate(is_spike=True,one_kinetic_surge=False).save()
-    GrenadeLaunchers.EdgeTransitSupremacyRotation().calculate(is_spike=True,one_kinetic_surge=True).save()
+    GrenadeLaunchers.EdgeTransitAutoSupremacyRotation().calculate(is_spike=False,one_kinetic_surge=False).save()
+    GrenadeLaunchers.EdgeTransitAutoSupremacyRotation().calculate(is_spike=False,one_kinetic_surge=True).save()
+    GrenadeLaunchers.EdgeTransitAutoSupremacyRotation().calculate(is_spike=True,one_kinetic_surge=False).save()
+    GrenadeLaunchers.EdgeTransitAutoSupremacyRotation().calculate(is_spike=True,one_kinetic_surge=True).save()
 def _calculate_doomed_petitioner_multi():
     x = Linears.DoomedPartitioner().calculate()
     x.add(Snipers.FathersSin().calculate(prev_result=x)).save()
@@ -606,12 +820,6 @@ def _calculate_gjally_multi():
     
     Rockets.GjallyTremors().calculate(one_kinetic_surge=False).save()
     Rockets.GjallyTremors().calculate(one_kinetic_surge=True).save()
-def _calculate_izi_rot_multi():
-    Rockets.IziRocket(rocket_reserves=8,one_kinetic_surge=False).calculate().save()
-    Rockets.IziRocket(rocket_reserves=8,one_kinetic_surge=True).calculate().save()
-    
-    Rockets.IziELRocket(rocket_reserves=8,one_kinetic_surge=False).calculate().save()
-    Rockets.IziELRocket(rocket_reserves=8,one_kinetic_surge=True).calculate().save()
 def _calculate_microchasm_multi():
     x = TraceRifles.Microchasm().calculate()
     x.add(Snipers.SupremacyFTTC().calculate(1.25 * 1.22,prev_result=x,name="Supremacy (Rewind FTTC)")).save()
@@ -626,6 +834,10 @@ def _calculate_microchasm_multi():
     x.add(Snipers.SupremacyFTTC().calculate(1.25 * 1.22,prev_result=x,name="Supremacy (Rewind FTTC)")).save()
 def calculate_multi_weapons():
     
+    _calculate_tomorrows_answer()
+    _calculate_vs_chill_multi()
+    _calculate_wicked_sister_multi()
+    _calculate_bitter_sweet_multi()
     x = FusionRifles.OneThousandVoices().calculate()
     x.add(FusionRifles.Cartesian().calculate(prev_result=x)).save()
     
@@ -661,10 +873,9 @@ def calculate_multi_weapons():
     _calculate_edge_transit_multi()
     
     _calculate_gjally_multi()
-
+    _calculate_hezen_vengeance()
+    _calculate_bow_heavy()
     _calculate_hothead_multi()
-    
-    _calculate_izi_rot_multi()
     
     _calculate_bow_multi()
     

@@ -15,10 +15,13 @@ class Sniper(Weapon.Weapon):
         self.still_hunt_shot_1 = 33732
         self.still_hunt_shot_2 = 48911
         self.still_hunt_shot_3 = 64090
-        self.darci_damage      = 21538
+        self.darci_damage      = [21538, 22278, 22945, 23612]
         self.izi_damage_4x     = 75206
         self.izi_damage_3x     = 37012
         self.izi_damage_2x     = 28077
+        self.ice_breaker       = 29868
+        self.ice_break_frozen  = 32855 + 10596 + 19867
+        self.darci_legendary_buff = [1.02846239, 1.03324057, 1.02685919, 1.03132969, 1.03037796]
         self.category = "s"
 
 #140s
@@ -318,6 +321,28 @@ class CriticalAnomoly(Sniper):
 
 #Exotics
 #####################################################################################################################################
+class IceBreaker(Sniper):
+    def __init__(self):
+        self.reserves = 10
+        super().__init__(self.reserves)
+        self.base_damage = self.ice_breaker * self.surgex3_damage_buff
+        self.frozen_damage = self.ice_break_frozen * self.surgex3_damage_buff 
+        self.time_between_shots = 73/60
+        self.reload_time = 0
+        self.mag_size_initial = self.reserves
+        self.mag_size_subsequent = self.reserves
+        self.category = "s"
+    def calculate(self, buff_perc = 1.25, is_frozen = False, name="Ice Breaker", prev_result=DamageResult()):
+        self._prepare_calculation(prev_result)
+        frozen_text = " Shatter" if is_frozen else ""
+        name+= frozen_text
+        def damage_per_shot_function(shots_fired, shots_fired_this_mag):
+            damage_done = self.frozen_damage if is_frozen else self.base_damage
+            return damage_done * buff_perc
+        self.processSimpleDamageLoop(
+            self.mag_size_initial, self.mag_size_subsequent, self.time_between_shots, self.reload_time, damage_per_shot_function)
+        return self.fill_gaps(self.damage_times, name, self.category)
+
 class Izi(Sniper):
     def __init__(self, reserves=23):
         self.reserves = reserves
@@ -374,7 +399,7 @@ class DARCI(Sniper):
     def __init__(self):
         self.reserves = 35
         super().__init__(self.reserves)
-        self.base_damage = self.darci_damage * self.surgex3_damage_buff
+        self.base_damage = self.darci_damage[0] * self.surgex3_damage_buff
         self.charge_time = 26/60
         self.reload_time = 136/60
         self.mag_size_initial = 7
@@ -386,7 +411,8 @@ class DARCI(Sniper):
         self.time += self.charge_time
 
         def damage_per_shot_function(shots_fired, shots_fired_this_mag):
-            return self.base_damage * buff_perc
+            index = min(3, shots_fired)
+            return self.darci_damage[index] * buff_perc
         self.processSimpleDamageLoop(self.mag_size_initial, self.mag_size_subsequent,
                                      self.time_between_shots, self.reload_time, damage_per_shot_function)
         return self.fill_gaps(self.damage_times, name, self.category)

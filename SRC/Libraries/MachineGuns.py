@@ -5,11 +5,11 @@ class MachineGun(Weapon.Weapon):
     def __init__(self, reserves):
         super().__init__(reserves)
         self.rapid_damage = 1603
-        self.xenophage_damage = 3859 + 15963
-        self.grand_burst = 20 * (2478 + 9458)
-        self.grand_shot = 13241
-        self.tlord_lightning = 4832
-        self.tlord_shot = 2750
+        self.xenophage_damage = 4644 + 15963
+        self.grand_burst = 20 * (2478 + 11316)
+        self.grand_shot = 15842
+        self.tlord_lightning = 4072
+        self.tlord_shot = 2803
         self.category = "h"
 #Rapids
 #####################################################################################################################################
