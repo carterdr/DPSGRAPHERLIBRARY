@@ -168,7 +168,49 @@ class SupremacyFTTC(Sniper):
             refund_shots=4
         )
         self.base_damage /= self.buffs["surgex3"]
-
+class PraedythsRevenge(Sniper):
+    def __init__(self, tethers=0, triple_tethers=0, stacks = 2, super_mag = True):
+        self.tethers = tethers
+        self.triple_tethers = triple_tethers
+        reserves = 35
+        self.damage_buff = [1.1, 1.2, 1.3, 1.35, 1.4]
+        super().__init__(
+            name=f"Praedyths Revenge ({'Timelost ' if super_mag else ''}FTTC Elemental Honing {stacks} Stacks) No Surges",
+            reserves=reserves,
+            charge_time=default_swap_time * min(stacks, 2), # Assuming you are swapping from heavy to nothing
+            reload_time=104/60,
+            time_between_shots=25.5/60,
+            mag_size_initial=14 if super_mag else 7,
+            mag_size_subsequent=14 if super_mag else 7,
+            damage_type="sniper_140",
+            damage_loop_type="refund",
+            refund_shots=4
+        )
+        self.base_damage /= self.buffs["surgex3"]
+        self.stacks = stacks-1
+    def damage_per_shot_function(self, buff_perc):
+        if self.sim_state.start_time - default_swap_time + 23 > self.sim_state.time:
+            return self.base_damage * buff_perc * self.damage_buff[self.stacks]
+        return self.base_damage * buff_perc
+    #Overwrite refund loop
+    def processRefundLoop(self, damage_per_shot_function):
+        def after_x():
+            # If in 14 mag, only refund on 8th shots
+            if (self.sim_state.time > 20 and (self.sim_state.shots_fired_this_mag > 7 and self.sim_state.mag_size > 11)) \
+                or (self.sim_state.mag_size <= 11) \
+                or (self.sim_state.time <= 20):
+                    if print_update:
+                        print("      - Refunding 2 shots")
+                    self.sim_state.mag_size += 2
+                    if print_update:
+                        print("      - Refunding {mapping[self.refund_shots]} shots")
+                    self.reserves += 2
+        def reload_func():
+            self.sim_state.time += self.reload_time
+            if self.sim_state.time > 20:
+                self.mag_size_subsequent = 7
+            return self.refund_shots
+        self.processSimpleDamageLoop(damage_per_shot_function, special_reload_function=reload_func, after_x_do = after_x, x = self.refund_shots, proc_progress = self.refund_progress_per_shot)
 class NaeemsLance(Sniper):
     def __init__(self):
         super().__init__(
@@ -343,7 +385,7 @@ class StillHunt(Sniper):
         right = ")" if (nighthawk or preloaded) else ""
         nighthawk_text = "Nighthawk" if nighthawk else ""
         preloaded_text = "Preloaded" if preloaded else ""
-        mid = " " if (nighthawk or preloaded) else ""
+        mid = " " if (nighthawk and preloaded) else ""
         name = "StillHunt" + left + nighthawk_text + mid + preloaded_text + right
         super().__init__(
             name=name,

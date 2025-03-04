@@ -203,7 +203,7 @@ class DoomedPartitioner(Linear):
 class Scintillation(Linear):
     def __init__(self, is_bns=True):
         super().__init__(
-            name="Scintillation" + "(Rewind Bait)" if is_bns else "(Rewind FL)",
+            name="Scintillation" + (" (Rewind Bait)" if is_bns else " (Rewind FL)"),
             reserves=23,
             charge_time=26 / 60,
             reload_time=0,

@@ -104,7 +104,7 @@ class FILO(Shotgun):
 class Fortismo(Shotgun):
     def __init__(self, damage_multiplier=1.2):
         super().__init__(
-            name="Fortismo (" + "FF" if damage_multiplier == 1.2 else "Vorpal" + ")",
+            name="Fortismo (" + ("FF" if damage_multiplier == 1.2 else "Vorpal" + "FTTC)"),
             reserves=19,
             time_between_shots=40/60,
             reload_time=3,
@@ -167,7 +167,7 @@ class Nessas(Shotgun):
 class Acrius(Shotgun):
     def __init__(self, is_hs = True, melee_shot_time=101/60, shot_melee_shot=104/60):
         super().__init__(
-            name="Acrius" + " (Trench HS)" if is_hs else " (Trench BS)",
+            name="Acrius" + (" (Trench HS)" if is_hs else " (Trench BS)"),
             reserves=18,
             time_between_shots=shot_melee_shot,
             reload_time=melee_shot_time,
@@ -181,7 +181,7 @@ class FourthHorseMan(Shotgun):
     def __init__(self, is_hs=False, is_rain_of=False, is_dodge=False):
         damage_type = "horseman_hs" if is_hs else "horseman_bs"
         super().__init__(
-            name="Fourth Horseman" + "HS" if is_hs else "BS",
+            name="Fourth Horseman" + ("HS" if is_hs else "BS"),
             reserves=18,
             time_between_shots=11.5/60,
             reload_time=162/60,  # Default Lunas reload time

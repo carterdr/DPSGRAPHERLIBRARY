@@ -2,6 +2,10 @@ from Libraries.weapons import *
 from Libraries.models.DamageResult import DamageResult
 from Libraries.abilities import *
 from Libraries.utils.constants import *
+def _calculate_praedyths():
+    for stacks in [1,2,5]:
+        for super_mag in [True, False]:
+            Snipers.PraedythsRevenge(super_mag=super_mag, stacks=stacks).calculate().save()
 def _calculate_cataclysmic_bait_multi() :
     result = Linears.Cataclysm().calculate(special_damage=Snipers.Ikelos().base_damage)
     y = Snipers.Ikelos()
@@ -145,7 +149,7 @@ def _calculate_cold_comfort_multi():
         a = FusionRifles.Riptide()
         a.reserves-=1
         a.mag_size_initial -= 1
-        x.add(a.calculate(1.25, "Riptide (Vorpal)", prev_result=x)).save()
+        x.add(a.calculate(prev_result=x)).save()
 
     #EL
     x = Rockets.ColdComfort(4, False).calculate()
@@ -285,7 +289,7 @@ def _calculate_still_hunt():
         for prepped in [False, True]:
             Snipers.StillHunt(prepped, nighthawk).calculate().save()
             x = Snipers.StillHunt(prepped, nighthawk)
-            x.name += " (No Surges)"
+            x.name += " No Surges"
             x.calculate(1.25/1.22).save()
             
 def _calculate_supremacy():
@@ -373,7 +377,7 @@ def calculate_special_weapons():
     Snipers.NaeemsLance().calculate(buff_perc=1.25/1.22, custom_name="Naeems Lance (Recon Precision) No Surges").save()
     
     Shotguns.Nessas().calculate().save()
-    
+    _calculate_praedyths()
     Shotguns.Rapid().calculate().save()
     Shotguns.Rapid(is_hs=True).calculate().save()
     
@@ -729,8 +733,9 @@ def calculate_abilities():
     Abilities.SilenceAndSquall().calculate(is_star_eaters=True, is_durace_fissures=False, is_ruin=True).save()
 def _calculate_still_hunt_apex():
     for prepped, nighthawk in [(False, False), (False, True), (True, False), (True, True)]:
-        for nighthawk_super in [False, True]:
-            Rockets.ApexStillHuntRotation(prepped=prepped, nighthawk=nighthawk, nighthawk_super=nighthawk_super).calculate().save()
+        Rockets.ApexStillHuntRotation(prepped=prepped, nighthawk=nighthawk).calculate().save()
+        if prepped:
+            Rockets.ApexStillHuntRotation(prepped=prepped, nighthawk=nighthawk, nighthawk_super=True).calculate().save()
         Rockets.ApexStillHuntRotation(prepped=prepped, nighthawk=nighthawk).calculateNoHolster().save()
 
 def save_all():

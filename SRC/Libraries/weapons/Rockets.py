@@ -537,7 +537,8 @@ class CruxCloudRotation(Rocket):
                          reserves=8, 
                          reload_time=127/60, 
                          time_between_shots=66/60, 
-                         damage_type="adaptive_wolfpack")
+                         damage_type="adaptive_wolfpack", 
+                         category="mw")
 
         self.tethers, self.triple_tethers = tethers, triple_tethers
         self.num_el = num_el
@@ -616,7 +617,8 @@ class ApexStillHuntRotation(Rocket):
                          reserves=8, 
                          time_between_shots=72/60,
                          reload_time=127/60, 
-                         damage_type="adaptive_wolfpack")
+                         damage_type="adaptive_wolfpack",
+                         category="mw")
 
         self.tethers, self.triple_tethers = tethers, triple_tethers
         self.num_el = num_el

@@ -50,7 +50,6 @@ class Weapon:
         self.bait_duration = bait_duration
         # Fetch base damage from the subclass-defined dictionary
         self.base_damage = self.damage_values.get(damage_type, 0)
-        self.default_bait_tuple = [(default_swap_time, 0), (default_swap_time, 0), (default_swap_time, 0)]
         self._surge_damage_values()
         # Tracking state
         self.sim_state = SimulationState()
@@ -77,7 +76,7 @@ class Weapon:
 
     def damage_per_shot_function_bait(self, is_proc_shot, buff_perc, **kwargs):
         """Handles Bait procs, applying surges dynamically."""
-        return self.base_damage * buff_perc * self.buffs["bait"] if not is_proc_shot else 1
+        return self.base_damage * buff_perc * (self.buffs["bait"] if not is_proc_shot else 1)
 
 
     def calculate(self, buff_perc=1.25, custom_name=None, prev_result=None, 
@@ -393,6 +392,7 @@ class Weapon:
                 print("      - Refunding {mapping[self.refund_shots]} shots")
             self.reserves += mapping[self.refund_shots]
         def reload_func():
+            self.sim_state.time += self.reload_time
             return self.refund_shots
         self.processSimpleDamageLoop(damage_per_shot_function, special_reload_function=reload_func, after_x_do = after_x, x = self.refund_shots, proc_progress = self.refund_progress_per_shot)
     def consume_sequence(self, sequence, buff_perc):
