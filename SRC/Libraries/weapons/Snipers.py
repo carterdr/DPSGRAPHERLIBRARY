@@ -1,5 +1,4 @@
 from Libraries.models.Weapon import Weapon
-from Libraries.models.DamageResult import DamageResult
 from Libraries.utils.config import *
 from Libraries.utils.constants import *
 import numpy as np
@@ -118,7 +117,7 @@ class Irukandji(Sniper):
 class SupremacyBait(Sniper):
     def __init__(self):
         super().__init__(
-            name="Supremacy (Rewind FTTC) No Surges",
+            name="Supremacy (Rewind Bait) No Surges",
             reserves=32,
             reload_time=104/60,
             time_between_shots=25.5/60,
@@ -133,7 +132,7 @@ class SupremacyBait(Sniper):
 class SupremacyTremors(Sniper):
     def __init__(self):
         super().__init__(
-            name="Supremacy (Rewind FTTC) No Surges",
+            name="Supremacy (Rewind Tremors) No Surges",
             reserves=32,
             reload_time=104/60,
             time_between_shots=25.5/60,
@@ -177,7 +176,7 @@ class PraedythsRevenge(Sniper):
         super().__init__(
             name=f"Praedyths Revenge ({'Timelost ' if super_mag else ''}FTTC Elemental Honing {stacks} Stacks) No Surges",
             reserves=reserves,
-            charge_time=default_swap_time * min(stacks, 2), # Assuming you are swapping from heavy to nothing
+            charge_time=default_swap_time if stacks > 1 else 0, # Assuming you are swapping from heavy to nothing
             reload_time=104/60,
             time_between_shots=25.5/60,
             mag_size_initial=14 if super_mag else 7,
@@ -202,8 +201,6 @@ class PraedythsRevenge(Sniper):
                     if print_update:
                         print("      - Refunding 2 shots")
                     self.sim_state.mag_size += 2
-                    if print_update:
-                        print("      - Refunding {mapping[self.refund_shots]} shots")
                     self.reserves += 2
         def reload_func():
             self.sim_state.time += self.reload_time
@@ -294,6 +291,38 @@ class CriticalAnomoly(Sniper):
             damage_loop_type="refund",
             refund_shots=4
         )
+class KeenThistle(Sniper):
+    def __init__(self):
+        super().__init__(
+            name="Keen Thistle (FTTC TT)",
+            reserves=22,
+            reload_time=119/60,
+            time_between_shots=50/60,
+            mag_size_initial=5,
+            mag_size_subsequent=5,
+            damage_type="sniper_72",
+            damage_loop_type="refund"
+        )
+    def processRefundLoop(self, damage_per_shot_function):
+        # x = tt
+        # y = fttc
+        def after_x():
+            self.sim_state.mag_size += 1
+            if print_update:
+                print(f"      - Refunding 1 shots")
+            self.reserves += 1
+        def reload_func_x():
+            self.sim_state.time += self.reload_time
+            return 3
+        def after_y_do():
+            self.sim_state.mag_size += 2
+            if print_update:
+                print(f"      - Refunding 2 shots")
+            self.reserves += 2
+        def reload_func_y():
+            return 4
+        self.processSimpleDamageLoop(damage_per_shot_function, special_reload_function=reload_func_x, after_x_do = after_x, x = 3, proc_progress = self.refund_progress_per_shot,
+                                     special_reload_function_y=reload_func_y, after_y_do = after_y_do, y = 4)
 #####################################################################################################################################
 
 #Exotics
@@ -419,7 +448,6 @@ class StillHunt(Sniper):
                 self.sim_state.time += self.gg_to_shot - self.time_between_shots # bc simple function adds time_between_shots
             self.sim_state.shots_fired_this_mag = 1 # When shooting, nighthawk, we "reload" but it starts with 1 mag
         def shoot_golden_gun(buff_perc, start = False):
-            print("gg")
             self.sim_state.time += 0 if start else self.shot_gg_proc
             self.sim_state.damage_done += self.damage_values["still_hunt_shot_1"] * buff_perc
             self.sim_state.damage_times.append(self.update())

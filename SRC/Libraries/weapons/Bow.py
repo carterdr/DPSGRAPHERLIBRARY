@@ -2,13 +2,9 @@ from Libraries.models.Weapon import Weapon
 from Libraries.models.DamageResult import DamageResult
 
 class Bow(Weapon):
-    """Bow base class, storing common damage values and logic."""
-
-
     def __init__(self, name, reserves, charge_time=0, time_between_shots=0, reload_time=0, 
                  mag_size_initial=0, mag_size_subsequent=0, damage_type="", category="h",
                  damage_loop_type="simple"):
-        """Initialize Bow properties and pass values to Weapon class."""
         self.damage_values = {
             "LeviathansBreath": (24976 + 33852 + 2755 + 44) * 1.04,
         }

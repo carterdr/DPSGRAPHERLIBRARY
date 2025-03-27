@@ -20,7 +20,7 @@ def calculate_apex_supremacy_rotation():
     x3.add(Snipers.SupremacyFTTC(tethers=1).calculate(prev_result = x3))
     result.add(x3)
     
-    result.save_custom(name, "mp")
+    result.save(name, "mp")
     
     name = "4 (Apex (Recon Bait) + Supremacy (Rewind FTTC) Rotation 1 Kinetic Surge) + (PERMA Divinity) + (Gjallarhorn + Supremacy (Rewind FTTC)) + 2 Nighthawk"
     result = DamageResult()
@@ -41,7 +41,7 @@ def calculate_apex_supremacy_rotation():
     x3 = Rockets.Ghally().calculate(buff_perc= 1.25 * 1.15)
     x3.add(Snipers.SupremacyFTTC().calculate(buff_perc= 1.25 * 1.15, prev_result = x3))
     result.add(x1).add(x2).add(x3)
-    result.save_custom(name, "mp")
+    result.save(name, "mp")
     
     
 def calculate_crux_cloudstrike_permadiv():
@@ -64,7 +64,7 @@ def calculate_crux_cloudstrike_permadiv():
     x4 = Rockets.Ghally(tethers=1).calculate()
     x4.add(Snipers.Ikelos(tethers=1).calculate(prev_result = x4))
     result.add(x1).add(x2).add(x3).add(x4)
-    result.save_custom(name, "mp")
+    result.save(name, "mp")
 
     name = "4 (Crux (Prepped Clown 8 EL) + Cloudstrike) + (Gjallarhorn + Ikelos SR (FTTC FF)) + (PERMA DIV) + 1 Nighthawk + 1 Tether"
     result = DamageResult()
@@ -84,7 +84,7 @@ def calculate_crux_cloudstrike_permadiv():
     x4 = Rockets.Ghally(tethers=1).calculate()
     x4.add(Snipers.Ikelos(tethers=1).calculate(prev_result = x4))
     result.add(x1).add(x2).add(x3).add(x4)
-    result.save_custom(name, "mp")
+    result.save(name, "mp")
     
 
 def calculate_crux_cloudstrike_rocket_div():
@@ -108,7 +108,7 @@ def calculate_crux_cloudstrike_rocket_div():
     x5 = Rockets.Ghally(tethers=1).calculate()
     x5.add(Snipers.Ikelos(tethers=1).calculate(prev_result = x5))
     result.add(x1).add(x2).add(x3).add(x4).add(x5)
-    result.save_custom(name, "mp")
+    result.save(name, "mp")
 
 
     name = "4 (Crux (Prepped Clown 8 EL) + Cloudstrike) + (Gjallarhorn + Ikelos SR (FTTC FF)) + (Crux (Clown 6 EL) Then Div) + 1 Nighthawk + 1 Tether"
@@ -130,7 +130,7 @@ def calculate_crux_cloudstrike_rocket_div():
     x5 = Rockets.Ghally(tethers=1).calculate()
     x5.add(Snipers.Ikelos(tethers=1).calculate(prev_result = x5))
     result.add(x1).add(x2).add(x3).add(x4).add(x5)
-    result.save_custom(name, "mp")
+    result.save(name, "mp")
     
     
 def calculate_crux_supremacy_permadiv():
@@ -153,7 +153,7 @@ def calculate_crux_supremacy_permadiv():
     x4 = Rockets.Ghally(tethers=1).calculate()
     x4.add(Snipers.SupremacyFTTC(tethers=1).calculate(prev_result = x4))
     result.add(x1).add(x2).add(x3).add(x4)
-    result.save_custom(name, "mp")
+    result.save(name, "mp")
 
 
     name = "4 (Crux (Prepped Clown 8 EL) + Supremacy (Rewind FTTC) No Surges) + (Gjallarhorn + Supremacy (Rewind FTTC) No Surges) + (PERMA DIV) + 1 Nighthawk + 1 Tether"
@@ -174,7 +174,7 @@ def calculate_crux_supremacy_permadiv():
     x4 = Rockets.Ghally(tethers=1).calculate()
     x4.add(Snipers.SupremacyFTTC(tethers=1).calculate(prev_result = x4))
     result.add(x1).add(x2).add(x3).add(x4)
-    result.save_custom(name, "mp")
+    result.save(name, "mp")
     
     
 def calculate_crux_supremacy_rocket_div():
@@ -198,7 +198,7 @@ def calculate_crux_supremacy_rocket_div():
     x5 = Rockets.Ghally(tethers=1).calculate()
     x5.add(Snipers.Ikelos(tethers=1).calculate(prev_result = x5))
     result.add(x1).add(x2).add(x3).add(x4).add(x5)
-    result.save_custom(name, "mp")
+    result.save(name, "mp")
 
     name =  "4 (Crux (Prepped Clown 8 EL) + Supremacy (Rewind FTTC) No Surges) + (Gjallarhorn + Supremacy (Rewind FTTC) No Surges) + (Crux (Clown 7 EL) Then Div) + 1 Nighthawk + 1 Tether"
     result = DamageResult()
@@ -219,7 +219,7 @@ def calculate_crux_supremacy_rocket_div():
     x5 = Rockets.Ghally(tethers=1).calculate()
     x5.add(Snipers.Ikelos(tethers=1).calculate(prev_result = x5))
     result.add(x1).add(x2).add(x3).add(x4).add(x5)
-    result.save_custom(name, "mp")
+    result.save(name, "mp")
     
 
 def calculate_cataphract():
@@ -245,7 +245,7 @@ def calculate_cataphract():
     result.add(z_result)
     
     result.add(FusionRifles.ScatterSignal().calculate(buff_perc=1.25 * 1.3))
-    result.save_custom(name, "mp")
+    result.save(name, "mp")
     
 def calculate_ergo_sum():
     name = "4 (Ergo Sum (Transcend Caster Perfect Fifth)) + (Wolfpack Ergo + Fallen Gullotine (Relentless Whirlwind)) + (Tractor + Scatter Signal (Overflow CB))) + 2 Nighthawk"
@@ -261,7 +261,7 @@ def calculate_ergo_sum():
     result.add(Swords.Gullotine(wolfpack=True).calculate(buff_perc=1.25 * 1.3))
     
     result.add(FusionRifles.ScatterSignal().calculate(buff_perc=1.25 * 1.3))
-    result.save_custom(name, "mp")
+    result.save(name, "mp")
 def calculate_fallen_gullotine():
     name = "4 (Fallen Gullotine (Relentless Whirlwind)) + (Wolfpack Ergo + Fallen Gullotine (Relentless Whirlwind)) + (Tractor + Scatter Signal (Overflow CB))) + 2 Nighthawk"
     result = DamageResult()
@@ -274,7 +274,7 @@ def calculate_fallen_gullotine():
     result.add(x)
     
     result.add(FusionRifles.ScatterSignal().calculate(buff_perc=1.25 * 1.3))
-    result.save_custom(name, "mp")
+    result.save(name, "mp")
     
 def calculate_edge_transit():
     name = "5 (Edge Transit (Auto Bait) + Supremacy (Rewind FTTC) Rotation) + (PERMA DIV) + 2 Nighthawk"
@@ -291,7 +291,7 @@ def calculate_edge_transit():
     result.add(GrenadeLaunchers.EdgeTransitAutoSupremacyRotation(is_spike=False, one_kinetic_surge=False).calculate(buff_perc=1.25 * 3 * 1.15))
         
     result.add(TraceRifles.Divinity(no_reload=True).calculate())
-    result.save_custom(name, "mp")
+    result.save(name, "mp")
 
     
     name = "5 (Edge Transit (24 Mag Bait) + Supremacy (Rewind FTTC)) + (Edge Transit (19 Mag Bait) Then Div) + 1 Single Tether + 1 Nighthawk"
@@ -307,7 +307,7 @@ def calculate_edge_transit():
 
     result.add(GrenadeLaunchers.EdgeTransitDiv(tethers=1, mag_size=24, is_spike=False).calculate())
     
-    result.save_custom(name, "mp")
+    result.save(name, "mp")
     
     name = "5 (Edge Transit (24 Mag Bait) + Fathers Sins (TT FF)) + (Edge Transit (19 Mag Bait) Then Div) + 1 Single Tether + 1 Nighthawk"
     result = DamageResult()
@@ -321,7 +321,7 @@ def calculate_edge_transit():
     result.add(GrenadeLaunchers.EdgeTransitEnviousFathersSins(tethers=1, mag_size=24,is_spike=False).calculate(buff_perc=1.25 * 3))
     
     result.add(GrenadeLaunchers.EdgeTransitDiv(tethers=1, mag_size=24, is_spike=False).calculate())
-    result.save_custom(name, "mp")
+    result.save(name, "mp")
 def calculate_levis():
     name = "5 (Leviathans Breath + Supremacy (Rewind FTTC)) + (PERMA DIV) + 2 Nighthawk"
     result = DamageResult()
@@ -336,7 +336,7 @@ def calculate_levis():
 
     result.add(TraceRifles.Divinity(no_reload=True).calculate())
     result.add(x1).add(x2)
-    result.save_custom(name, "mp")
+    result.save(name, "mp")
 
     name = "5 (Leviathans Breath + Fathers Sins (TT FF)) + (PERMA DIV) + 2 Nighthawk"
     result = DamageResult()
@@ -351,7 +351,7 @@ def calculate_levis():
 
     result.add(TraceRifles.Divinity(no_reload=True).calculate())
     result.add(x1).add(x2)
-    result.save_custom(name, "mp")
+    result.save(name, "mp")
 def calculate_sleeper():
     name = "5 (Sleeper + Supremacy (Rewind FTTC)) + (PERMA DIV) + 2 Nighthawk"
     result = DamageResult()
@@ -366,7 +366,7 @@ def calculate_sleeper():
 
     result.add(TraceRifles.Divinity(no_reload=True).calculate())
     result.add(x1).add(x2)
-    result.save_custom(name, "mp")
+    result.save(name, "mp")
 
     name = "5 (Sleeper + Ikelos SR (FTTC FF)) + (PERMA DIV) + 2 Nighthawk"
     result = DamageResult()
@@ -381,7 +381,7 @@ def calculate_sleeper():
 
     result.add(TraceRifles.Divinity(no_reload=True).calculate())
     result.add(x1).add(x2)
-    result.save_custom(name, "mp")
+    result.save(name, "mp")
 def calculate_whisper():
     name = "5 (Whisper + Supremacy (Rewind FTTC)) + (PERMA DIV) + 2 Nighthawk"
     result = DamageResult()
@@ -396,7 +396,7 @@ def calculate_whisper():
 
     result.add(TraceRifles.Divinity(no_reload=True).calculate())
     result.add(x1).add(x2)
-    result.save_custom(name, "mp")
+    result.save(name, "mp")
 
     name = "5 (Whisper + Ikelos SR (FTTC FF)) + (PERMA DIV) + 2 Nighthawk"
     result = DamageResult()
@@ -412,7 +412,7 @@ def calculate_whisper():
     
     result.add(TraceRifles.Divinity(no_reload=True).calculate())
     result.add(x1).add(x2)
-    result.save_custom(name, "mp")
+    result.save(name, "mp")
 def calculate_wendigo_cloud():
     name = "5 (Wendigo (Auto Cascade) + Cloudstrike) + (PERMA DIV) + 2 Nighthawk"
     result = DamageResult()
@@ -425,7 +425,7 @@ def calculate_wendigo_cloud():
     result.add(GrenadeLaunchers.WendigoAutoCascadeRotation().calculate(buff_perc=1.25 * 1.15 * 3))
 
     result.add(TraceRifles.Divinity(no_reload=True).calculate())
-    result.save_custom(name, "mp")
+    result.save(name, "mp")
 
 def calculate_cartesian_apex_rotation():
     name = "5 (Apex (Recon Bait) + Cartesian (Vorpal) Rotation) + (Gjallarhorn + Cartesian (Vorpal)) + (Tractor + Scatter Signal (Overflow CB)) + 2 Nighthawk"
@@ -443,7 +443,7 @@ def calculate_cartesian_apex_rotation():
     result.add(x2)
     
     result.add(FusionRifles.ScatterSignal().calculate(buff_perc= 1.25 * 1.3))
-    result.save_custom(name, "mp")
+    result.save(name, "mp")
 def calculate_merciless_apex():
     name = "5 (Apex (Recon Bipod) + Merciless) + (Gjallarhorn + Cartesian (Vorpal)) + (Tractor + Scatter Signal (Overflow CB)) + 2 Nighthawk"
     result = DamageResult()
@@ -463,7 +463,7 @@ def calculate_merciless_apex():
     result.add(x3)
     
     result.add(FusionRifles.ScatterSignal().calculate(buff_perc= 1.25 * 1.3))
-    result.save_custom(name, "mp")
+    result.save(name, "mp")
 def save_all():
     calculate_cartesian_apex_rotation()
     calculate_merciless_apex()

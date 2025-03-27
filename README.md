@@ -1,7 +1,20 @@
-# DPSGRAPHERLIBRARY
+# Damage Simulation Tool
 
-**DPSGRAPHERLIBRARY** is a Python library designed to accurately calculate and visualize Damage Per Second (DPS) for various weapons in the game Destiny 2. It outputs the DPS data into an Excel file, enabling users to create detailed graphs for analysis.
+This project simulates damage over time using a modular system of weapons, abilities, and simulation parameters. Results are able to be exported to a Google Cloud Database or Excel files and graphed.
 
+### Project Structure
+Brief overview:
+```
+📁 SRC/
+├── Libraries/             
+│   ├── abilities/         # Ability implementations
+│   ├── database/          # Database interaction logic and python files to run all calculations
+│   ├── models/            # Core simulation models and result representations
+│   ├── utils/             # Helper files like config, Excel export, constants
+│   └── weapons/           # Weapon type logic and damage implementations
+├── Runner.py              # Main script to run simulation
+├── DPS.xlsx               # Output excel file for Damage Per Second
+```
 ## Description
 
 This library calculates DPS using the following methodology:
@@ -20,56 +33,62 @@ This library calculates DPS using the following methodology:
 
 ## Getting Started
 
-### Dependencies
-
-- **Python 3**
-- **openpyxl**: A Python library for reading/writing Excel 2010 xlsx/xlsm files.
-  - Installation: Run `pip install openpyxl` in your terminal.
-
 ### Installation
+```bash
+git clone <your-repo>
+cd <your-repo>
+pip install -r requirements.txt
+```
+(You can generate `requirements.txt` via `pip freeze > requirements.txt`)
 
-- Clone or download the repository from GitHub.
+
+### Database setup
+#### Setup .env file in root directory
+```
+DB_USER=database_user
+INSTANCE_CONNECTION_NAME=connection_string
+DB_NAME=database_string
+DB_PASSWORD=database_password
+DB_PORT=database_port
+PRIVATE_IP=false
+GOOGLE_APPLICATION_CREDENTIALS="key.json"
+```
+#### Setup key.json file in root directory
+
 
 ### Usage
+# Basic usage
+python Runner.py
 
-1. **Navigate to the SRC Folder:** The `SRC` folder contains the primary script `Runner.py` with all necessary imports.
-2. **Running the Script:** 
-   - For single weapon DPS calculation, instantiate the weapon class and call `printDPS()`.
-   - For multiple weapons, chain the `printDPS()` method calls, passing the appropriate parameters.
-3. **Output File:** The results are written to `DPS.xlsx`. Ensure this file is closed before running the script.
-5. **Data Visualization:** Upon execution, the script will render a graphical representation of the data in a separate window for immediate analysis.
-6. **Permanent Storage** Transfer the data to a permanent spreadsheet and create a line chart with time on the x-axis for visualization.
+# Ensure the config in `utils/config.py` is set correctly before running.
 
 #### Examples
+- Each calculate() call returns a DamageResult.
+- The DamageResult can be saved to the database with DamageResult().save()
+- The Damage Result can be printed to the excel sheet with print_to_sheet(DamageResult())
 
-```python
 # Single Weapon Example
-crux = Rockets.Crux()
-crux.printDps(1.25)
+```python
+ExoticPrimaries.ChoirOfOne(out_of_range=False).calculate()
+```
 
 # Multiple Weapons Example
-crux = Rockets.Crux()
-col = crux.printDps(1.25)
-cloud = Snipers.CloudStrike()
-cloud.printDps(1.25, "Cloudstrike", crux.damage_times, placeInColumn=col)
+```python
+x = Rockets.Ghally().calculate()
+x.add(FusionRifles.Cartesian().calculate(prev_result=x))
 ```
-## Customization
+# Saving to the Database
+```python
+ExoticPrimaries.ChoirOfOne(out_of_range=False).calculate().save()
+```
 
-To customize DPSGRAPHERLIBRARY for your specific needs, you can modify the parameters for each weapon class. The library is designed to be flexible, allowing changes to various aspects of DPS calculation. For more advanced customizations, refer to the documentation within each weapon's class.
+# Printing to the excel sheet
+```python
+print_to_sheet(FusionRifles.Cartesian().calculate())
+```
 
-## Version History
-
-- **1.0**
-  - Initial Release.
-  - Features include:
-    - DPS calculation for various weapons in Destiny 2.
-    - Excel output for data visualization.
-    - Documentation for each weapon class.
-
-## Help
-
-If you encounter issues or have questions regarding the usage of DPSGRAPHERLIBRARY, please follow these steps for assistance:
-
-1. **Check the Documentation:** Most common issues and usage instructions are covered in the in-class documentation.
-2. **Open an Issue:** If you can't find the answer in the documentation, open an issue on GitHub detailing the problem. Please provide as much detail as possible to help us understand and address the issue quickly.
-3. **Community Support:** You can also seek help from the community by posting your query in relevant forums or discussion groups.
+# Setting up the sheet
+```python
+prepare_sheet(clear_excel=True) # Clears the sheet and creates the time column
+display_data() # Displays the data in the sheet using matplotlib
+```

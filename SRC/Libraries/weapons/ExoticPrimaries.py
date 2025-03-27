@@ -1,14 +1,10 @@
 import math
 from Libraries.models.Weapon import Weapon
-from Libraries.models.DamageResult import DamageResult
 
 class ExoticPrimary(Weapon):
-    """Base class for all Exotic Primary weapons."""
-
     def __init__(self, name, reserves, time_between_shots=0, reload_time=0, 
                  mag_size_initial=0, mag_size_subsequent=0, damage_type="", category="e",
                  damage_loop_type="simple"):
-        """Initialize Exotic Primary properties and pass values to Weapon class."""
         self.damage_values = {
             "Outbreak_Base": 946 * 3,
             "Outbreak_Nanite": 1161 * 3,

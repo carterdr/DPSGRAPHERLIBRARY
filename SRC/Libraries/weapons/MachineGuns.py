@@ -2,10 +2,8 @@ from Libraries.models.Weapon import Weapon
 from Libraries.models.DamageResult import DamageResult
 from Libraries.utils.config import *
 class MachineGun(Weapon):
-    """Machine Gun base class, storing common damage values and logic."""
     def __init__(self, name, reserves, time_between_shots=0, reload_time=0, mag_size_initial=0, 
                  mag_size_subsequent=0, damage_type="", category="h", damage_loop_type="simple", refund_shots=4):
-        """Initialize Machine Gun properties and pass values to Weapon class."""
         self.damage_values = {
             "rapid": 1603,
             "xenophage": 4644 + 15963,
@@ -42,7 +40,6 @@ class Retrofit(MachineGun):
         if mag_percent < 0.125:
             return 0
         if mag_percent >= 1.1:
-            print(self.sim_state.shots_fired_this_mag)
             return 0.45
         return -0.2241 * mag_percent**3 + 0.3001 * mag_percent**2 + 0.2066 * mag_percent + 0.1575
 #####################################################################################################################################

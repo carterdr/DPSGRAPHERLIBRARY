@@ -1,14 +1,10 @@
 from Libraries.models.Weapon import Weapon
-from Libraries.models.DamageResult import DamageResult
 import numpy
 
 class Fusion(Weapon):
-    """Fusion Rifle base class, storing common damage values and logic."""
-
     def __init__(self, name, reserves, charge_time=0, time_between_shots=0, reload_time=0, 
                  mag_size_initial=0, mag_size_subsequent=0, damage_type="", category="s",
                  damage_loop_type="simple"):
-        """Initialize Fusion rifle properties and pass values to Weapon class."""
         self.damage_values = {
             "rapid_accel": 2304 * 9,
             "rapid": 2351 * 9,
@@ -48,8 +44,6 @@ class Cartesian(Fusion):
         self.reload_num_appear = 60/60
         self.base_damage *= self.buffs["vorpal"]
 class Iterative(Fusion):
-    """Iterative Loop Fusion Rifle with Mini Rocket Perks."""
-
     def __init__(self):
         super().__init__(
             name="Iterative Loop",
@@ -153,8 +147,6 @@ class Eremite(Fusion):
 #Exotics
 #####################################################################################################################################
 class Merciless(Fusion):
-    """Merciless Exotic Fusion Rifle with increasing damage per shot and decreasing time between shots."""
-
     def __init__(self):
         super().__init__(
             name="Merciless",
@@ -171,7 +163,6 @@ class Merciless(Fusion):
         self.time_between_shots_max = 32/60
         self.reload_num_appear = 60/60
     def damage_per_shot_function(self, buff_perc):
-        """Adjusts time_between_shots dynamically per shot while increasing damage."""
         if self.sim_state.shots_fired == 0:
             self.time_between_shots = self.time_one_to_two
         elif self.sim_state.shots_fired == 1:
@@ -198,7 +189,6 @@ class OneThousandVoices(Fusion):
         )
 
     def damage_per_shot_function(self, buff_perc):
-        """Handles One Thousand Voices ignition damage conditionally."""
         if self.is_ashes:
             return (self.base_damage + self.damage_values["oneK_ignition"]) * buff_perc
         return (self.base_damage + (self.damage_values["oneK_ignition"] if (self.sim_state.shots_fired % 2 == 1) else 0)) * buff_perc

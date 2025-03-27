@@ -61,20 +61,20 @@ class WardensLawIkelosSR():
         
         result.add(WardensLaw().calculate(buff_perc=buff_perc/1.22 * kinetic_buff,max_rotations=1, custom_name = name, prev_result=prev_result))
         result.last_time += 57/60
-        print(result)
+
         ikelos = Snipers.Ikelos()
         ikelos.reserves = 14
         result.add(ikelos.calculate(buff_perc=buff_perc/1.22 * self.solar_buff, prev_result=result, custom_name=""))
         result.last_time += 35/60
-        print(result)
+
         result.add(WardensLaw().calculate(buff_perc=buff_perc/1.22 * kinetic_buff, max_rotations=1, prev_result=result, custom_name = ""))
         result.last_time += 57/60
-        print(result)
+
         ikelos = Snipers.Ikelos()
         ikelos.reserves = 13
         result.add(ikelos.calculate(buff_perc=buff_perc/1.22 * self.solar_buff,prev_result=result, custom_name=""))
         result.last_time += 35/60
-        print(result)
+
         result.add(WardensLaw().calculate(buff_perc=buff_perc/1.22 * kinetic_buff, custom_name = "", prev_result=result))
         result.category = "mw"
         return result

@@ -12,7 +12,6 @@ class GrenadeLauncher(Weapon):
     def __init__(self, name, reserves, charge_time=0, time_between_shots=0, reload_time=0, 
                  mag_size_initial=0, mag_size_subsequent=0, damage_type="", category="h",
                  damage_loop_type="simple"):
-        """Initialize grenade launcher properties."""
         self.damage_values = {
             "mtop": 7366 + 16104,  # Kinetic spec
             "lightweight": 12220 + 5538,
@@ -44,8 +43,6 @@ class GrenadeLauncher(Weapon):
 # Specials
 #####################################################################################################################################
 class DoubleFire(GrenadeLauncher):
-    """Double Fire Grenade Launcher with unique firing behavior."""
-
     def __init__(self):
         super().__init__(
             name="Double Fire (Vorpal)",
@@ -60,8 +57,6 @@ class DoubleFire(GrenadeLauncher):
 
 
 class LightWeight(GrenadeLauncher):
-    """Lightweight Grenade Launcher."""
-
     def __init__(self):
         super().__init__(
             name="Lightweight (Vorpal)",
@@ -76,8 +71,6 @@ class LightWeight(GrenadeLauncher):
 
 
 class MTOP(GrenadeLauncher):
-    """MTOP Grenade Launcher."""
-
     def __init__(self):
         super().__init__(
             name="MTOP (Vorpal)",
@@ -198,9 +191,7 @@ class Koraxis(GrenadeLauncher):
         self.base_damage *= self.buff_multiplier
 
 
-class Wendigo(GrenadeLauncher):
-    """Wendigo Adaptive Grenade Launcher switching to EL after 6 shots."""
-    
+class Wendigo(GrenadeLauncher):    
     def __init__(self):
         super().__init__(name="Wendigo (FP 6 EL)",
                          reserves=29,
@@ -213,13 +204,10 @@ class Wendigo(GrenadeLauncher):
                          damage_loop_type="simple")
 
     def damage_per_shot_function(self, buff_perc, **kwargs):
-        """Switches to Base Damage after 6 shots."""
         return (self.base_damage if self.sim_state.shots_fired >= 6 else self.damage_values["adaptive_el_spike"]) * buff_perc
 
 
-class Regnant(GrenadeLauncher):
-    """Regnant Adaptive Grenade Launcher switching between Spike & EL rounds."""
-    
+class Regnant(GrenadeLauncher):    
     def __init__(self, mag_size=21):
         super().__init__(name=f"Regnant ({mag_size} Mag Envious Spike 7 EL)",
                          reserves=24,
@@ -232,7 +220,6 @@ class Regnant(GrenadeLauncher):
                          damage_loop_type="simple")
 
     def damage_per_shot_function(self, buff_perc, **kwargs):
-        """Switches to Base Damage after 7 shots."""
         return (self.base_damage if self.sim_state.shots_fired >= 7 else self.damage_values["adaptive_el_spike"]) * buff_perc
 
 
@@ -278,8 +265,6 @@ class Anarchy(GrenadeLauncher):
 
 
 class ExDiris(GrenadeLauncher):
-    """Ex Diris Grenade Launcher with changing fire rate and moth explosions."""
-
     def __init__(self):
         super().__init__(name="Ex Diris",
                          reserves=39,
@@ -296,7 +281,6 @@ class ExDiris(GrenadeLauncher):
         self.btwn_index = 0
 
     def damage_per_shot_function(self, buff_perc, **kwargs):
-        """Changes fire rate dynamically and applies moth explosion on alternate shots."""
         if self.sim_state.shots_fired > 0 and self.btwn_index < 4:
             self.btwn_index += 1
             self.time_between_shots = self.time_between_shots_arr[self.btwn_index]
@@ -305,8 +289,6 @@ class ExDiris(GrenadeLauncher):
 
 
 class Parasite(GrenadeLauncher):
-    """Parasite Grenade Launcher dealing exponentially higher damage with stacks."""
-
     def __init__(self, start_with_max=True):
         self.start_with_max = start_with_max
         super().__init__(name=f"Parasite{' (Max Stack)' if start_with_max else ''}",
@@ -320,14 +302,11 @@ class Parasite(GrenadeLauncher):
                          damage_loop_type="simple")
 
     def damage_per_shot_function(self, buff_perc, **kwargs):
-        """Applies max stack damage on first shot if `start_with_max` is enabled."""
         return (self.damage_values["parasite"] * 3 if self.sim_state.shots_fired == 0 and self.start_with_max 
                 else self.base_damage) * buff_perc
 
 
 class Prospector(GrenadeLauncher):
-    """Prospector Grenade Launcher with high rate of fire and AoE damage."""
-
     def __init__(self):
         super().__init__(name="Prospector",
                          reserves=29,
@@ -341,8 +320,6 @@ class Prospector(GrenadeLauncher):
 
 
 class Witherhoard(GrenadeLauncher):
-    """Witherhoard Grenade Launcher dealing DoT (stick + tick) damage."""
-
     def __init__(self):
         super().__init__(name="Witherhoard",
                          reserves=20,
@@ -355,7 +332,6 @@ class Witherhoard(GrenadeLauncher):
                          damage_loop_type="dot")
 
     def calculate(self, buff_perc=1.25, prev_result=None, custom_name=None):
-        """Calculates continuous damage from initial stick and DoT ticks."""
         name = custom_name or self.name
         self._prepare_calculation(prev_result)
         ticks, self.sim_state.damage_done = 0, self.damage_values["wither_initial"] * buff_perc
@@ -382,7 +358,6 @@ class Witherhoard(GrenadeLauncher):
 #####################################################################################################################################
 
 class EdgeTransitEnviousChoir(GrenadeLauncher):
-    """Edge Transit with Envious Arsenal + Choir of One Rotation."""
 
     def __init__(self, mag_size=21, is_spike=True, tethers=0, triple_tethers = 0, out_of_range=True):
         name = f"Edge Transit ({mag_size} Mag{' Spike' if is_spike else ''} Bait)"
@@ -394,7 +369,6 @@ class EdgeTransitEnviousChoir(GrenadeLauncher):
                          category="mw", damage_loop_type="envious")
 
     def calculate(self, buff_perc=1.25, prev_result=None, custom_name=None):
-        """Calculates damage with Envious Arsenal and Choir of One loop."""
         self._prepare_calculation(prev_result)
         name = custom_name or self.name
         dont_reproc = self.mag_size_initial > 20
@@ -405,7 +379,6 @@ class EdgeTransitEnviousChoir(GrenadeLauncher):
         choir_damage = choir.base_damage * buff_perc 
 
         def damage_per_shot_function(is_proc_shot):
-            """Determines damage per shot based on conditions."""
             damage = self.base_damage * buff_perc * self.tether_div_buff()
             return damage * self.buffs["bait"] if not is_proc_shot else damage
         bait_tuple =  [(primary_to_choir, 0 * buff_perc),
@@ -512,7 +485,6 @@ class EdgeTransitDiv(BaseEdgeTransitBait):
 
 
 class EdgeTransitAutoChoirRotation(GrenadeLauncher):
-    """Edge Transit Auto Bait + Choir Rotation."""
 
     def __init__(self, is_spike=True, out_of_range=True):
         self.is_spike = is_spike
@@ -587,8 +559,7 @@ class EdgeTransitAutoChoirRotation(GrenadeLauncher):
         return damage_result.add(choir.calculate(buff_perc, prev_result=damage_result))
 
 class EdgeTransitAutoSupremacyRotation(GrenadeLauncher):
-    """Edge Transit Auto Bait + Supremacy (Rewind FTTC) Rotation."""
-
+    
     def __init__(self, is_spike=True, one_kinetic_surge=True):
         self.is_spike = is_spike
         self.one_kinetic_surge = one_kinetic_surge
@@ -602,7 +573,6 @@ class EdgeTransitAutoSupremacyRotation(GrenadeLauncher):
                          category="mw")
 
     def calculate(self, buff_perc=1.25, prev_result=None, custom_name=None):
-        """Simulates Edge Transit rotation with Supremacy sniper, alternating damage sources."""
         self._prepare_calculation(prev_result)
         name = custom_name or self.name
         
@@ -662,7 +632,6 @@ class EdgeTransitAutoSupremacyRotation(GrenadeLauncher):
 
 
 class WendigoAutoCascadeRotation(GrenadeLauncher):
-    """Wendigo Auto Cascade + Cloudstrike Rotation."""
     def __init__(self, tethers: float = 0, triple_tethers: float = 0):
         super().__init__(name="Wendigo (Auto Cascade) + Cloudstrike Rotation",
                          reserves=26, 

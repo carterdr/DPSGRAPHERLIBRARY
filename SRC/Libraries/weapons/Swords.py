@@ -1,11 +1,9 @@
 from Libraries.models.Weapon import Weapon
 
 class Sword(Weapon):
-    """Sword base class, storing common damage values and logic."""
     def __init__(self, name, reserves, charge_time=0, time_between_shots=0, reload_time=0, 
                  mag_size_initial=0, mag_size_subsequent=0, damage_type="", category="h",
                  damage_loop_type="simple",  refund_shots=3, refund_progress_per_shot=1):
-        """Initialize Sword properties and pass values to Weapon class."""
         self.damage_values = {
             "light_base": 11746,
             "light_bequest": 12820,

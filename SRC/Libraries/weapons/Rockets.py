@@ -1,6 +1,5 @@
 from typing import List
 from Libraries.weapons import Snipers, FusionRifles
-from Libraries.models.DamageResult import DamageResult
 from Libraries.utils.config import *
 from Libraries.abilities import Abilities
 from Libraries.models.Weapon import Weapon
@@ -10,7 +9,6 @@ class Rocket(Weapon):
   def __init__(self, name, reserves, charge_time=0, time_between_shots=0, reload_time=0, 
                  mag_size_initial=0, mag_size_subsequent=0, damage_type="", category="h", 
                  damage_loop_type="simple", refund_shots=0, refund_progress_per_shot=0, bait_duration=11):
-        """Initialize Rocket properties and pass values to Weapon class."""
         wolfpack_damage = 8 * (557 + 1193)
         self.damage_values = {
             "adaptive": 12890 + 41059,
@@ -90,7 +88,7 @@ class Crux(Rocket):
             time_between_shots=66/60,
             reload_time=127/60,
             mag_size_initial=2 if prepped_clown else 1,
-            mag_size_subsequent=1,
+            mag_size_subsequent=2,
             damage_type="adaptive_wolfpack" if wolfpacks else "adaptive",
             damage_loop_type="bait" if is_bns else "simple",
         )
@@ -740,7 +738,7 @@ class ApexStillHuntRotation(Rocket):
             result = apex.calculate(buff_perc=buff_perc, prev_result=prev_result)
 
             still = Snipers.StillHunt(preloaded=self.prepped, nighthawk=self.nighthawk)
-            result.last_time += (still.shot_gg_proc - default_swap_time)* 10
+            result.last_time += (still.shot_gg_proc - default_swap_time)
             print(result)
             result.add(still.calculate(buff_perc=buff_perc, prev_result = result))
             

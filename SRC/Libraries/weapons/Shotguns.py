@@ -1,11 +1,8 @@
 from Libraries.models.Weapon import Weapon
-from Libraries.models.DamageResult import DamageResult
 
 class Shotgun(Weapon):
-    """Shotgun base class, storing common damage values and logic."""
     def __init__(self, name, reserves, time_between_shots=0, reload_time=0, mag_size_initial=0, 
                  mag_size_subsequent=0, damage_type="", category="s", damage_loop_type="simple", refund_shots = 4):
-        """Initialize Shotgun properties and pass values to Weapon class."""
         self.damage_values = {
             "rapid_bs": 12 * 1217.5,
             "rapid_hs": 16187,

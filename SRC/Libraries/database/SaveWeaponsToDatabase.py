@@ -6,6 +6,9 @@ def _calculate_praedyths():
     for stacks in [1,2,5]:
         for super_mag in [True, False]:
             Snipers.PraedythsRevenge(super_mag=super_mag, stacks=stacks).calculate().save()
+            x = Snipers.PraedythsRevenge(super_mag=super_mag, stacks=stacks)
+            x.name.replace(" No Surges", "")
+            x.calculate(1.25 * 1.22).save()
 def _calculate_cataclysmic_bait_multi() :
     result = Linears.Cataclysm().calculate(special_damage=Snipers.Ikelos().base_damage)
     y = Snipers.Ikelos()
@@ -273,7 +276,7 @@ def calculate_exotic_primaries():
     LuckyPants.WardensLaw().calculate().save()
     
     for people in [1,2,3,4,5,6]:
-        ExoticPrimaries.Outbreak().calculate(people=people).save()
+        ExoticPrimaries.Outbreak(people=people).calculate().save()
     
     ExoticPrimaries.ToM().calculate().save()
     ExoticPrimaries.ToM(isBuffed=True).calculate(custom_name="ToM (Buffed)").save()
@@ -357,6 +360,8 @@ def calculate_special_weapons():
     FusionRifles.Iterative().calculate().save()
     
     Snipers.Izi().calculate().save()
+    
+    Snipers.KeenThistle().calculate().save()
     
     GrenadeLaunchers.LightWeight().calculate().save()
     
@@ -598,6 +603,16 @@ def _calculate_microchasm_multi():
         
 def calculate_multi_weapons():
     
+    x = GrenadeLaunchers.Anarchy().calculate()
+    x.last_time = 0
+    y = GrenadeLaunchers.MTOP()
+    x.add(y.calculate(custom_name= "MTOP (Vorpal) No Surges")).save()
+    
+    x = GrenadeLaunchers.Anarchy().calculate(1.25 *(1.25/1.22), custom_name="Anarchy 4x Surges")
+    x.last_time = 0
+    y = GrenadeLaunchers.MTOP()
+    x.add(y.calculate(1.25/1.22, custom_name= "MTOP (Vorpal) 3 Surges")).save()
+    
     _calculate_tomorrows_answer()
     _calculate_vs_chill_multi()
     _calculate_wicked_sister_multi()
@@ -642,6 +657,12 @@ def calculate_multi_weapons():
     
     x = Linears.QueenBreaker(is_burst_mode=True).calculate()
     x.add(Snipers.SupremacyFTTC().calculate(prev_result=x)).save()
+    
+    x = Linears.QueenBreaker(is_burst_mode=True).calculate()
+    x.add(Snipers.PraedythsRevenge(stacks=2).calculate(prev_result=x)).save()
+    
+    x = Linears.QueenBreaker(is_burst_mode=True).calculate()
+    x.add(Snipers.PraedythsRevenge(stacks=5).calculate(prev_result=x)).save()
     
     x = Linears.QueenBreaker(is_burst_mode=False).calculate()
     x.add(FusionRifles.Techeun().calculate(prev_result=x)).save()
@@ -732,10 +753,9 @@ def calculate_abilities():
     Abilities.SilenceAndSquall().calculate(is_star_eaters=True, is_durace_fissures=True, is_ruin=False).save()
     Abilities.SilenceAndSquall().calculate(is_star_eaters=True, is_durace_fissures=False, is_ruin=True).save()
 def _calculate_still_hunt_apex():
+    Rockets.ApexStillHuntRotation(prepped=True, nighthawk=True, nighthawk_super=True).calculate().save()
     for prepped, nighthawk in [(False, False), (False, True), (True, False), (True, True)]:
         Rockets.ApexStillHuntRotation(prepped=prepped, nighthawk=nighthawk).calculate().save()
-        if prepped:
-            Rockets.ApexStillHuntRotation(prepped=prepped, nighthawk=nighthawk, nighthawk_super=True).calculate().save()
         Rockets.ApexStillHuntRotation(prepped=prepped, nighthawk=nighthawk).calculateNoHolster().save()
 
 def save_all():

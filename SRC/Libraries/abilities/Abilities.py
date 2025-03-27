@@ -1,76 +1,26 @@
-import numpy
-from Libraries.utils.Excel import print_to_sheet
 from Libraries.utils.config import *
 from Libraries.utils.constants import *
 from Libraries.models.DamageResult import DamageResult
-class Ability:
+from Libraries.models.DamageSource import DamageSource
+class Ability(DamageSource):
     def __init__(self):
-        self.time = 0
-        self.damage_done = 0
-        self.damage_times = []
-        self.excel = None
-        self.category = "a"
-    def _prepare_calculation(self, last_time):   
-        self.damage_times = []
-        self.time = 0
-        self.damage_done = 0
-        if last_time.last_time != 0:
-            if print_update:
-                print("ADDING SWAP DELAY")
-            self.time = last_time.last_time/10 + (50/60)
-
-    def update(self, time, damage_done, shots_fired):
-        if print_update:
-            if not time == 0:
-                print("| shot " + str(shots_fired) + "| time: "+str(format(time, ".2f")) + "| damage: " +
-                    str(int(float(format(damage_done, ".0f")))) + "| dps: " + str(format((damage_done)/time, ".0f")))
-            else:
-                print("| shot " + str(shots_fired) + "| time: "+str(format(time, ".2f")) +
-                    "| damage: " + str(int(format(damage_done, ".0f"))) + "| dps: infinity")
-        return (int((float(format(time, ".1f")))*10), int(format(damage_done, ".0f")))
-    def fill_gaps(self, damagetimes, name, category):
-        damagetimes = self._remove_dupe_values(damagetimes)
-        values = numpy.zeros(1001, dtype=int)
-        if len(damagetimes) == 0:
-            return DamageResult(dot = values, last_time = 0, name = name)
-        dt_index = 0
-        damage_value = damagetimes[dt_index][1]
-        dt_index += 1
-        
-        for i in range(damagetimes[0][0], 1001):
-            if dt_index < len(damagetimes) and i == damagetimes[dt_index][0]:
-                damage_value = damagetimes[dt_index][1]
-                dt_index += 1
-            values[i] = int(damage_value)
-        final_time = damagetimes[dt_index-1][0]
-        if print_when_filling:
-            print_to_sheet(DamageResult(dot = values, last_time = final_time, name= name, category= category))
-        return DamageResult(dot = values, last_time = final_time, name= name, category= category)
-    def _remove_dupe_values(self, damagetimes):
-        newTimes = {}
-        #remove dupes
-        for time, damage in damagetimes:
-            damage = int(format(damage * story_mission_to_raid_scalar, ".0f"))
-            if time not in newTimes or newTimes[time] < damage:
-                newTimes[time] = damage
-        return sorted(newTimes.items())
-    
-
+        super().__init__(category="a")
 class ArcSoul(Ability):
     def __init__(self):
         self.charge_time = 49/60
         self.time_between_shots = 110/60
         self.arc_soul_damage = 7919 / story_mission_to_raid_scalar
-        self.arc_soul_dps = self.arc_soul_damage/(110/60)
+        self.arc_soul_dps = self.arc_soul_damage/(self.time_between_shots)
         super().__init__()
 
     def calculate(self, name="Arc Souls", prev_result=DamageResult()):
         self._prepare_calculation(prev_result)
         start = int(format(self.charge_time, ".0f")) * 10
         for rows in range(start, 1001):
-            damage_done = self.arc_soul_dps * (rows-start/10)
-            self.damage_times.append(self.update(rows/10, damage_done, rows))
-        return self.fill_gaps(self.damage_times, name, self.category)
+            self.sim_state.damage_done = self.arc_soul_dps * (rows-start)/10
+            self.sim_state.time = rows / 10
+            self.sim_state.damage_times.append(self.update())
+        return self.fill_gaps(self.sim_state.damage_times, name, self.category)
 
 class ChaosReach(Ability):
     def __init__(self):
@@ -90,12 +40,11 @@ class ChaosReach(Ability):
         frames = self.geo_duration_frames if geomags else self.base_duration_frames
         frame_damage = self.geo_average_damage_per_frame if geomags else self.base_average_damage_per_frame
         for i in range(frames):
-            self.damage_done += frame_damage 
-            self.damage_times.append(self.update(
-                self.time, self.damage_done, ticks))
-            self.time += 1/60
-        result = self.fill_gaps(self.damage_times, name, self.category)
-        result.last_time -= 9 
+            self.sim_state.damage_done += frame_damage 
+            self.sim_state.damage_times.append(self.update())
+            self.sim_state.time += 1/60
+        result = self.fill_gaps(self.sim_state.damage_times, name, self.category)
+        result.last_time -= .9 
         return result
 
 
@@ -113,11 +62,11 @@ class NeedleStorm(Ability):
         if is_star_eaters:
             name += " (Star Eaters)"
         self._prepare_calculation(prev_result)
-        self.damage_done = self.damage_fragment if fragment else self.damage_is_star_eaters if is_star_eaters else self.damage_base
-        self.time += self.duration
-        self.damage_times.append(self.update(self.time, self.damage_done, 0))
-        result = self.fill_gaps(self.damage_times, name, self.category)
-        result.last_time -= 9 
+        self.sim_state.damage_done = self.damage_fragment if fragment else self.damage_is_star_eaters if is_star_eaters else self.damage_base
+        self.sim_state.time += self.duration
+        self.sim_state.damage_times.append(self.update())
+        result = self.fill_gaps(self.sim_state.damage_times, name, self.category)
+        result.last_time -= .9 
         return result
 
 class BladeBarrage(Ability):
@@ -131,11 +80,11 @@ class BladeBarrage(Ability):
         if is_star_eaters:
             name += " (Star Eaters)"
         self._prepare_calculation(prev_result)
-        self.damage_done = self.damage_is_star_eaters if is_star_eaters else self.damage_base
-        self.time += self.duration
-        self.damage_times.append(self.update(self.time, self.damage_done, 0))
-        result = self.fill_gaps(self.damage_times, name, self.category)
-        result.last_time -= 9 
+        self.sim_state.damage_done = self.damage_is_star_eaters if is_star_eaters else self.damage_base
+        self.sim_state.time += self.duration
+        self.sim_state.damage_times.append(self.update())
+        result = self.fill_gaps(self.sim_state.damage_times, name, self.category)
+        result.last_time -= .9 
         return result
 
 
@@ -157,11 +106,11 @@ class NovaBomb(Ability):
             name = "Nova Bomb (Catacylsm Star Eaters)"
             self.damage_cataclysm = self.damage_cataclysm_stareater
         self._prepare_calculation(prev_result)
-        self.damage_done = self.damage_cataclysm if is_cataclsym else self.damage_vortex
-        self.time += self.duration_cataclysm if is_cataclsym else self.duration_vortex
-        self.damage_times.append(self.update(self.time, self.damage_done, 0))
-        result = self.fill_gaps(self.damage_times, name, self.category)
-        result.last_time -= 9 
+        self.sim_state.damage_done = self.damage_cataclysm if is_cataclsym else self.damage_vortex
+        self.sim_state.time += self.duration_cataclysm if is_cataclsym else self.duration_vortex
+        self.sim_state.damage_times.append(self.update())
+        result = self.fill_gaps(self.sim_state.damage_times, name, self.category)
+        result.last_time -= .9 
         return result
 
 
@@ -176,11 +125,11 @@ class GatheringStorm(Ability):
         if is_star_eaters:
             name += " (Star Eaters)"
         self._prepare_calculation(prev_result)
-        self.damage_done = self.damage_is_star_eaters if is_star_eaters else self.damage_base
-        self.time += self.duration
-        self.damage_times.append(self.update(self.time, self.damage_done, 0))
-        result = self.fill_gaps(self.damage_times, name, self.category)
-        result.last_time -= 9 
+        self.sim_state.damage_done = self.damage_is_star_eaters if is_star_eaters else self.damage_base
+        self.sim_state.time += self.duration
+        self.sim_state.damage_times.append(self.update())
+        result = self.fill_gaps(self.sim_state.damage_times, name, self.category)
+        result.last_time -= .9 
         return result
 
 
@@ -211,26 +160,22 @@ class GoldenGun(Ability):
             damage_per_shot *= 1.3
         if (is_nighthawk):
             if not prepop:
-                self.time += self.duration_nighthawk
-            self.damage_done += damage_per_shot
-            self.damage_times.append(self.update(
-                self.time, self.damage_done, 0))
+                self.sim_state.time += self.duration_nighthawk
+            self.sim_state.damage_done += damage_per_shot
+            self.sim_state.damage_times.append(self.update())
         else:
-            self.time += self.duration_base_shot_1
-            self.damage_done += damage_per_shot/3
-            self.damage_times.append(self.update(
-                self.time, self.damage_done, 0))
-            self.time += self.duration_base_shot_2
-            self.damage_done += damage_per_shot/3
-            self.damage_times.append(self.update(
-                self.time, self.damage_done, 0))
-            self.time += self.duration_base_shot_3
-            self.damage_done += damage_per_shot/3
-            self.time += self.duration_base_cooldown
-            self.damage_times.append(self.update(
-                self.time, self.damage_done, 0))
-        result = self.fill_gaps(self.damage_times, name, self.category)
-        result.last_time -= 9 
+            self.sim_state.time += self.duration_base_shot_1
+            self.sim_state.damage_done += damage_per_shot/3
+            self.sim_state.damage_times.append(self.update())
+            self.sim_state.time += self.duration_base_shot_2
+            self.sim_state.damage_done += damage_per_shot/3
+            self.sim_state.damage_times.append(self.update())
+            self.sim_state.time += self.duration_base_shot_3
+            self.sim_state.damage_done += damage_per_shot/3
+            self.sim_state.time += self.duration_base_cooldown
+            self.sim_state.damage_times.append(self.update())
+        result = self.fill_gaps(self.sim_state.damage_times, name, self.category)
+        result.last_time -= .9 
         return result
 
 
@@ -260,36 +205,30 @@ class Tether(Ability):
         self._prepare_calculation(prev_result)
         damage_per_shot = self.damage_orpheus if is_orpheus else self.damage_is_star_eaters if is_star_eaters else self.damage_deadfall if is_deadfall else self.damage_base
         if (is_orpheus):
-            self.time += self.duration_orpheus_shot_1
-            self.damage_done += damage_per_shot/3
-            self.damage_times.append(self.update(
-                self.time, self.damage_done, 0))
-            self.time += self.duration_orpheus_shot_2
-            self.damage_done += damage_per_shot/3
-            self.damage_times.append(self.update(
-                self.time, self.damage_done, 0))
-            self.time += self.duration_orpheus_shot_2
-            self.damage_done += damage_per_shot/3
-            self.time += self.duration_orpheus_cooldown
-            self.damage_times.append(self.update(
-                self.time, self.damage_done, 0))
+            self.sim_state.time += self.duration_orpheus_shot_1
+            self.sim_state.damage_done += damage_per_shot/3
+            self.sim_state.damage_times.append(self.update())
+            self.sim_state.time += self.duration_orpheus_shot_2
+            self.sim_state.damage_done += damage_per_shot/3
+            self.sim_state.damage_times.append(self.update())
+            self.sim_state.time += self.duration_orpheus_shot_2
+            self.sim_state.damage_done += damage_per_shot/3
+            self.sim_state.time += self.duration_orpheus_cooldown
+            self.sim_state.damage_times.append(self.update())
         elif (is_deadfall):
-            self.time += self.duration_base_cooldown
-            self.damage_done += damage_per_shot
-            self.damage_times.append(self.update(
-                self.time, self.damage_done, 0))
+            self.sim_state.time += self.duration_base_cooldown
+            self.sim_state.damage_done += damage_per_shot
+            self.sim_state.damage_times.append(self.update())
         else:
-            self.time += self.duration_base_shot_1
-            self.damage_done += damage_per_shot/2
-            self.damage_times.append(self.update(
-                self.time, self.damage_done, 0))
-            self.time += self.duration_base_shot_2
-            self.damage_done += damage_per_shot/2
-            self.time += self.duration_base_cooldown
-            self.damage_times.append(self.update(
-                self.time, self.damage_done, 0))
-        result = self.fill_gaps(self.damage_times, name, self.category)
-        result.last_time -= 9 
+            self.sim_state.time += self.duration_base_shot_1
+            self.sim_state.damage_done += damage_per_shot/2
+            self.sim_state.damage_times.append(self.update())
+            self.sim_state.time += self.duration_base_shot_2
+            self.sim_state.damage_done += damage_per_shot/2
+            self.sim_state.time += self.duration_base_cooldown
+            self.sim_state.damage_times.append(self.update())
+        result = self.fill_gaps(self.sim_state.damage_times, name, self.category)
+        result.last_time -= .9 
         return result
 
 
@@ -318,11 +257,11 @@ class SilenceAndSquall(Ability):
             name += " (Durance + Fissures)"
             damage = self.damage_durance_fissures
         self._prepare_calculation(prev_result)
-        self.damage_done = damage
-        self.time += self.duration
-        self.damage_times.append(self.update(self.time, self.damage_done, 0))
-        result = self.fill_gaps(self.damage_times, name, self.category)
-        result.last_time -= 9 
+        self.sim_state.damage_done = damage
+        self.sim_state.time += self.duration
+        self.sim_state.damage_times.append(self.update())
+        result = self.fill_gaps(self.sim_state.damage_times, name, self.category)
+        result.last_time -= .9 
         return result
 class TwlightArsenal(Ability):
     def __init__(self):
@@ -335,9 +274,9 @@ class TwlightArsenal(Ability):
         if is_star_eaters:
             name += " (Star Eaters)"
         self._prepare_calculation(prev_result)
-        self.damage_done = self.damage_is_star_eaters if is_star_eaters else self.damage_base
-        self.time += self.duration
-        self.damage_times.append(self.update(self.time, self.damage_done, 0))
-        result = self.fill_gaps(self.damage_times, name, self.category)
-        result.last_time -= 9 
+        self.sim_state.damage_done = self.damage_is_star_eaters if is_star_eaters else self.damage_base
+        self.sim_state.time += self.duration
+        self.sim_state.damage_times.append(self.update())
+        result = self.fill_gaps(self.sim_state.damage_times, name, self.category)
+        result.last_time -= .9 
         return result
