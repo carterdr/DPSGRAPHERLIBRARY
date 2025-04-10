@@ -18,7 +18,7 @@ db = client[DB_NAME]
 damages_collection = db[COLLECTION_NAME]
 
 # Drop the collection if needed
-def drop_damages_collection():
+def drop_dot_collection():
     try:
         damages_collection.drop()
         print("Collection dropped successfully.")

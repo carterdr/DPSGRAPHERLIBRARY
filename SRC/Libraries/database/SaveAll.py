@@ -1,5 +1,5 @@
 from Libraries.database import SaveMultiPersonToDatabase, SaveWeaponsToDatabase, Database
 def save_everything():
-    Database.reset_table()
+    Database.drop_dot_collection()
     SaveWeaponsToDatabase.save_all()
     SaveMultiPersonToDatabase.save_all()
