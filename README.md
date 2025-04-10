@@ -45,13 +45,9 @@ pip install -r requirements.txt
 ### Database setup
 #### Setup .env file in root directory
 ```
-DB_USER=database_user
-INSTANCE_CONNECTION_NAME=connection_string
-DB_NAME=database_string
-DB_PASSWORD=database_password
-DB_PORT=database_port
-PRIVATE_IP=false
-GOOGLE_APPLICATION_CREDENTIALS="key.json"
+MONGO_URI
+DB_NAME
+COLLECTION_NAME
 ```
 #### Setup key.json file in root directory
 
