@@ -7,8 +7,7 @@ from Libraries.abilities import *
 
 
 
-prepare_sheet(clear_sheet=True)
-save_everything()
+Snipers.Ikelos().calculate().save()
 display_data()
 
 
